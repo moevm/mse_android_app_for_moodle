@@ -15,9 +15,9 @@ class SlideshowFragment : Fragment() {
     private lateinit var slideshowViewModel: SlideshowViewModel
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         slideshowViewModel =
                 ViewModelProviders.of(this).get(SlideshowViewModel::class.java)
