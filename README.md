@@ -22,6 +22,16 @@
   Jira Board
   </a>
 </div>
+<div>
+  <a href="https://calendar.google.com/calendar/u/0?cid=c2VoZzRua3RpMmxmdm8wZmljY2tkaGxzb2dAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ">
+  <img
+    style="margin-left: 10px"
+    width="15px"
+    src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Google_Calendar_icon.svg/246px-Google_Calendar_icon.svg.png"
+  />
+  Google Calendar
+  </a>
+</div>
 
 
 ## Требования
