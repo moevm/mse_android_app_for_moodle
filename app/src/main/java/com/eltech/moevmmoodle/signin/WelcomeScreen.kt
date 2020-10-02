@@ -24,10 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.ui.tooling.preview.Preview
 import com.eltech.moevmmoodle.R
-import com.eltech.moevmmoodle.com.eltech.moevmmoodle.signin.authorization.Email
-import com.eltech.moevmmoodle.com.eltech.moevmmoodle.signin.authorization.EmailState
-import com.eltech.moevmmoodle.com.eltech.moevmmoodle.signin.authorization.Password
-import com.eltech.moevmmoodle.com.eltech.moevmmoodle.signin.authorization.PasswordState
+import com.eltech.moevmmoodle.signin.authorization.Email
+import com.eltech.moevmmoodle.signin.authorization.EmailState
+import com.eltech.moevmmoodle.signin.authorization.Password
+import com.eltech.moevmmoodle.signin.authorization.PasswordState
 import com.eltech.moevmmoodle.theme.MoodleTheme
 import com.eltech.moevmmoodle.theme.snackbarAction
 import kotlinx.coroutines.delay

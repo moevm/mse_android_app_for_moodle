@@ -1,4 +1,4 @@
-package com.eltech.moevmmoodle.com.eltech.moevmmoodle.signin.authorization
+package com.eltech.moevmmoodle.signin.authorization
 
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text

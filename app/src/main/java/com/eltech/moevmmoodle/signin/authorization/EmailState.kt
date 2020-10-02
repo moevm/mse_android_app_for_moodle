@@ -1,10 +1,10 @@
-package com.eltech.moevmmoodle.com.eltech.moevmmoodle.signin.authorization
+package com.eltech.moevmmoodle.signin.authorization
 
 import com.eltech.moevmmoodle.signin.TextFieldState
 import java.util.regex.Pattern
 
 // Consider an email valid if there's some text before and after a "@"
-private const val EMAIL_VALIDATION_REGEX = "^(.+)@(.+)\$"
+private const val EMAIL_VALIDATION_REGEX = "^([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4})\$"
 
 class EmailState :
     TextFieldState(validator = ::isEmailValid, errorFor = ::emailValidationError)
