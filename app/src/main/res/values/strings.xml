@@ -19,6 +19,11 @@
     <string name="previous">Previous</string>
     <string name="done">Done</string>
 
+    <!-- navigation -->
+    <string name="navigation_welcome">Welcome</string>
+    <string name="navigation_sign_in">Sign in</string>
+    <string name="navigation_survey">Survey</string>
+
     <!-- survey-->
     <string name="which_jetpack_library">Which Jetpack library are you?</string>
 

@@ -7,17 +7,16 @@
     <fragment
         android:id="@+id/welcome_fragment"
         android:name="com.eltech.moevmmoodle.signin.WelcomeFragment"
-        android:label="Welcome">
-
+        android:label="@+id/navigation_welcome">
     </fragment>
     <fragment
         android:id="@+id/sign_in_fragment"
         android:name="com.eltech.moevmmoodle.signin.SignInFragment"
-        android:label="Sign in">
+        android:label="@+id/navigation_sign_in">
     </fragment>
     <fragment
         android:id="@+id/survey_fragment"
         android:name="com.eltech.moevmmoodle.survey.SurveyFragment"
-        android:label="Survey">
+        android:label="@+id/navigation_survey">
     </fragment>
 </navigation>
