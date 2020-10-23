@@ -13,11 +13,9 @@
     <fragment
         android:id="@+id/sign_in_fragment"
         android:name="com.eltech.moevmmoodle.signin.SignInFragment"
-        android:label="Sign in">
-    </fragment>
+        android:label="Sign in"></fragment>
     <fragment
         android:id="@+id/survey_fragment"
         android:name="com.eltech.moevmmoodle.survey.SurveyFragment"
-        android:label="Survey">
-    </fragment>
+        android:label="Survey"></fragment>
 </navigation>
