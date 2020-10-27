@@ -115,7 +115,7 @@ private fun PostMetadata(metadata: Metadata) {
             }
             ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
                 Text(
-                    text = "${metadata.date} • ${metadata.readTimeMinutes} min read",
+                    text = "${metadata.date} • ${metadata.readTimeMinutes} to pass",
                     style = typography.caption
                 )
             }

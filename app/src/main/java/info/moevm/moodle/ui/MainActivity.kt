@@ -8,7 +8,7 @@ import info.moevm.moodle.MOEVMMoodleApplication
 
 class MainActivity: AppCompatActivity() {
 
-    val navigationViewModel by viewModels<NavigationViewModel>()
+    private val navigationViewModel by viewModels<NavigationViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

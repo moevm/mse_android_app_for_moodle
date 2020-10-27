@@ -78,9 +78,10 @@ private fun AppContent(
                     postsRepository = postsRepository,
                     onBack = { navigationViewModel.onBack() }
                 )
-                // CHECKME: (2) go to the Sign in screen
+                // CHECKME: go to the Sign in screen
                 is Screen.SignIn -> SignInScreen(
                     navigateTo = navigationViewModel::navigateTo,
+                    onBack = { navigationViewModel.onBack() }
                 )
             }
         }
@@ -109,7 +110,7 @@ fun AppDrawer(
 
         DrawerButton(
             icon = Icons.Filled.ListAlt,
-            label = "Interests",
+            label = "Courses",
             isSelected = currentScreen == Screen.Interests,
             action = {
                 navigateTo(Screen.Interests)
@@ -126,11 +127,7 @@ private fun MOEVMMoodleLogo(modifier: Modifier = Modifier) {
             asset = vectorResource(R.drawable.ic_logo_light),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
         )
-        Spacer(Modifier.preferredWidth(8.dp))
-        Image(
-            asset = vectorResource(R.drawable.ic_jetnews_wordmark),
-            colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface)
-        )
+        // TODO: Add MOEVM text
     }
 }
 

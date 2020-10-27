@@ -106,7 +106,7 @@ class NavigationViewModel(private val savedStateHandle: SavedStateHandle) : View
      */
     var currentScreen: Screen by savedStateHandle.getMutableStateOf<Screen>(
         key = SIS_SCREEN,
-        // CHECKME: (1) setting start screen
+        // setting start screen
         default = SignIn,
         save = { it.toBundle() },
         restore = { it.toScreen() }

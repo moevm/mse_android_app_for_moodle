@@ -111,7 +111,7 @@ fun ArticleScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Published in: ${post.publication?.name}",
+                        text = "Course name: ${post.publication?.name}",
                         style = MaterialTheme.typography.subtitle2,
                         color = AmbientContentColor.current
                     )
@@ -160,9 +160,6 @@ private fun BottomBar(
                 .preferredHeight(56.dp)
                 .fillMaxWidth()
         ) {
-            IconButton(onClick = onUnimplementedAction) {
-                Icon(Icons.Filled.FavoriteBorder)
-            }
             BookmarkButton(
                 isBookmarked = isFavorite,
                 onClick = onToggleFavorite
@@ -170,10 +167,6 @@ private fun BottomBar(
             val context = ContextAmbient.current
             IconButton(onClick = { sharePost(post, context) }) {
                 Icon(Icons.Filled.Share)
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = onUnimplementedAction) {
-                Icon(vectorResource(R.drawable.ic_text_settings))
             }
         }
     }

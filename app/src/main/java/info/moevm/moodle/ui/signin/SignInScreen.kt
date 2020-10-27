@@ -82,7 +82,8 @@ private fun Logo(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SignInScreen(
-        navigateTo: (Screen) -> Unit
+        navigateTo: (Screen) -> Unit,
+        onBack: () -> Unit
 ) {
 
     Log.i("!@#", "SignInScreen function called")
@@ -211,7 +212,7 @@ fun SignInSignUpScreen(
 @Composable
 fun SignInPreview() {
     MOEVMMoodleTheme {
-        SignInScreen(navigateTo = {})
+        SignInScreen({}, {})
     }
 }
 
@@ -219,6 +220,6 @@ fun SignInPreview() {
 @Composable
 fun SignInPreviewDark() {
     MOEVMMoodleTheme(darkTheme = true) {
-        SignInScreen(navigateTo = {})
+        SignInScreen({}, {})
     }
 }

@@ -43,7 +43,7 @@ fun AuthorAndReadTime(
                 style = textStyle
             )
             Text(
-                text = " - ${post.metadata.readTimeMinutes} min read",
+                text = " - ${post.metadata.readTimeMinutes} to pass",
                 style = textStyle
             )
         }
@@ -104,7 +104,7 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
         Column(Modifier.weight(1f)) {
             ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
                 Text(
-                    text = "BASED ON YOUR HISTORY",
+                    text = "Open course",
                     style = MaterialTheme.typography.overline
                 )
             }

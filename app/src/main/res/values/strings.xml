@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MOEVMoodle</string>
-    <string name="load_error">Can\'t update latest news</string>
+    <string name="load_error">Can\'t update course list</string>
     <string name="retry">Retry</string>
 
     <string name="app_tagline">MOEVM Moodle App</string>
     <string name="email">Email</string>
+    <string name="dominant_home_course_caption">Your last course</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_in">Sign in</string>
-    <string name="sign_in_guest">Sign in as guest</string>
     <string name="sign_in_create_account">Sign in to your Moodle account</string>
     <string name="or">or</string>
     <string name="forgot_password">Forgot password</string>
     <string name="user_continue">Continue</string>
-    <string name="create_account">Create account</string>
-    <string name="terms_and_conditions">By continuing, you agree to our Terms of Service. We’ll
-        handle your data according to our Privacy Policy.</string>
     <string name="dismiss">Dismiss</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>

@@ -50,9 +50,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 enum class Sections(val title: String) {
-    Topics("Topics"),
-    People("People"),
-    Publications("Publications")
+    Topics("All"),
+    People("Current"),
+    Publications("Archive")
 }
 
 /**
@@ -165,7 +165,7 @@ fun InterestsScreen(
         },
         topBar = {
             TopAppBar(
-                title = { Text("Interests") },
+                title = { Text("Courses") },
                 navigationIcon = {
                     IconButton(onClick = { scaffoldState.drawerState.open() }) {
                         Icon(vectorResource(R.drawable.ic_logo_light))

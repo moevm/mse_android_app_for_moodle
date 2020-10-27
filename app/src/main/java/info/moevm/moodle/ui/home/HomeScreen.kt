@@ -120,6 +120,7 @@ fun HomeScreen(
     if (posts.hasError) {
         val errorMessage = stringResource(id = R.string.load_error)
         val retryMessage = stringResource(id = R.string.retry)
+
         // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
         // automatically dismiss. This coroutine will cancel whenever posts.hasError changes, and
         // only start when posts.hasError is true (due to the above if-check).
@@ -303,7 +304,7 @@ private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
     ProvideEmphasis(AmbientEmphasisLevels.current.high) {
         Text(
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = "Top stories for you",
+            text = stringResource(R.string.dominant_home_course_caption),
             style = MaterialTheme.typography.subtitle1
         )
     }

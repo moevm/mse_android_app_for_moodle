@@ -16,14 +16,14 @@ import info.moevm.moodle.model.Publication
  * Define hardcoded posts to avoid handling any non-ui operations.
  */
 
-val pietro = PostAuthor("Pietro Maggi", "https://medium.com/@pmaggi")
-val manuel = PostAuthor("Manuel Vivo", "https://medium.com/@manuelvicnt")
+val pietro = PostAuthor("Pietro Maggi", "https://etu.ru/")
+val manuel = PostAuthor("Manuel Vivo", "https://etu.ru/")
 val florina = PostAuthor(
     "Florina Muntenescu",
-    "https://medium.com/@florina.muntenescu"
+    "https://etu.ru/"
 )
 val jose =
-    PostAuthor("Jose Alcérreca", "https://medium.com/@JoseAlcerreca")
+    PostAuthor("Jose Alcérreca", "https://etu.ru/")
 
 val publication = Publication(
     "Android Developers",
@@ -968,9 +968,9 @@ val post3 = Post(
 
 val post4 = Post(
     id = "84eb677660d9",
-    title = "Locale changes and the AndroidViewModel antipattern",
+    title = "Not beginning at all Android Development",
     subtitle = "TL;DR: Expose resource IDs from ViewModels to avoid showing obsolete data.",
-    url = "https://medium.com/androiddevelopers/locale-changes-and-the-androidviewmodel-antipattern-84eb677660d9",
+    url = "",
     publication = publication,
     metadata = Metadata(
         author = jose,
