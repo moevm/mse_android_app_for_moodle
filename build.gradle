@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-import com.eltech.moevmmoodle.buildsrc.Libs
-import com.eltech.moevmmoodle.buildsrc.Versions
+import info.moevm.moodle.buildsrc.Libs
+import info.moevm.moodle.buildsrc.Versions
 
 buildscript {
     repositories {
@@ -59,7 +59,3 @@ subprojects {
         }
     }
 }
-
-//task clean(type: Delete) {
-//    delete rootProject.buildDir
-//}

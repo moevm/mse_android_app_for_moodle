@@ -1,4 +1,4 @@
-import com.eltech.moevmmoodle.buildsrc.Libs
+import info.moevm.moodle.buildsrc.Libs
 
 plugins {
     id 'com.android.application'
@@ -10,7 +10,7 @@ android {
     buildToolsVersion '30.0.2'
 
     defaultConfig {
-        applicationId "com.eltech.moevmmoodle"
+        applicationId "info.moevm.moodle"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
@@ -62,6 +62,8 @@ dependencies {
     implementation Libs.AndroidX.Compose.tooling
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata
+    implementation Libs.AndroidX.Compose.foundation
+    implementation Libs.AndroidX.Compose.animation
 
     androidTestImplementation Libs.junit
     androidTestImplementation Libs.AndroidX.Test.core
@@ -70,5 +72,3 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.Ext.junit
     androidTestImplementation Libs.AndroidX.Compose.uiTest
 }
-
-apply from: "ktlint.gradle"
