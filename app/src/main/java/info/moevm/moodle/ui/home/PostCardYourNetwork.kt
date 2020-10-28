@@ -64,7 +64,7 @@ fun PostCardPopular(
                 ProvideEmphasis(emphasisLevels.high) {
                     Text(
                         text = "${post.metadata.date} - " +
-                                "${post.metadata.readTimeMinutes} min read",
+                                "${post.metadata.hoursToPass}h to pass",
                         style = MaterialTheme.typography.body2
                     )
                 }
@@ -107,7 +107,7 @@ fun PreviewPostCardPopularLongText() {
                 title = "Title$loremIpsum",
                 metadata = post1.metadata.copy(
                     author = PostAuthor("Author: $loremIpsum"),
-                    readTimeMinutes = Int.MAX_VALUE
+                    hoursToPass = Int.MAX_VALUE
                 )
             ),
             {}

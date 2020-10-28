@@ -16,31 +16,31 @@ import info.moevm.moodle.model.Publication
  * Define hardcoded posts to avoid handling any non-ui operations.
  */
 
-val pietro = PostAuthor("Pietro Maggi", "https://etu.ru/")
-val manuel = PostAuthor("Manuel Vivo", "https://etu.ru/")
-val florina = PostAuthor(
-    "Florina Muntenescu",
+val tatyana = PostAuthor("Берленко Татьяна Андреевна", "https://etu.ru/")
+val f_tatyana = PostAuthor("Фомичёва Татьяна Генриховна", "https://etu.ru/")
+val nobody = PostAuthor(
+    "Man with no name",
     "https://etu.ru/"
 )
-val jose =
-    PostAuthor("Jose Alcérreca", "https://etu.ru/")
+val sergey =
+    PostAuthor("Беляев Сергей Алексеевич", "https://etu.ru/")
 
 val publication = Publication(
-    "Android Developers",
+    "Programming",
     "https://cdn-images-1.medium.com/max/258/1*u7oZc2_5mrkcFaxkXEyfYA@2x.png"
 )
 val paragraphsPost1 = listOf(
     Paragraph(
         ParagraphType.Text,
-        "Working to make our Android application more modular, I ended up with a sample that included a set of on-demand features grouped inside a folder:"
+        "Product value - наблюдаемая степень достижения цели проекта, которая эквивалентна объему пользы от продукта для пользователя. Польза выражается в количестве/качестве реализации сценариев использования продукта."
     ),
     Paragraph(
         ParagraphType.Text,
-        "Pretty standard setup, all the on-demand modules, inside a “features” folder; clean."
+        "Эскалирование (или эскалация) проблемы - оперативная передача информации о возникшей проблеме на вышестоящий уровень иерархии. При этом эскалируются только проблемы, для решения которых команда не обладает ресурсами и/или инструментами."
     ),
     Paragraph(
         ParagraphType.Text,
-        "These modules are included in the settings.gradle file as:"
+        "Первая итерация посвящена знакомству членов команды друг с другом, с проектом, который они будут реализовывать, и с технологиями, которые будут использоваться. В течение итерации студенты выявляют требования к проекту, разрабатывают макет UI (или CLI, в зависимости от проекта)."
     ),
     Paragraph(
         ParagraphType.CodeBlock,
@@ -73,100 +73,101 @@ val paragraphsPost1 = listOf(
                 72
             )
         )
-    ),
-
-    Paragraph(
-        ParagraphType.Text,
-        "In this particular case our settings.gradle becomes:",
-        listOf(Markup(MarkupType.Code, 28, 43))
-    ),
-    Paragraph(
-        ParagraphType.CodeBlock,
-        """
-        include ':app'
-        include ':module1'
-        include ':module1'
-        include ':module1'
-        include ':module1'
-        """.trimIndent()
-    ),
-    Paragraph(
-        ParagraphType.CodeBlock,
-        """
-        // Set a custom path for the four features modules.
-        // This avoid to have an empty "features" module in  Android Studio.
-        project(":module1").projectDir=new File(rootDir, "features/module1")
-        project(":module2").projectDir=new File(rootDir, "features/module2")
-        project(":module3").projectDir=new File(rootDir, "features/module3")
-        project(":module4").projectDir=new File(rootDir, "features/module4")
-        """.trimIndent()
-    ),
-    Paragraph(
-        ParagraphType.Text,
-        "And the layout in Android Studio is now:"
-    ),
-    Paragraph(
-        ParagraphType.Header,
-        "Conclusion"
-    ),
-    Paragraph(
-        ParagraphType.Text,
-        "As the title says, this is really a small thing, but it helps keep my project in order and it shows how a small Gradle configuration can help keep your project tidy."
-    ),
-    Paragraph(
-        ParagraphType.Quote,
-        "You can find this update in the latest version of the on-demand modules codelab.",
-        listOf(
-            Markup(
-                MarkupType.Link,
-                54,
-                79,
-                "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html"
-            )
-        )
-    ),
-    Paragraph(
-        ParagraphType.Header,
-        "Resources"
-    ),
-    Paragraph(
-        ParagraphType.Bullet,
-        "Android Studio: Tips and Tricks (Google I/O’19)",
-        listOf(
-            Markup(
-                MarkupType.Link,
-                0,
-                47,
-                "https://www.youtube.com/watch?v=ihF-PwDfRZ4&list=PLWz5rJ2EKKc9FfSQIRXEWyWpHD6TtwxMM&index=32&t=0s"
-            )
-        )
-    ),
-
-    Paragraph(
-        ParagraphType.Bullet,
-        "On Demand module codelab",
-        listOf(
-            Markup(
-                MarkupType.Link,
-                0,
-                24,
-                "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html"
-            )
-        )
-    ),
-    Paragraph(
-        ParagraphType.Bullet,
-        "Patchwork Plaid — A modularization story",
-        listOf(
-            Markup(
-                MarkupType.Link,
-                0,
-                40,
-                "https://medium.com/androiddevelopers/a-patchwork-plaid-monolith-to-modularized-app-60235d9f212e"
-            )
-        )
     )
 )
+
+//    Paragraph(
+//        ParagraphType.Text,
+//        "In this particular case our settings.gradle becomes:",
+//        listOf(Markup(MarkupType.Code, 28, 43))
+//    ),
+//    Paragraph(
+//        ParagraphType.CodeBlock,
+//        """
+//        include ':app'
+//        include ':module1'
+//        include ':module1'
+//        include ':module1'
+//        include ':module1'
+//        """.trimIndent()
+//    ),
+//    Paragraph(
+//        ParagraphType.CodeBlock,
+//        """
+//        // Set a custom path for the four features modules.
+//        // This avoid to have an empty "features" module in  Android Studio.
+//        project(":module1").projectDir=new File(rootDir, "features/module1")
+//        project(":module2").projectDir=new File(rootDir, "features/module2")
+//        project(":module3").projectDir=new File(rootDir, "features/module3")
+//        project(":module4").projectDir=new File(rootDir, "features/module4")
+//        """.trimIndent()
+//    ),
+//    Paragraph(
+//        ParagraphType.Text,
+//        "And the layout in Android Studio is now:"
+//    ),
+//    Paragraph(
+//        ParagraphType.Header,
+//        "Conclusion"
+//    ),
+//    Paragraph(
+//        ParagraphType.Text,
+//        "As the title says, this is really a small thing, but it helps keep my project in order and it shows how a small Gradle configuration can help keep your project tidy."
+//    ),
+//    Paragraph(
+//        ParagraphType.Quote,
+//        "You can find this update in the latest version of the on-demand modules codelab.",
+//        listOf(
+//            Markup(
+//                MarkupType.Link,
+//                54,
+//                79,
+//                "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html"
+//            )
+//        )
+//    ),
+//    Paragraph(
+//        ParagraphType.Header,
+//        "Resources"
+//    ),
+//    Paragraph(
+//        ParagraphType.Bullet,
+//        "Android Studio: Tips and Tricks (Google I/O’19)",
+//        listOf(
+//            Markup(
+//                MarkupType.Link,
+//                0,
+//                47,
+//                "https://www.youtube.com/watch?v=ihF-PwDfRZ4&list=PLWz5rJ2EKKc9FfSQIRXEWyWpHD6TtwxMM&index=32&t=0s"
+//            )
+//        )
+//    ),
+//
+//    Paragraph(
+//        ParagraphType.Bullet,
+//        "On Demand module codelab",
+//        listOf(
+//            Markup(
+//                MarkupType.Link,
+//                0,
+//                24,
+//                "https://codelabs.developers.google.com/codelabs/on-demand-dynamic-delivery/index.html"
+//            )
+//        )
+//    ),
+//    Paragraph(
+//        ParagraphType.Bullet,
+//        "Patchwork Plaid — A modularization story",
+//        listOf(
+//            Markup(
+//                MarkupType.Link,
+//                0,
+//                40,
+//                "https://medium.com/androiddevelopers/a-patchwork-plaid-monolith-to-modularized-app-60235d9f212e"
+//            )
+//        )
+//    )
+//)
 
 val paragraphsPost2 = listOf(
     Paragraph(
@@ -920,14 +921,14 @@ val paragraphsPost5 = listOf(
 
 val post1 = Post(
     id = "dc523f0ed25c",
-    title = "A Little Thing about Android Module Paths",
-    subtitle = "How to configure your module paths, instead of using Gradle’s default.",
-    url = "https://medium.com/androiddevelopers/gradle-path-configuration-dc523f0ed25c",
+    title = "Введение в программную инженерию",
+    subtitle = "Основы разработки конечного программного продукта.",
+    url = "https://etu.ru/",
     publication = publication,
     metadata = Metadata(
-        author = pietro,
-        date = "August 02",
-        readTimeMinutes = 1
+        author = tatyana,
+        date = "Pass till December 30",
+        hoursToPass = 1
     ),
     paragraphs = paragraphsPost1,
     imageId = R.drawable.post_1,
@@ -936,14 +937,14 @@ val post1 = Post(
 
 val post2 = Post(
     id = "7446d8dfd7dc",
-    title = "Dagger in Kotlin: Gotchas and Optimizations",
-    subtitle = "Use Dagger in Kotlin! This article includes best practices to optimize your build time and gotchas you might encounter.",
-    url = "https://medium.com/androiddevelopers/dagger-in-kotlin-gotchas-and-optimizations-7446d8dfd7dc",
+    title = "Базы данных",
+    subtitle = "Разработка БД на Access",
+    url = "https://etu.ru/",
     publication = publication,
     metadata = Metadata(
-        author = manuel,
-        date = "July 30",
-        readTimeMinutes = 3
+        author = f_tatyana,
+        date = "Pass till December 28",
+        hoursToPass = 3
     ),
     paragraphs = paragraphsPost2,
     imageId = R.drawable.post_2,
@@ -952,14 +953,14 @@ val post2 = Post(
 
 val post3 = Post(
     id = "ac552dcc1741",
-    title = "From Java Programming Language to Kotlin — the idiomatic way",
-    subtitle = "Learn how to get started converting Java Programming Language code to Kotlin, making it more idiomatic and avoid common pitfalls, by…",
-    url = "https://medium.com/androiddevelopers/from-java-programming-language-to-kotlin-the-idiomatic-way-ac552dcc1741",
+    title = "Функциональное программирование",
+    subtitle = "Реально очень полезный предмет",
+    url = "https://etu.ru/",
     publication = publication,
     metadata = Metadata(
-        author = florina,
-        date = "July 09",
-        readTimeMinutes = 1
+        author = nobody,
+        date = "Pass till Inf",
+        hoursToPass = 1
     ),
     paragraphs = paragraphsPost3,
     imageId = R.drawable.post_3,
@@ -968,14 +969,14 @@ val post3 = Post(
 
 val post4 = Post(
     id = "84eb677660d9",
-    title = "Not beginning at all Android Development",
-    subtitle = "TL;DR: Expose resource IDs from ViewModels to avoid showing obsolete data.",
-    url = "",
+    title = "Web-технологии",
+    subtitle = "Комплексное изучение современной Web-разработки",
+    url = "https://etu.ru/",
     publication = publication,
     metadata = Metadata(
-        author = jose,
-        date = "April 02",
-        readTimeMinutes = 1
+        author = sergey,
+        date = "Pass till November 30",
+        hoursToPass = 1
     ),
     paragraphs = paragraphsPost4,
     imageId = R.drawable.post_4,
@@ -986,12 +987,12 @@ val post5 = Post(
     id = "55db18283aca",
     title = "Collections and sequences in Kotlin",
     subtitle = "Working with collections is a common task and the Kotlin Standard Library offers many great utility functions. It also offers two ways of…",
-    url = "https://medium.com/androiddevelopers/collections-and-sequences-in-kotlin-55db18283aca",
+    url = "https://etu.ru/",
     publication = publication,
     metadata = Metadata(
-        author = florina,
+        author = nobody,
         date = "July 24",
-        readTimeMinutes = 4
+        hoursToPass = 4
     ),
     paragraphs = paragraphsPost5,
     imageId = R.drawable.post_5,

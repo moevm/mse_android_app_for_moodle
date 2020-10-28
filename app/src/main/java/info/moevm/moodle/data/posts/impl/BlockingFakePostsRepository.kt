@@ -23,6 +23,7 @@ class BlockingFakePostsRepository(private val context: Context) : PostsRepositor
         posts.map {
             it.copy(
                 image = imageFromResource(context.resources, it.imageId),
+                // FIXME: is it necessary?
                 imageThumb = imageFromResource(context.resources, it.imageThumbId)
             )
         }

@@ -356,7 +356,7 @@ private fun PostListPopularSection(
         ProvideEmphasis(AmbientEmphasisLevels.current.high) {
             Text(
                 modifier = Modifier.padding(16.dp),
-                text = "Popular on Jetnews",
+                text = "Available courses",
                 style = MaterialTheme.typography.subtitle1
             )
         }

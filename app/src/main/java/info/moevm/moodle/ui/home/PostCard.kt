@@ -43,7 +43,7 @@ fun AuthorAndReadTime(
                 style = textStyle
             )
             Text(
-                text = " - ${post.metadata.readTimeMinutes} to pass",
+                text = " - ${post.metadata.hoursToPass}h to pass",
                 style = textStyle
             )
         }

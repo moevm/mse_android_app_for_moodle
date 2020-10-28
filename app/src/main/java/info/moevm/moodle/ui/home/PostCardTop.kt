@@ -51,7 +51,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
         }
         ProvideEmphasis(emphasisLevels.medium) {
             Text(
-                text = "${post.metadata.date} - ${post.metadata.readTimeMinutes} min read",
+                text = "${post.metadata.date} - ${post.metadata.hoursToPass}h to pass",
                 style = typography.body2
             )
         }

@@ -8,7 +8,6 @@
         <item name="colorPrimary">@color/electric_violet</item>
         <item name="colorPrimaryDark">@color/purple_heart</item>
         <item name="colorAccent">@color/electric_violet</item>
-        <item name="android:statusBarColor">@color/status_bar</item>
     </style>
 
 </resources>

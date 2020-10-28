@@ -111,7 +111,7 @@ fun ArticleScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Course name: ${post.publication?.name}",
+                        text = "${post.publication?.name}",
                         style = MaterialTheme.typography.subtitle2,
                         color = AmbientContentColor.current
                     )

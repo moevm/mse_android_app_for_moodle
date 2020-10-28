@@ -19,7 +19,7 @@ data class Post(
 data class Metadata(
     val author: PostAuthor,
     val date: String,
-    val readTimeMinutes: Int
+    val hoursToPass: Int
 )
 
 data class PostAuthor(
