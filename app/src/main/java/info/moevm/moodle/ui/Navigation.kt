@@ -20,7 +20,7 @@ import info.moevm.moodle.utils.getMutableStateOf
 /**
  * Screen names (used for serialization)
  */
-enum class ScreenName { HOME, INTERESTS, ARTICLE, SIGN_IN }
+enum class ScreenName { SIGN_IN, HOME, INTERESTS, ARTICLE }
 
 /**
  * Class defining the screens we have in the app:
@@ -65,8 +65,7 @@ private fun Screen.toBundle(): Bundle {
  * @throws IllegalArgumentException if the bundle could not be parsed
  */
 private fun Bundle.toScreen(): Screen {
-    val screenName = ScreenName.valueOf(getStringOrThrow(SIS_NAME))
-    return when (screenName) {
+    return when (ScreenName.valueOf(getStringOrThrow(SIS_NAME))) {
         HOME -> Home
         INTERESTS -> Interests
         SIGN_IN -> SignIn
@@ -86,9 +85,6 @@ private fun Bundle.getStringOrThrow(key: String) =
     requireNotNull(getString(key)) { "Missing key '$key' in $this" }
 
 /**
- * This is expected to be replaced by the navigation component, but for now handle navigation
- * manually.
- *
  * Instantiate this ViewModel at the scope that is fully-responsible for navigation, which in this
  * application is [MainActivity].
  *
@@ -96,7 +92,7 @@ private fun Bundle.getStringOrThrow(key: String) =
  * levels are not allowed. To use a similar pattern with a longer back stack, use a [StateList] to
  * hold the back stack state.
  */
-class NavigationViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class NavigationViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     /**
      * Hold the current screen in an observable, restored from savedStateHandle after process
      * death.
@@ -106,6 +102,7 @@ class NavigationViewModel(private val savedStateHandle: SavedStateHandle) : View
      */
     var currentScreen: Screen by savedStateHandle.getMutableStateOf<Screen>(
         key = SIS_SCREEN,
+
         // setting start screen
         default = SignIn,
         save = { it.toBundle() },
@@ -121,8 +118,8 @@ class NavigationViewModel(private val savedStateHandle: SavedStateHandle) : View
      */
     @MainThread
     fun onBack(): Boolean {
-        val wasHandled = currentScreen != Home
-        currentScreen = Home
+        val wasHandled = (currentScreen != Home && currentScreen != SignIn)
+        if (wasHandled) currentScreen = Home
         return wasHandled
     }
 

@@ -31,7 +31,6 @@ import info.moevm.moodle.ui.theme.snackbarAction
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
-    object NavigateBack : SignInEvent()
 }
 
 private fun Modifier.brandingPreferredHeight(
@@ -82,8 +81,7 @@ private fun Logo(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SignInScreen(
-        navigateTo: (Screen) -> Unit,
-        onBack: () -> Unit
+        navigateTo: (Screen) -> Unit
 ) {
 
     Log.i("!@#", "SignInScreen function called")
@@ -130,9 +128,10 @@ fun SignInScreen(
                 ) {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         SignInContent(
-                            onSignInSubmitted = { email, password ->
-                                SignInEvent.SignIn(email, password)
-                            }
+//                            onSignInSubmitted = { email, password ->
+//                                SignInEvent.SignIn(email, password)
+//                            }
+                            onSignInSubmitted = navigateTo
                         )
                     }
                 }
@@ -164,7 +163,8 @@ fun SignInSignUpTopAppBar(topAppBarText: String) {
 @OptIn(ExperimentalFocus::class)
 @Composable
 fun SignInContent(
-    onSignInSubmitted: (email: String, password: String) -> Unit,
+//    onSignInSubmitted: (email: String, password: String) -> Unit
+    onSignInSubmitted: (Screen) -> Unit
 ) {
     Log.i("!@#", "SignInContent function called")
 
@@ -180,11 +180,18 @@ fun SignInContent(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
             modifier = Modifier.focusRequester(focusRequester),
-            onImeAction = { onSignInSubmitted(emailState.text, passwordState.text) }
+            onImeAction = {
+//                onSignInSubmitted(emailState.text, passwordState.text)
+                onSignInSubmitted(Screen.Home)
+            }
         )
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
-            onClick = { onSignInSubmitted(emailState.text, passwordState.text) },
+            onClick = {
+                Log.i("!@#", "onSignInSubmitted called from btn click")
+//                onSignInSubmitted(emailState.text, passwordState.text)
+                onSignInSubmitted(Screen.Home)
+            },
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
             enabled = emailState.isValid && passwordState.isValid
         ) {
@@ -212,7 +219,7 @@ fun SignInSignUpScreen(
 @Composable
 fun SignInPreview() {
     MOEVMMoodleTheme {
-        SignInScreen({}, {})
+        SignInScreen {}
     }
 }
 
@@ -220,6 +227,6 @@ fun SignInPreview() {
 @Composable
 fun SignInPreviewDark() {
     MOEVMMoodleTheme(darkTheme = true) {
-        SignInScreen({}, {})
+        SignInScreen {}
     }
 }

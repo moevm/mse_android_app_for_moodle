@@ -80,8 +80,7 @@ private fun AppContent(
                 )
                 // CHECKME: go to the Sign in screen
                 is Screen.SignIn -> SignInScreen(
-                    navigateTo = navigationViewModel::navigateTo,
-                    onBack = { navigationViewModel.onBack() }
+                    navigateTo = navigationViewModel::navigateTo
                 )
             }
         }
