@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.setContent
 import info.moevm.moodle.MOEVMMoodleApplication
 
-class MainActivity: AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val navigationViewModel by viewModels<NavigationViewModel>()
 
@@ -14,7 +14,7 @@ class MainActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val appContainer = (application as MOEVMMoodleApplication).container
-        setContent {    // call Composable
+        setContent { // call Composable
             MOEVMMoodleApp(appContainer, navigationViewModel)
         }
     }
@@ -27,5 +27,4 @@ class MainActivity: AppCompatActivity() {
             super.onBackPressed()
         }
     }
-
 }

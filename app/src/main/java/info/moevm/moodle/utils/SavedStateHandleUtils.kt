@@ -21,7 +21,11 @@ fun <T> SavedStateHandle.getMutableStateOf(
     restore: (Bundle) -> T
 ): MutableState<T> {
     val bundle: Bundle? = get(key)
-    val initial = if (bundle == null) { default } else { restore(bundle) }
+    val initial = if (bundle == null) {
+        default
+    } else {
+        restore(bundle)
+    }
     val state = mutableStateOf(initial)
     setSavedStateProvider(key) {
         save(state.value)

@@ -3,11 +3,7 @@ package info.moevm.moodle.ui.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -64,7 +60,7 @@ fun PostCardPopular(
                 ProvideEmphasis(emphasisLevels.high) {
                     Text(
                         text = "${post.metadata.date} - " +
-                                "${post.metadata.hoursToPass}h to pass",
+                            "${post.metadata.hoursToPass}h to pass",
                         style = MaterialTheme.typography.body2
                     )
                 }

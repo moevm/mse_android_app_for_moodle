@@ -21,11 +21,15 @@ object UserRepository {
     val user: User
         get() = _user
 
+    @Suppress("unused")
     fun signIn(email: String, password: String) {
+        password.length // TODO: remove it: just for suppress warnings
         _user = User.LoggedInUser(email)
     }
 
+    @Suppress("unused")
     fun signUp(email: String, password: String) {
+        password.length // TODO: remove it: just for suppress warnings
         _user = User.LoggedInUser(email)
     }
 

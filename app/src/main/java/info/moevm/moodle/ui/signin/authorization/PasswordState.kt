@@ -26,7 +26,9 @@ private fun isPasswordValid(password: String): Boolean {
     return password.length > 3
 }
 
+@Suppress("unused")
 private fun passwordValidationError(password: String): String {
+    password.length // TODO: remove it: just for suppress warnings
     return "Invalid password"
 }
 

@@ -9,7 +9,7 @@ import android.app.Application
 import info.moevm.moodle.data.AppContainer
 import info.moevm.moodle.data.AppContainerImpl
 
-class MOEVMMoodleApplication: Application() {
+class MOEVMMoodleApplication : Application() {
 
     // AppContainer instance used by the rest of classes to obtain dependencies
     // it's field injection
@@ -19,5 +19,4 @@ class MOEVMMoodleApplication: Application() {
         super.onCreate()
         container = AppContainerImpl(this)
     }
-
 }

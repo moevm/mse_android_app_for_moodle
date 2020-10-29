@@ -5,24 +5,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.FirstBaseline
-import androidx.compose.material.AmbientEmphasisLevels
-import androidx.compose.material.Colors
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
-import androidx.compose.material.Surface
-import androidx.compose.material.Typography
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
@@ -46,12 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.data.posts.impl.post3
-import info.moevm.moodle.model.Markup
-import info.moevm.moodle.model.MarkupType
-import info.moevm.moodle.model.Metadata
-import info.moevm.moodle.model.Paragraph
-import info.moevm.moodle.model.ParagraphType
-import info.moevm.moodle.model.Post
+import info.moevm.moodle.model.*
 import info.moevm.moodle.ui.ThemedPreview
 
 private val defaultSpacerSize = 16.dp

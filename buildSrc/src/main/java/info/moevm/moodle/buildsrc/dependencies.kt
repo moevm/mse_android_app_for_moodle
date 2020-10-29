@@ -31,7 +31,8 @@ object Libs {
             const val foundation = "androidx.compose.foundation:foundation:$version"
             const val layout = "androidx.compose.foundation:foundation-layout:$version"
             const val material = "androidx.compose.material:material:$version"
-            const val materialIconsExtended = "androidx.compose.material:material-icons-extended:$version"
+            const val materialIconsExtended =
+                "androidx.compose.material:material-icons-extended:$version"
             const val runtime = "androidx.compose.runtime:runtime:$version"
             const val runtimeLivedata = "androidx.compose.runtime:runtime-livedata:$version"
             const val animation = "androidx.compose.animation:animation:$version"
@@ -69,7 +70,8 @@ object Libs {
             const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
             const val annotations = "androidx.lifecycle:lifecycle-compiler:$version"
-            const val viewModelSaveState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:$version"
+            const val viewModelSaveState =
+                "androidx.lifecycle:lifecycle-viewmodel-savedstate:$version"
 
         }
     }

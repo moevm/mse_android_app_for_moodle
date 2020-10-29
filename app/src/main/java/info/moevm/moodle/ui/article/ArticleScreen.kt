@@ -6,34 +6,20 @@ import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import info.moevm.moodle.R
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.data.posts.impl.BlockingFakePostsRepository
@@ -130,7 +116,8 @@ fun ArticleScreen(
         bottomBar = {
             BottomBar(
                 post = post,
-                onUnimplementedAction = { showDialog = true },
+                // FIXME: return - it's just because warning
+//                onUnimplementedAction = { showDialog = true },
                 isFavorite = isFavorite,
                 onToggleFavorite = onToggleFavorite
             )
@@ -149,7 +136,7 @@ fun ArticleScreen(
 @Composable
 private fun BottomBar(
     post: Post,
-    onUnimplementedAction: () -> Unit,
+//    onUnimplementedAction: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit
 ) {

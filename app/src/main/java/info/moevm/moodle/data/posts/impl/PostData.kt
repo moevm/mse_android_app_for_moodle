@@ -3,14 +3,7 @@ package info.moevm.moodle.data.posts.impl
 import android.content.res.Resources
 import androidx.compose.ui.graphics.imageFromResource
 import info.moevm.moodle.R
-import info.moevm.moodle.model.Markup
-import info.moevm.moodle.model.MarkupType
-import info.moevm.moodle.model.Metadata
-import info.moevm.moodle.model.Paragraph
-import info.moevm.moodle.model.ParagraphType
-import info.moevm.moodle.model.Post
-import info.moevm.moodle.model.PostAuthor
-import info.moevm.moodle.model.Publication
+import info.moevm.moodle.model.*
 
 /**
  * Define hardcoded posts to avoid handling any non-ui operations.
@@ -563,8 +556,8 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         "public inline fun <T, R> Iterable<T>.map(transform: (T) -> R): List<R> {\n" +
-                "  return mapTo(ArrayList<R>(collectionSizeOrDefault(10)), transform)\n" +
-                "}",
+            "  return mapTo(ArrayList<R>(collectionSizeOrDefault(10)), transform)\n" +
+            "}",
         listOf(
             Markup(MarkupType.Bold, 7, 13),
             Markup(MarkupType.Bold, 88, 97)
@@ -608,8 +601,8 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         "public fun <T, R> Sequence<T>.map(transform: (T) -> R): Sequence<R>{      \n" +
-                "   return TransformingSequence(this, transform)\n" +
-                "}",
+            "   return TransformingSequence(this, transform)\n" +
+            "}",
         listOf(Markup(MarkupType.Bold, 85, 105))
     ),
     Paragraph(
@@ -628,9 +621,9 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         "public inline fun <T> Sequence<T>.first(predicate: (T) -> Boolean): T {\n" +
-                "   for (element in this) if (predicate(element)) return element\n" +
-                "   throw NoSuchElementException(“Sequence contains no element matching the predicate.”)\n" +
-                "}"
+            "   for (element in this) if (predicate(element)) return element\n" +
+            "   throw NoSuchElementException(“Sequence contains no element matching the predicate.”)\n" +
+            "}"
     ),
     Paragraph(
         ParagraphType.Text,
@@ -643,7 +636,7 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         "internal class TransformingIndexedSequence<T, R> \n" +
-                "constructor(private val sequence: Sequence<T>, private val transformer: (Int, T) -> R) : Sequence<R> {",
+            "constructor(private val sequence: Sequence<T>, private val transformer: (Int, T) -> R) : Sequence<R> {",
         listOf(
             Markup(
                 MarkupType.Bold,
@@ -655,12 +648,12 @@ val paragraphsPost5 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         "override fun iterator(): Iterator<R> = object : Iterator<R> {\n" +
-                "   …\n" +
-                "   override fun next(): R {\n" +
-                "     return transformer(checkIndexOverflow(index++), iterator.next())\n" +
-                "   }\n" +
-                "   …\n" +
-                "}",
+            "   …\n" +
+            "   override fun next(): R {\n" +
+            "     return transformer(checkIndexOverflow(index++), iterator.next())\n" +
+            "   }\n" +
+            "   …\n" +
+            "}",
         listOf(
             Markup(MarkupType.Bold, 83, 89),
             Markup(MarkupType.Bold, 107, 118)

@@ -2,7 +2,6 @@ package info.moevm.moodle.ui.signin
 
 import android.util.Log
 import androidx.compose.animation.animate
-import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
@@ -27,7 +26,6 @@ import info.moevm.moodle.ui.signin.authorization.EmailState
 import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
-import info.moevm.moodle.ui.theme.snackbarAction
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
@@ -81,12 +79,13 @@ private fun Logo(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SignInScreen(
-        navigateTo: (Screen) -> Unit
+    navigateTo: (Screen) -> Unit
 ) {
 
     Log.i("!@#", "SignInScreen function called")
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    // FIXME: return it - just remove warning
+//    val snackbarHostState = remember { SnackbarHostState() }
 
     var brandingBottom by remember { mutableStateOf(0f) }
     val showBranding by remember { mutableStateOf(true) }

@@ -9,6 +9,7 @@ open class TextFieldState(
     private val errorFor: (String) -> String = { "" }
 ) {
     var text: String by mutableStateOf("")
+
     // was the TextField ever focused
     var isFocusedDirty: Boolean by mutableStateOf(false)
     var isFocused: Boolean by mutableStateOf(false)

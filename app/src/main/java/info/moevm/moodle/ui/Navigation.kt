@@ -7,14 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import info.moevm.moodle.ui.Screen.Article
-import info.moevm.moodle.ui.Screen.Home
-import info.moevm.moodle.ui.Screen.SignIn
-import info.moevm.moodle.ui.Screen.Interests
-import info.moevm.moodle.ui.ScreenName.ARTICLE
-import info.moevm.moodle.ui.ScreenName.HOME
-import info.moevm.moodle.ui.ScreenName.INTERESTS
-import info.moevm.moodle.ui.ScreenName.SIGN_IN
+import info.moevm.moodle.ui.Screen.*
+import info.moevm.moodle.ui.ScreenName.*
 import info.moevm.moodle.utils.getMutableStateOf
 
 /**
