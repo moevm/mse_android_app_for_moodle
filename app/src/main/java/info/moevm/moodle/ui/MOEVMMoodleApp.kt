@@ -1,7 +1,5 @@
 package info.moevm.moodle.ui
 
-import android.content.res.Resources
-import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.Text
@@ -32,7 +30,6 @@ import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
 import info.moevm.moodle.ui.signin.SignInScreen
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
-
 
 @Composable
 fun MOEVMMoodleApp(

@@ -3,9 +3,9 @@
 package info.moevm.moodle.data.courses.impl
 
 import info.moevm.moodle.data.Result
+import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.courses.TopicSelection
-import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.utils.addOrRemove
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

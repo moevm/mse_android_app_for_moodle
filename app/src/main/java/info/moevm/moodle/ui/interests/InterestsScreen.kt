@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui.interests
 
-import android.util.Log
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
@@ -23,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
 import info.moevm.moodle.data.Result
+import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.courses.TopicSelection
-import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.data.courses.impl.FakeCoursesRepository
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen

@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui.signin
 
-import android.util.Log
 import androidx.compose.animation.animate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
