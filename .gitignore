@@ -36,3 +36,6 @@ buildSrc/.gradle
 #NDK
 obj/
 .externalNativeBuild
+
+#Release
+app/release
