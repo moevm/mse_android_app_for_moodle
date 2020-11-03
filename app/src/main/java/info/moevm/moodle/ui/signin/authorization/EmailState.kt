@@ -3,7 +3,6 @@ package info.moevm.moodle.ui.signin.authorization
 import info.moevm.moodle.ui.signin.TextFieldState
 import java.util.regex.Pattern
 
-// Consider an email valid if there's some text before and after a "@"
 private const val EMAIL_VALIDATION_REGEX =
     "^([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4})\$"
 
