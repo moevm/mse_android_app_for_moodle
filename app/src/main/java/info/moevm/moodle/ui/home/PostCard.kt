@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
@@ -35,7 +36,7 @@ fun AuthorAndReadTime(
                 style = textStyle
             )
             Text(
-                text = " - ${post.metadata.hoursToPass}h to pass",
+                text = " - ${post.metadata.hoursToPass}" + stringResource(R.string.hours_to_pass),
                 style = textStyle
             )
         }

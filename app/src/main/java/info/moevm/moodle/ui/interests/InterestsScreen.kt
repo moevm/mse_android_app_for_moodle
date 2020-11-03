@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
 import info.moevm.moodle.data.Result
-import info.moevm.moodle.data.interests.InterestsRepository
-import info.moevm.moodle.data.interests.TopicSelection
-import info.moevm.moodle.data.interests.TopicsMap
-import info.moevm.moodle.data.interests.impl.FakeInterestsRepository
+import info.moevm.moodle.data.courses.CoursesRepository
+import info.moevm.moodle.data.courses.TopicSelection
+import info.moevm.moodle.data.courses.CoursesMap
+import info.moevm.moodle.data.courses.impl.FakeCoursesRepository
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.ThemedPreview
@@ -57,12 +57,12 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  *
  * @param navigateTo (event) request navigation to [Screen]
  * @param scaffoldState (state) state for screen Scaffold
- * @param interestsRepository data source for this screen
+ * @param coursesRepository data source for this screen
  */
 @Composable
 fun InterestsScreen(
     navigateTo: (Screen) -> Unit,
-    interestsRepository: InterestsRepository,
+    coursesRepository: CoursesRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     // Returns a [CoroutineScope] that is scoped to the lifecycle of [InterestsScreen]. When this
@@ -72,38 +72,38 @@ fun InterestsScreen(
     // Describe the screen sections here since each section needs 2 states and 1 event.
     // Pass them to the stateless InterestsScreen using a tabContent.
     val topicsSection = TabContent(Sections.Topics) {
-        val (topics) = produceUiState(interestsRepository) {
+        val (topics) = produceUiState(coursesRepository) {
             getTopics()
         }
         // collectAsState will read a [Flow] in Compose
-        val selectedTopics by interestsRepository.observeTopicsSelected().collectAsState(setOf())
+        val selectedTopics by coursesRepository.observeTopicsSelected().collectAsState(setOf())
         val onTopicSelect: (TopicSelection) -> Unit = {
-            coroutineScope.launch { interestsRepository.toggleTopicSelection(it) }
+            coroutineScope.launch { coursesRepository.toggleTopicSelection(it) }
         }
         val data = topics.value.data ?: return@TabContent
         TopicList(data, selectedTopics, onTopicSelect)
     }
 
     val peopleSection = TabContent(Sections.People) {
-        val (people) = produceUiState(interestsRepository) {
+        val (people) = produceUiState(coursesRepository) {
             getPeople()
         }
-        val selectedPeople by interestsRepository.observePeopleSelected().collectAsState(setOf())
+        val selectedPeople by coursesRepository.observePeopleSelected().collectAsState(setOf())
         val onPeopleSelect: (String) -> Unit = {
-            coroutineScope.launch { interestsRepository.togglePersonSelected(it) }
+            coroutineScope.launch { coursesRepository.togglePersonSelected(it) }
         }
         val data = people.value.data ?: return@TabContent
         PeopleList(data, selectedPeople, onPeopleSelect)
     }
 
     val publicationSection = TabContent(Sections.Publications) {
-        val (publications) = produceUiState(interestsRepository) {
+        val (publications) = produceUiState(coursesRepository) {
             getPublications()
         }
-        val selectedPublications by interestsRepository.observePublicationSelected()
+        val selectedPublications by coursesRepository.observePublicationSelected()
             .collectAsState(setOf())
         val onPublicationSelect: (String) -> Unit = {
-            coroutineScope.launch { interestsRepository.togglePublicationSelected(it) }
+            coroutineScope.launch { coursesRepository.togglePublicationSelected(it) }
         }
         val data = publications.value.data ?: return@TabContent
         PublicationList(data, selectedPublications, onPublicationSelect)
@@ -138,7 +138,6 @@ fun InterestsScreen(
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState,
 ) {
-    Log.i("!@#", "InterestsScreen function called")
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -202,17 +201,17 @@ private fun TabContent(
 /**
  * Display the list for the topic tab
  *
- * @param topics (state) topics to display, mapped by section
+ * @param courses (state) topics to display, mapped by section
  * @param selectedTopics (state) currently selected topics
  * @param onTopicSelect (event) request a topic selection be changed
  */
 @Composable
 private fun TopicList(
-    topics: TopicsMap,
+    courses: CoursesMap,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    TabWithSections(topics, selectedTopics, onTopicSelect)
+    TabWithSections(courses, selectedTopics, onTopicSelect)
 }
 
 /**
@@ -280,7 +279,7 @@ private fun TabWithTopics(
  */
 @Composable
 private fun TabWithSections(
-    sections: TopicsMap,
+    sections: CoursesMap,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
@@ -359,7 +358,7 @@ fun PreviewInterestsScreen() {
     ThemedPreview {
         InterestsScreen(
             navigateTo = {},
-            interestsRepository = FakeInterestsRepository()
+            coursesRepository = FakeCoursesRepository()
         )
     }
 }
@@ -374,7 +373,7 @@ fun PreviewInterestsScreenDark() {
         InterestsScreen(
             navigateTo = {},
             scaffoldState = scaffoldState,
-            interestsRepository = FakeInterestsRepository()
+            coursesRepository = FakeCoursesRepository()
         )
     }
 }
@@ -389,7 +388,7 @@ private fun PreviewDrawerOpen() {
         InterestsScreen(
             navigateTo = {},
             scaffoldState = scaffoldState,
-            interestsRepository = FakeInterestsRepository()
+            coursesRepository = FakeCoursesRepository()
         )
     }
 }
@@ -404,7 +403,7 @@ private fun PreviewDrawerOpenDark() {
         InterestsScreen(
             navigateTo = {},
             scaffoldState = scaffoldState,
-            interestsRepository = FakeInterestsRepository()
+            coursesRepository = FakeCoursesRepository()
         )
     }
 }
@@ -426,9 +425,9 @@ fun PreviewTopicsTabDark() {
 }
 
 @Composable
-private fun loadFakeTopics(): TopicsMap {
+private fun loadFakeTopics(): CoursesMap {
     val topics = runBlocking {
-        FakeInterestsRepository().getTopics()
+        FakeCoursesRepository().getTopics()
     }
     return (topics as Result.Success).data
 }
@@ -452,7 +451,7 @@ fun PreviewPeopleTabDark() {
 @Composable
 private fun loadFakePeople(): List<String> {
     val people = runBlocking {
-        FakeInterestsRepository().getPeople()
+        FakeCoursesRepository().getPeople()
     }
     return (people as Result.Success).data
 }
@@ -476,7 +475,7 @@ fun PreviewPublicationsTabDark() {
 @Composable
 private fun loadFakePublications(): List<String> {
     val publications = runBlocking {
-        FakeInterestsRepository().getPublications()
+        FakeCoursesRepository().getPublications()
     }
     return (publications as Result.Success).data
 }

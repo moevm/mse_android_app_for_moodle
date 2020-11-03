@@ -1,5 +1,6 @@
 package info.moevm.moodle.ui
 
+import android.content.res.Resources
 import android.util.Log
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
@@ -18,18 +19,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
 import info.moevm.moodle.data.AppContainer
-import info.moevm.moodle.data.interests.InterestsRepository
+import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.ui.article.ArticleScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
 import info.moevm.moodle.ui.signin.SignInScreen
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
+
 
 @Composable
 fun MOEVMMoodleApp(
@@ -39,7 +42,7 @@ fun MOEVMMoodleApp(
     MOEVMMoodleTheme {
         AppContent(
             navigationViewModel = navigationViewModel,
-            interestsRepository = appContainer.interestsRepository,
+            coursesRepository = appContainer.coursesRepository,
             postsRepository = appContainer.postsRepository
         )
     }
@@ -49,10 +52,8 @@ fun MOEVMMoodleApp(
 private fun AppContent(
     navigationViewModel: NavigationViewModel,
     postsRepository: PostsRepository,
-    interestsRepository: InterestsRepository
+    coursesRepository: CoursesRepository
 ) {
-
-    Log.i("!@#", "AppContent function called")
 
     Crossfade(navigationViewModel.currentScreen) { screen ->
         Surface(color = MaterialTheme.colors.background) {
@@ -63,7 +64,7 @@ private fun AppContent(
                 )
                 is Screen.Interests -> InterestsScreen(
                     navigateTo = navigationViewModel::navigateTo,
-                    interestsRepository = interestsRepository
+                    coursesRepository = coursesRepository
                 )
                 is Screen.Article -> ArticleScreen(
                     postId = screen.postId,
@@ -91,7 +92,7 @@ fun AppDrawer(
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
         DrawerButton(
             icon = Icons.Filled.Home,
-            label = "Home",
+            label = stringResource(R.string.home_label),
             isSelected = currentScreen == Screen.Home,
             action = {
                 navigateTo(Screen.Home)
@@ -101,7 +102,7 @@ fun AppDrawer(
 
         DrawerButton(
             icon = Icons.Filled.ListAlt,
-            label = "Courses",
+            label = stringResource(R.string.courses_label),
             isSelected = currentScreen == Screen.Interests,
             action = {
                 navigateTo(Screen.Interests)

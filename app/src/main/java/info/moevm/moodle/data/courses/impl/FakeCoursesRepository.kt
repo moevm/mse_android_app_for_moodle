@@ -1,9 +1,11 @@
-package info.moevm.moodle.data.interests.impl
+// reference: https://github.com/android/compose-samples
+
+package info.moevm.moodle.data.courses.impl
 
 import info.moevm.moodle.data.Result
-import info.moevm.moodle.data.interests.InterestsRepository
-import info.moevm.moodle.data.interests.TopicSelection
-import info.moevm.moodle.data.interests.TopicsMap
+import info.moevm.moodle.data.courses.CoursesRepository
+import info.moevm.moodle.data.courses.TopicSelection
+import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.utils.addOrRemove
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +18,7 @@ import kotlinx.coroutines.sync.withLock
  * topics, people and publications synchronously.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-class FakeInterestsRepository : InterestsRepository {
+class FakeCoursesRepository : CoursesRepository {
 
     private val topics by lazy {
         mapOf(
@@ -62,7 +64,7 @@ class FakeInterestsRepository : InterestsRepository {
     // Used to make suspend functions that read and update state safe to call from any thread
     private val mutex = Mutex()
 
-    override suspend fun getTopics(): Result<TopicsMap> {
+    override suspend fun getTopics(): Result<CoursesMap> {
         return Result.Success(topics)
     }
 

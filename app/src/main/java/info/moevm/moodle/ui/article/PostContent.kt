@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
+import info.moevm.moodle.R
 import info.moevm.moodle.data.posts.impl.post3
 import info.moevm.moodle.model.*
 import info.moevm.moodle.ui.ThemedPreview
@@ -97,7 +99,7 @@ private fun PostMetadata(metadata: Metadata) {
             }
             ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
                 Text(
-                    text = "${metadata.date} • ${metadata.hoursToPass} h to pass",
+                    text = "${metadata.date} • ${metadata.hoursToPass}" + stringResource(R.string.hours_to_pass),
                     style = typography.caption
                 )
             }

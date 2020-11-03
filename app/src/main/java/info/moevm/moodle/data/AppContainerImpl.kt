@@ -1,8 +1,8 @@
 package info.moevm.moodle.data
 
 import android.content.Context
-import info.moevm.moodle.data.interests.InterestsRepository
-import info.moevm.moodle.data.interests.impl.FakeInterestsRepository
+import info.moevm.moodle.data.courses.CoursesRepository
+import info.moevm.moodle.data.courses.impl.FakeCoursesRepository
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.data.posts.impl.FakePostsRepository
 
@@ -11,7 +11,7 @@ import info.moevm.moodle.data.posts.impl.FakePostsRepository
  */
 interface AppContainer {
     val postsRepository: PostsRepository
-    val interestsRepository: InterestsRepository
+    val coursesRepository: CoursesRepository
 }
 
 /**
@@ -32,7 +32,7 @@ class AppContainerImpl(private val applicationContext: Context) : AppContainer {
         )
     }
 
-    override val interestsRepository: InterestsRepository by lazy {
-        FakeInterestsRepository()
+    override val coursesRepository: CoursesRepository by lazy {
+        FakeCoursesRepository()
     }
 }

@@ -1,19 +1,21 @@
-package info.moevm.moodle.data.interests
+// reference: https://github.com/android/compose-samples
+
+package info.moevm.moodle.data.courses
 
 import info.moevm.moodle.data.Result
 import kotlinx.coroutines.flow.Flow
 
-typealias TopicsMap = Map<String, List<String>>
+typealias CoursesMap = Map<String, List<String>>
 
 /**
  * Interface to the Interests data layer.
  */
-interface InterestsRepository {
+interface CoursesRepository {
 
     /**
      * Get relevant topics to the user.
      */
-    suspend fun getTopics(): Result<TopicsMap>
+    suspend fun getTopics(): Result<CoursesMap>
 
     /**
      * Get list of people.

@@ -82,10 +82,8 @@ fun SignInScreen(
     navigateTo: (Screen) -> Unit
 ) {
 
-    Log.i("!@#", "SignInScreen function called")
-
     // FIXME: return it - just remove warning
-//    val snackbarHostState = remember { SnackbarHostState() }
+    // val snackbarHostState = remember { SnackbarHostState() }
 
     var brandingBottom by remember { mutableStateOf(0f) }
     val showBranding by remember { mutableStateOf(true) }
@@ -165,7 +163,6 @@ fun SignInContent(
 //    onSignInSubmitted: (email: String, password: String) -> Unit
     onSignInSubmitted: (Screen) -> Unit
 ) {
-    Log.i("!@#", "SignInContent function called")
 
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }
@@ -187,7 +184,6 @@ fun SignInContent(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
             onClick = {
-                Log.i("!@#", "onSignInSubmitted called from btn click")
 //                onSignInSubmitted(emailState.text, passwordState.text)
                 onSignInSubmitted(Screen.Home)
             },

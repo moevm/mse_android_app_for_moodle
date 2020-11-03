@@ -1,3 +1,5 @@
+// reference: https://github.com/android/compose-samples
+
 package info.moevm.moodle.data.posts.impl
 
 import android.content.res.Resources

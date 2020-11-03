@@ -18,8 +18,10 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import info.moevm.moodle.R
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.data.posts.impl.BlockingFakePostsRepository
@@ -170,13 +172,13 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
         text = {
             Text(
-                text = "Functionality not available \uD83D\uDE48",
+                text = stringResource(R.string.function_not_available_info),
                 style = MaterialTheme.typography.body2
             )
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = "CLOSE")
+                Text(text = stringResource(R.string.close_info))
             }
         }
     )
@@ -194,7 +196,7 @@ private fun sharePost(post: Post, context: Context) {
         putExtra(Intent.EXTRA_TITLE, post.title)
         putExtra(Intent.EXTRA_TEXT, post.url)
     }
-    context.startActivity(Intent.createChooser(intent, "Share post"))
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_post)))
 }
 
 @Preview("Article screen")

@@ -19,6 +19,16 @@
     <string name="previous">Previous</string>
     <string name="done">Done</string>
 
+    <!--  Labels  -->
+    <string name="home_label">Home</string>
+    <string name="courses_label">Courses</string>
+
+    <!--  Service information  -->
+    <string name="function_not_available_info">Functionality not available 🙈</string>
+    <string name="close_info">CLOSE</string>
+    <string name="share_post">Share post</string>
+    <string name="hours_to_pass">h to pass</string>
+
     <!-- survey-->
     <string name="which_jetpack_library">Which Jetpack library are you?</string>
 
