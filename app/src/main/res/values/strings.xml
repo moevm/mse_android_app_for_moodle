@@ -1,28 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ETUMoodle</string>
-    <string name="app_tagline">MOEVM</string>
+    <string name="app_name">MOEVMoodle</string>
+    <string name="load_error">Can\'t update course list</string>
+    <string name="retry">Retry</string>
+
+    <string name="app_tagline">MOEVM Moodle App</string>
     <string name="email">Email</string>
+    <string name="dominant_home_course_caption">Your last course</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_in">Sign in</string>
-    <string name="sign_in_guest">Sign in as guest</string>
-    <string name="sign_in_create_account">Sign in by your Moodle account</string>
+    <string name="sign_in_create_account">Sign in to your Moodle account</string>
     <string name="or">or</string>
     <string name="forgot_password">Forgot password</string>
     <string name="user_continue">Continue</string>
-    <string name="create_account">Create account</string>
-    <string name="terms_and_conditions">By continuing, you agree to our Terms of Service. We’ll
-        handle your data according to our Privacy Policy.</string>
-    <string name="feature_not_available">Feature not available</string>
     <string name="dismiss">Dismiss</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="done">Done</string>
 
-    <!-- navigation -->
-    <string name="navigation_welcome">Welcome</string>
-    <string name="navigation_sign_in">Sign in</string>
-    <string name="navigation_survey">Survey</string>
+    <!--  Labels  -->
+    <string name="home_label">Home</string>
+    <string name="courses_label">Courses</string>
+
+    <!--  Service information  -->
+    <string name="function_not_available_info">Functionality not available 🙈</string>
+    <string name="close_info">CLOSE</string>
+    <string name="share_post">Share post</string>
+    <string name="hours_to_pass">h to pass</string>
 
     <!-- survey-->
     <string name="which_jetpack_library">Which Jetpack library are you?</string>
@@ -71,5 +76,5 @@
     <string name="survey_result">Congratulations, you are %s</string>
     <string name="survey_result_description">You are a curious developer, always willing to try
         something new. You want to stay up to date with the trends to Compose is your middle name</string>
-
+    <string name="feature_not_available">Feature not available</string>
 </resources>

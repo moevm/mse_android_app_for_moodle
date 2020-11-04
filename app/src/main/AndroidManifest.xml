@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.eltech.moevmmoodle">
+    package="info.moevm.moodle">
 
     <application
+        android:name=".MOEVMMoodleApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Moodle">
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name">
+        android:theme="@style/Theme.MOEVMMoodle">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

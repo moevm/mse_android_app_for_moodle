@@ -1,8 +1,10 @@
-import com.eltech.moevmmoodle.buildsrc.Libs
+import info.moevm.moodle.buildsrc.Libs
 
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -10,16 +12,21 @@ android {
     buildToolsVersion '30.0.2'
 
     defaultConfig {
-        applicationId "com.eltech.moevmmoodle"
+        applicationId "info.moevm.moodle"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -62,6 +69,8 @@ dependencies {
     implementation Libs.AndroidX.Compose.tooling
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.runtimeLivedata
+    implementation Libs.AndroidX.Compose.foundation
+    implementation Libs.AndroidX.Compose.animation
 
     androidTestImplementation Libs.junit
     androidTestImplementation Libs.AndroidX.Test.core
