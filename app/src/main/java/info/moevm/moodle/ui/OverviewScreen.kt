@@ -1,7 +1,10 @@
 package info.moevm.moodle.ui
 
-import androidx.compose.foundation.*
 import androidx.compose.foundation.Box
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -18,10 +21,8 @@ import info.moevm.moodle.R
 import info.moevm.moodle.data.statistics.UserData
 import info.moevm.moodle.model.Post
 import info.moevm.moodle.ui.components.*
-import info.moevm.moodle.ui.components.SuccessStudentsRow
 import info.moevm.moodle.ui.state.UiState
-import androidx.compose.material.EmphasisLevels
-import androidx.compose.runtime.snapshots.Snapshot.Companion.current
+import java.util.*
 
 @Composable
 fun OverviewScreen(
@@ -140,7 +141,7 @@ private fun AlertCard() {
                 showDialog = false
             },
             bodyText = alertMessage,
-            buttonText = "Dismiss".toUpperCase()
+            buttonText = "Dismiss".toUpperCase(Locale.ROOT)
         )
     }
     Card {
@@ -209,9 +210,6 @@ private fun AlertItem(message: String) {
  */
 
 
-
-
-
 @Composable
 private fun <T> OverviewScreenCard(
     title: String,
@@ -257,6 +255,7 @@ private fun <T> OverViewDivider(
         }
     }
 }
+
 /**
  * The Accounts card within the Rally Overview screen.
  */
@@ -264,7 +263,7 @@ private fun <T> OverViewDivider(
 private fun AccountsCard(onScreenChange: (SettingsScreen) -> Unit) {
     val amount = UserData.courses.map { account -> account.percent }.sum()
     OverviewScreenCard(
-        title = stringResource(info.moevm.moodle.R.string.accounts),
+        title = stringResource(R.string.accounts),
         amount = amount,
         onClickSeeAll = {
             onScreenChange(SettingsScreen.Courses)
@@ -281,6 +280,7 @@ private fun AccountsCard(onScreenChange: (SettingsScreen) -> Unit) {
         )
     }
 }
+
 /**
  * The Bills card within the Rally Overview screen.
  */
@@ -288,7 +288,7 @@ private fun AccountsCard(onScreenChange: (SettingsScreen) -> Unit) {
 private fun BillsCard(onScreenChange: (SettingsScreen) -> Unit) {
     val amount = UserData.students.map { bill -> bill.amount }.sum()
     OverviewScreenCard(
-        title = stringResource(info.moevm.moodle.R.string.bills),
+        title = stringResource(R.string.bills),
         amount = amount * 1f,
         onClickSeeAll = {
             onScreenChange(SettingsScreen.Students)
@@ -312,7 +312,7 @@ private fun SeeAllButton(onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier.preferredHeight(44.dp).fillMaxWidth()
     ) {
-        Text(stringResource(info.moevm.moodle.R.string.see_all))
+        Text(stringResource(R.string.see_all))
     }
 }
 

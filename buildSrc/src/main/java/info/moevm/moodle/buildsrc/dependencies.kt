@@ -25,7 +25,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            const val version = "1.0.0-alpha05"
+            private const val version = "1.0.0-alpha05"
 
             const val core = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -69,8 +69,7 @@ object Libs {
             const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
             const val annotations = "androidx.lifecycle:lifecycle-compiler:$version"
-            const val viewModelSaveState =
-                "androidx.lifecycle:lifecycle-viewmodel-savedstate:$version"
+            const val viewModelSaveState = "androidx.lifecycle:lifecycle-viewmodel-savedstate:$version"
 
         }
     }
