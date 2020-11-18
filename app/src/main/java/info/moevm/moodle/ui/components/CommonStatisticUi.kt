@@ -45,7 +45,7 @@ fun SuccessStudentsRow(name: String, mark: String, amount: Int, color: Color) {
     BaseRow(
         color = color,
         title = name,
-        subtitle = "Оценка $mark",
+        subtitle = stringResource(R.string.mark) + mark,
         amount = amount * 1f,
         negative = true
     )

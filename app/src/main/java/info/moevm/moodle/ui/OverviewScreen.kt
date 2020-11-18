@@ -1,3 +1,5 @@
+// Reference: https://github.com/android/compose-samples
+
 package info.moevm.moodle.ui
 
 import androidx.compose.foundation.Box
@@ -127,12 +129,18 @@ fun OverviewBody(onScreenChange: (SettingsScreen) -> Unit = {}) {
 }
 
 /**
- * The Alerts card within the Rally Overview screen.
+ * The Alerts card
  */
 @Composable
 private fun AlertCard() {
     var showDialog by remember { mutableStateOf(false) }
-    val alertMessage = "Heads up, you've used up 90% of your Shopping budget for this month."
+
+    /**
+     * TODO:
+     * Add alert message for some statistics reasons.
+     * For example, for outdated students for course
+     */
+    val alertMessage = stringResource(R.string.alert_message)
 
     if (showDialog) {
         StatisticsAlertDialog(
@@ -164,7 +172,7 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
     ) {
         ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
             Text(
-                text = "Alerts",
+                text = stringResource(R.string.alert),
                 style = MaterialTheme.typography.subtitle2,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
@@ -175,7 +183,7 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
             modifier = Modifier.align(Alignment.CenterVertically)
         ) {
             Text(
-                text = "SEE ALL",
+                text = stringResource(R.string.see_all),
                 style = MaterialTheme.typography.button,
             )
         }
@@ -222,7 +230,7 @@ private fun <T> OverviewScreenCard(
         Column {
             Column(Modifier.padding(RallyDefaultPadding)) {
                 Text(text = title, style = MaterialTheme.typography.subtitle2)
-                val amountText = "Кол-во" + formatAmount(
+                val amountText = stringResource(R.string.amount) + formatAmount(
                     amount
                 )
                 Text(text = amountText, style = MaterialTheme.typography.h2)
@@ -255,7 +263,7 @@ private fun <T> OverViewDivider(
 }
 
 /**
- * The Accounts card within the Rally Overview screen.
+ * The Accounts card
  */
 @Composable
 private fun AccountsCard(onScreenChange: (SettingsScreen) -> Unit) {
@@ -279,9 +287,6 @@ private fun AccountsCard(onScreenChange: (SettingsScreen) -> Unit) {
     }
 }
 
-/**
- * The Bills card within the Rally Overview screen.
- */
 @Composable
 private fun BillsCard(onScreenChange: (SettingsScreen) -> Unit) {
     val amount = UserData.students.map { bill -> bill.amount }.sum()

@@ -85,4 +85,8 @@
     <string name="accounts">Преобладающие оценки</string>
     <string name="bills">Качество обучения</string>
     <string name="see_all">SEE ALL</string>
+    <string name="alert_message">Future alert for statistics</string>
+    <string name="alert">Alert</string>
+    <string name="amount">Кол-во</string>
+    <string name="mark">Оценка</string>
 </resources>
