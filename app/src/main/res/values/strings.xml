@@ -77,4 +77,16 @@
     <string name="survey_result_description">You are a curious developer, always willing to try
         something new. You want to stay up to date with the trends to Compose is your middle name</string>
     <string name="feature_not_available">Feature not available</string>
+
+    <!-- Statisctics -->
+    <string name="total">Total</string>
+    <string name="due">Due</string>
+    <string name="account_redacted">Кол-во студентов</string>
+    <string name="accounts">Преобладающие оценки</string>
+    <string name="bills">Качество обучения</string>
+    <string name="see_all">SEE ALL</string>
+    <string name="alert_message">Future alert for statistics</string>
+    <string name="alert">Alert</string>
+    <string name="amount">Кол-во</string>
+    <string name="mark">Оценка</string>
 </resources>
