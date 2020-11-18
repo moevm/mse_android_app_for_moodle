@@ -27,9 +27,9 @@ import java.util.*
 
 @Composable
 fun RallyTopAppBar(
-        allScreens: List<SettingsScreen>,
-        onTabSelected: (SettingsScreen) -> Unit,
-        currentScreen: SettingsScreen
+    allScreens: List<SettingsScreen>,
+    onTabSelected: (SettingsScreen) -> Unit,
+    currentScreen: SettingsScreen
 ) {
     Surface(Modifier.preferredHeight(TabHeight).fillMaxWidth()) {
         Row {

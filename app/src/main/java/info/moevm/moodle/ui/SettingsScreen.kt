@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui
 
-
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.MoneyOff
@@ -16,20 +15,20 @@ import info.moevm.moodle.ui.statistics.SuccessStudentsBody
  * navigation is not supported.
  */
 enum class SettingsScreen(
-        val icon: VectorAsset,
-        val body: @Composable ((SettingsScreen) -> Unit) -> Unit
+    val icon: VectorAsset,
+    val body: @Composable ((SettingsScreen) -> Unit) -> Unit
 ) {
     Overview(
-            icon = Icons.Filled.PieChart,
-            body = { onScreenChange -> OverviewBody(onScreenChange) }
+        icon = Icons.Filled.PieChart,
+        body = { onScreenChange -> OverviewBody(onScreenChange) }
     ),
     Courses(
-            icon = Icons.Filled.AttachMoney,
-            body = { SuccessCoursesBody(UserData.courses) }
+        icon = Icons.Filled.AttachMoney,
+        body = { SuccessCoursesBody(UserData.courses) }
     ),
     Students(
-            icon = Icons.Filled.MoneyOff,
-            body = { SuccessStudentsBody(UserData.students) }
+        icon = Icons.Filled.MoneyOff,
+        body = { SuccessStudentsBody(UserData.students) }
     );
 
     @Composable
@@ -37,6 +36,3 @@ enum class SettingsScreen(
         body(onScreenChange)
     }
 }
-
-
-

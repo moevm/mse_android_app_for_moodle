@@ -26,18 +26,17 @@ import java.util.*
 
 @Composable
 fun OverviewScreen(
-        navigateTo: (Screen) -> Unit,
-        scaffoldState: ScaffoldState = rememberScaffoldState()
+    navigateTo: (Screen) -> Unit,
+    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
 
-    val coroutineScope = rememberCoroutineScope()
-
     OverviewScreen(
-            navigateTo = navigateTo,
-            scaffoldState = scaffoldState
+        navigateTo = navigateTo,
+        scaffoldState = scaffoldState
     )
 }
 
+@Suppress("unused")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun OverviewScreen(
@@ -58,8 +57,8 @@ fun OverviewScreen(
         // only start when posts.hasError is true (due to the above if-check).
         LaunchedTask(posts.hasError) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
-                    message = errorMessage,
-                    actionLabel = retryMessage
+                message = errorMessage,
+                actionLabel = retryMessage
             )
             when (snackbarResult) {
                 SnackbarResult.ActionPerformed -> onRefreshPosts()
@@ -74,13 +73,13 @@ fun OverviewScreen(
     val allScreens = SettingsScreen.values().toList()
     var currentScreen by savedInstanceState { SettingsScreen.Overview }
     Scaffold(
-            topBar = {
-                RallyTopAppBar(
-                        allScreens = allScreens,
-                        onTabSelected = { screen -> currentScreen = screen },
-                        currentScreen = currentScreen
-                )
-            }
+        topBar = {
+            RallyTopAppBar(
+                allScreens = allScreens,
+                onTabSelected = { screen -> currentScreen = screen },
+                currentScreen = currentScreen
+            )
+        }
     ) { innerPadding ->
         Box(Modifier.padding(innerPadding)) {
             currentScreen.content(onScreenChange = { screen -> currentScreen = screen })
@@ -90,28 +89,28 @@ fun OverviewScreen(
 
 @Composable
 private fun LoadingContent(
-        empty: Boolean,
-        emptyContent: @Composable () -> Unit,
-        loading: Boolean,
-        onRefresh: () -> Unit,
-        content: @Composable () -> Unit
+    empty: Boolean,
+    emptyContent: @Composable () -> Unit,
+    loading: Boolean,
+    onRefresh: () -> Unit,
+    content: @Composable () -> Unit
 ) {
     if (empty) {
         emptyContent()
     } else {
         SwipeToRefreshLayout(
-                refreshingState = loading,
-                onRefresh = onRefresh,
-                refreshIndicator = {
-                    Surface(elevation = 10.dp, shape = CircleShape) {
-                        CircularProgressIndicator(
-                                modifier = Modifier
-                                        .preferredSize(36.dp)
-                                        .padding(4.dp)
-                        )
-                    }
-                },
-                content = content,
+            refreshingState = loading,
+            onRefresh = onRefresh,
+            refreshIndicator = {
+                Surface(elevation = 10.dp, shape = CircleShape) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .preferredSize(36.dp)
+                            .padding(4.dp)
+                    )
+                }
+            },
+            content = content,
         )
     }
 }
@@ -208,7 +207,6 @@ private fun AlertItem(message: String) {
 /**
  * Base structure for cards in the Overview screen.
  */
-
 
 @Composable
 private fun <T> OverviewScreenCard(

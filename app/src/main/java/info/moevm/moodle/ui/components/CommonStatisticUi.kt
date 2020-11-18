@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.material.Divider
 import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.icons.Icons
@@ -40,7 +40,6 @@ fun SuccessCoursesRow(name: String, number: Int, percent: Float, color: Color) {
     )
 }
 
-
 @Composable
 fun SuccessStudentsRow(name: String, mark: String, amount: Int, color: Color) {
     BaseRow(
@@ -52,13 +51,14 @@ fun SuccessStudentsRow(name: String, mark: String, amount: Int, color: Color) {
     )
 }
 
+@Suppress("unused")
 @Composable
 private fun BaseRow(
-        color: Color,
-        title: String,
-        subtitle: String,
-        amount: Float,
-        negative: Boolean
+    color: Color,
+    title: String,
+    subtitle: String,
+    amount: Float,
+    negative: Boolean
 ) {
     Row(
         modifier = Modifier.preferredHeight(68.dp),
@@ -84,7 +84,7 @@ private fun BaseRow(
         ) {
             Text(
                 text = " = ",
-                //text = if (negative) "–$ " else "$ ",
+                // text = if (negative) "–$ " else "$ ",
                 style = typography.h6,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
@@ -129,7 +129,6 @@ fun formatAmount(amount: Float): String {
 
 private val AccountDecimalFormat = DecimalFormat("####")
 private val AmountDecimalFormat = DecimalFormat("#,###.##")
-
 
 fun <E> List<E>.extractProportions(selector: (E) -> Float): List<Float> {
     val total = this.sumByDouble { selector(it).toDouble() }
