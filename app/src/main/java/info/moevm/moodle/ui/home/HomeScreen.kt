@@ -9,11 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedTask
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
@@ -105,7 +101,7 @@ fun HomeScreen(
         // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
         // automatically dismiss. This coroutine will cancel whenever posts.hasError changes, and
         // only start when posts.hasError is true (due to the above if-check).
-        LaunchedTask(posts.hasError) {
+        LaunchedEffect(posts.hasError) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessage,
                 actionLabel = retryMessage
@@ -282,13 +278,16 @@ private fun FullScreenLoading() {
  */
 @Composable
 private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
-    ProvideEmphasis(AmbientEmphasisLevels.current.high) {
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(R.string.dominant_home_course_caption),
-            style = MaterialTheme.typography.subtitle1
-        )
-    }
+    Providers(
+        AmbientContentAlpha provides ContentAlpha.high,
+        children = {
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                text = stringResource(R.string.dominant_home_course_caption),
+                style = MaterialTheme.typography.subtitle1
+            )
+        }
+    )
     PostCardTop(
         post = post,
         modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
@@ -334,13 +333,16 @@ private fun PostListPopularSection(
     navigateTo: (Screen) -> Unit
 ) {
     Column {
-        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
-            Text(
-                modifier = Modifier.padding(16.dp),
-                text = "Available courses",
-                style = MaterialTheme.typography.subtitle1
-            )
-        }
+        Providers(
+            AmbientContentAlpha provides ContentAlpha.high,
+            children = {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = "Available courses",
+                    style = MaterialTheme.typography.subtitle1
+                )
+            }
+        )
         ScrollableRow(modifier = Modifier.padding(end = 16.dp)) {
             posts.forEach { post ->
                 PostCardPopular(post, navigateTo, Modifier.padding(start = 16.dp, bottom = 16.dp))

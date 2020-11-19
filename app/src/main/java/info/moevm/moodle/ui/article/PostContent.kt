@@ -8,16 +8,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.FirstBaseline
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -50,13 +51,16 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
         Text(text = post.title, style = MaterialTheme.typography.h4)
         Spacer(Modifier.preferredHeight(8.dp))
         post.subtitle?.let { subtitle ->
-            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.body2,
-                    lineHeight = 20.sp
-                )
-            }
+            Providers(
+                AmbientContentAlpha provides ContentAlpha.high,
+                children = {
+                    Text(
+                        text = subtitle,
+                        lineHeight = 20.sp,
+                        style = MaterialTheme.typography.body2
+                    )
+                }
+            )
             Spacer(Modifier.preferredHeight(defaultSpacerSize))
         }
         PostMetadata(post.metadata)
@@ -90,19 +94,25 @@ private fun PostMetadata(metadata: Metadata) {
         )
         Spacer(Modifier.preferredWidth(8.dp))
         Column {
-            ProvideEmphasis(AmbientEmphasisLevels.current.high) {
-                Text(
-                    text = metadata.author.name,
-                    style = typography.caption,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
-                Text(
-                    text = "${metadata.date} • ${metadata.hoursToPass}" + stringResource(R.string.hours_to_pass),
-                    style = typography.caption
-                )
-            }
+            Providers(
+                AmbientContentAlpha provides ContentAlpha.high,
+                children = {
+                    Text(
+                        text = metadata.author.name,
+                        style = typography.caption,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+            )
+            Providers(
+                AmbientContentAlpha provides ContentAlpha.high,
+                children = {
+                    Text(
+                        text = "${metadata.date} • ${metadata.hoursToPass}" + stringResource(R.string.hours_to_pass),
+                        style = typography.caption
+                    )
+                }
+            )
         }
     }
 }
@@ -137,14 +147,14 @@ private fun Paragraph(paragraph: Paragraph) {
             )
             ParagraphType.Header -> {
                 Text(
-                    modifier = Modifier.padding(4.dp),
                     text = annotatedString,
+                    modifier = Modifier.padding(4.dp),
                     style = textStyle.merge(paragraphStyle)
                 )
             }
             else -> Text(
-                modifier = Modifier.padding(4.dp),
                 text = annotatedString,
+                modifier = Modifier.padding(4.dp),
                 style = textStyle
             )
         }
@@ -163,8 +173,8 @@ private fun CodeBlockParagraph(
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            modifier = Modifier.padding(16.dp),
             text = text,
+            modifier = Modifier.padding(16.dp),
             style = textStyle.merge(paragraphStyle)
         )
     }
@@ -182,7 +192,7 @@ private fun BulletParagraph(
             Box(
                 modifier = Modifier
                     .preferredSize(8.sp.toDp(), 8.sp.toDp())
-                    .alignWithSiblings {
+                    .alignBy {
                         // Add an alignment "baseline" 1sp below the bottom of the circle
                         9.sp.toIntPx()
                     }
@@ -192,7 +202,7 @@ private fun BulletParagraph(
         Text(
             modifier = Modifier
                 .weight(1f)
-                .alignWithSiblings(FirstBaseline),
+                .alignBy(FirstBaseline),
             text = text,
             style = textStyle.merge(paragraphStyle)
         )
