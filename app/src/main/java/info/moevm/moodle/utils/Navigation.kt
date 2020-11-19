@@ -1,30 +1,96 @@
+// Reference: https://medium.com/google-developer-experts/how-to-handle-navigation-in-jetpack-compose-a9ac47f7f975
+
 package info.moevm.moodle.utils
 
 import android.os.Parcelable
-import androidx.compose.runtime.Immutable
-import info.moevm.moodle.Navigator
-import kotlinx.android.parcel.Parcelize
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.savedinstancestate.listSaver
+import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.runtime.toMutableStateList
 
 /**
- * Models the screens in the app and any arguments they require.
+ * A simple navigator which maintains a back stack.
  */
-sealed class Destination : Parcelable {
-    @Parcelize
-    object Home : Destination()
+class Navigator<T : Parcelable> private constructor(
+    initialBackStack: List<T>,
+    backDispatcher: OnBackPressedDispatcher
+) {
+    constructor(
+        initial: T,
+        backDispatcher: OnBackPressedDispatcher
+    ) : this(listOf(initial), backDispatcher)
 
-    @Immutable
-    @Parcelize
-    data class SnackDetail(val snackId: Long) : Destination()
+    private val backStack = initialBackStack.toMutableStateList()
+
+    private val backCallback = object : OnBackPressedCallback(canGoBack()) {
+        override fun handleOnBackPressed() {
+            back()
+        }
+    }.also { callback ->
+        backDispatcher.addCallback(callback)
+    }
+    val current: T get() = backStack.last()
+
+    fun back() {
+        backStack.removeAt(backStack.lastIndex)
+        backCallback.isEnabled = canGoBack()
+    }
+
+    fun navigate(destination: T) {
+        backStack += destination
+        backCallback.isEnabled = canGoBack()
+    }
+
+    private fun canGoBack(): Boolean = backStack.size > 1
+
+    companion object {
+        /**
+         * Serialize the back stack to save to instance state.
+         */
+        fun <T : Parcelable> saver(backDispatcher: OnBackPressedDispatcher) =
+            listSaver<Navigator<T>, T>(
+                save = { navigator -> navigator.backStack.toList() },
+                restore = { backstack -> Navigator(backstack, backDispatcher) }
+            )
+    }
 }
 
 /**
- * Models the navigation actions in the app.
+ * An effect for handling presses of the device back button.
  */
-class Actions(navigator: Navigator<Destination>) {
-    val selectSnack: (Long) -> Unit = { snackId: Long ->
-        navigator.navigate(Destination.SnackDetail(snackId))
+@Composable
+fun backHandler(
+    enabled: Boolean = true,
+    onBack: () -> Unit
+) {
+    val backCallback = remember(onBack) {
+        object : OnBackPressedCallback(enabled) {
+            override fun handleOnBackPressed() {
+                onBack()
+            }
+        }
     }
-    val upPress: () -> Unit = {
-        navigator.back()
+    onCommit(enabled) {
+        backCallback.isEnabled = enabled
     }
+
+    val dispatcher = BackDispatcherAmbient.current
+    onCommit(backCallback) {
+        dispatcher.addCallback(backCallback)
+        onDispose {
+            backCallback.remove()
+        }
+    }
+}
+
+/**
+ * An [androidx.compose.runtime.Ambient] providing the current [OnBackPressedDispatcher]. You must
+ * [provide][androidx.compose.runtime.Providers] a value before use.
+ */
+internal val BackDispatcherAmbient = staticAmbientOf<OnBackPressedDispatcher> {
+    error("No Back Dispatcher provided")
 }
