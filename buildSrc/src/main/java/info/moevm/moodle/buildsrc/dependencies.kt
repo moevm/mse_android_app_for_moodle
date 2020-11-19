@@ -25,7 +25,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            private const val version = "1.0.0-alpha05"
+            private const val version = "1.0.0-alpha07"
 
             const val core = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -42,8 +42,10 @@ object Libs {
 
         object Navigation {
             private const val version = "2.3.0"
+            private const val nav_compose_version = "1.0.0-alpha01"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
+            const val jetpackNavigation = "androidx.navigation:navigation-compose:$nav_compose_version"
         }
 
         object Material {
