@@ -15,6 +15,7 @@ import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.ui.article.ArticleScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
+import info.moevm.moodle.ui.signin.SignInScreen
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 
 @Composable
@@ -38,7 +39,12 @@ private fun AppContent(
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
-            NavHost(navController, startDestination = ScreenName.HOME.name) {
+            NavHost(navController, startDestination = ScreenName.SIGN_IN.name) {
+                composable(ScreenName.SIGN_IN.name) {
+                    SignInScreen(
+                        navigateTo = actions.select
+                    )
+                }
                 composable(ScreenName.HOME.name) {
                     HomeScreen(
                         navigateTo = actions.select,

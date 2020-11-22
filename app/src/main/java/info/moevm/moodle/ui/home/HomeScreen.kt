@@ -281,15 +281,10 @@ private fun FullScreenLoading() {
  */
 @Composable
 private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
-    Providers(
-        AmbientContentAlpha provides ContentAlpha.high,
-        children = {
-            Text(
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                text = stringResource(R.string.dominant_home_course_caption),
-                style = MaterialTheme.typography.subtitle1
-            )
-        }
+    androidx.compose.material.Text(
+        modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
+        text = stringResource(R.string.dominant_home_course_caption),
+        style = MaterialTheme.typography.subtitle1
     )
     PostCardTop(
         post = post,

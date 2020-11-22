@@ -15,10 +15,6 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import info.moevm.moodle.R
 
-private val EczarFontFamily = fontFamily(
-    font(R.font.eczar_regular),
-    font(R.font.eczar_semibold, FontWeight.SemiBold)
-)
 private val RobotoCondensed = fontFamily(
     font(R.font.robotocondensed_regular),
     font(R.font.robotocondensed_light, FontWeight.Light),

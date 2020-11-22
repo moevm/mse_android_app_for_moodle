@@ -22,7 +22,7 @@ class MOEVMMoodleApplication : Application() {
 
         if (BuildConfig.DEBUG) {
             // print logs in debug mode
-            Timber.plant(Timber.DebugTree())
+            Timber.plant(DebugTree())
         }
 
         container = AppContainerImpl(this)
