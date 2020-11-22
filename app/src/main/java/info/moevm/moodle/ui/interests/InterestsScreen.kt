@@ -16,6 +16,7 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -149,10 +150,14 @@ fun InterestsScreen(
         },
         topBar = {
             TopAppBar(
-                title = { Text("Courses") },
+                modifier = Modifier.testTag("topAppBarInterests"),
+                title = { androidx.compose.material.Text("Interests") },
                 navigationIcon = {
-                    IconButton(onClick = { scaffoldState.drawerState.open() }) {
-                        Icon(vectorResource(R.drawable.ic_logo_light))
+                    IconButton(
+                        modifier = Modifier.testTag("appDrawer"),
+                        onClick = { scaffoldState.drawerState.open() },
+                    ) {
+                        androidx.compose.material.Icon(vectorResource(R.drawable.ic_logo_light))
                     }
                 }
             )

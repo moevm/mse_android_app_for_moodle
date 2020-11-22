@@ -42,7 +42,7 @@ object Libs {
 
         object Navigation {
             private const val version = "2.3.0"
-            private const val nav_compose_version = "1.0.0-alpha01"
+            private const val nav_compose_version = "1.0.0-alpha02"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
             const val jetpackNavigation = "androidx.navigation:navigation-compose:$nav_compose_version"
