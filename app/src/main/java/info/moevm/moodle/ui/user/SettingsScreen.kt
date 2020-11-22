@@ -1,4 +1,4 @@
-package info.moevm.moodle.ui
+package info.moevm.moodle.ui.user
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
