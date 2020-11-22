@@ -28,6 +28,7 @@
     <string name="close_info">CLOSE</string>
     <string name="share_post">Share post</string>
     <string name="hours_to_pass">h to pass</string>
+    <string name="available_courses">Available courses</string>
 
     <!-- survey-->
     <string name="which_jetpack_library">Which Jetpack library are you?</string>

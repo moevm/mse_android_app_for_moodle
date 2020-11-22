@@ -18,10 +18,10 @@ enum class ScreenName { SIGN_IN, HOME, INTERESTS, ARTICLE }
  * - interests
  */
 sealed class Screen(val id: ScreenName) {
+    object SignIn : Screen(SIGN_IN)
     object Home : Screen(HOME)
     object Interests : Screen(INTERESTS)
     data class Article(val postId: String) : Screen(ARTICLE)
-    object SignIn : Screen(SIGN_IN)
 
     object ArticleArgs {
         const val PostId = "postId"
