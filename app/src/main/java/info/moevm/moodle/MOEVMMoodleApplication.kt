@@ -8,6 +8,8 @@ package info.moevm.moodle
 import android.app.Application
 import info.moevm.moodle.data.AppContainer
 import info.moevm.moodle.data.AppContainerImpl
+import timber.log.Timber
+import timber.log.Timber.DebugTree
 
 class MOEVMMoodleApplication : Application() {
 
@@ -17,6 +19,12 @@ class MOEVMMoodleApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        if (BuildConfig.DEBUG) {
+            // print logs in debug mode
+            Timber.plant(Timber.DebugTree())
+        }
+
         container = AppContainerImpl(this)
     }
 }

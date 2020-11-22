@@ -10,6 +10,8 @@ object Libs {
 
     const val junit = "junit:junit:4.13"
 
+    const val timber = "com.jakewharton.timber:timber:4.7.1"
+
     const val material = "com.google.android.material:material:1.1.0"
 
     object Kotlin {
