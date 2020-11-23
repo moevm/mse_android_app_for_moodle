@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.unit.dp
-import info.moevm.moodle.ui.user.SettingsScreen
+import info.moevm.moodle.ui.statistics.SettingsScreen
 import java.util.*
 
 @Composable

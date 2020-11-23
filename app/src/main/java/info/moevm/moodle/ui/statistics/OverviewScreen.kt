@@ -1,6 +1,6 @@
 // Reference: https://github.com/android/compose-samples
 
-package info.moevm.moodle.ui.user
+package info.moevm.moodle.ui.statistics
 
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon

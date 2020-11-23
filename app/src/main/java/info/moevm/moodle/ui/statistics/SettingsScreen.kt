@@ -1,4 +1,4 @@
-package info.moevm.moodle.ui.user
+package info.moevm.moodle.ui.statistics
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
@@ -7,8 +7,6 @@ import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.VectorAsset
 import info.moevm.moodle.data.statistics.UserData
-import info.moevm.moodle.ui.statistics.SuccessCoursesBody
-import info.moevm.moodle.ui.statistics.SuccessStudentsBody
 
 /**
  * Screen state for Rally. Navigation is kept simple until a proper mechanism is available. Back
