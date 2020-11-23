@@ -2,10 +2,9 @@ package info.moevm.moodle.ui.article
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.Icon
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -96,15 +95,15 @@ fun ArticleScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    androidx.compose.material.Text(
+                    Text(
                         text = "Published in: ${post.publication?.name}",
                         style = MaterialTheme.typography.subtitle2,
-                        color = androidx.compose.material.AmbientContentColor.current
+                        color = AmbientContentColor.current
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        androidx.compose.material.Icon(Icons.Filled.ArrowBack)
+                        Icon(Icons.Filled.ArrowBack)
                     }
                 }
             )
@@ -147,7 +146,7 @@ private fun BottomBar(
                 .fillMaxWidth()
         ) {
             IconButton(onClick = onUnimplementedAction) {
-                androidx.compose.material.Icon(Icons.Filled.FavoriteBorder)
+                Icon(Icons.Filled.FavoriteBorder)
             }
             BookmarkButton(
                 isBookmarked = isFavorite,
@@ -155,11 +154,11 @@ private fun BottomBar(
             )
             val context = ContextAmbient.current
             IconButton(onClick = { sharePost(post, context) }) {
-                androidx.compose.material.Icon(Icons.Filled.Share)
+                Icon(Icons.Filled.Share)
             }
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = onUnimplementedAction) {
-                androidx.compose.material.Icon(vectorResource(R.drawable.ic_text_settings))
+                Icon(vectorResource(R.drawable.ic_text_settings))
             }
         }
     }
@@ -175,14 +174,14 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         text = {
-            androidx.compose.material.Text(
+            Text(
                 text = stringResource(R.string.function_not_available_info),
                 style = MaterialTheme.typography.body2
             )
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                androidx.compose.material.Text(text = stringResource(R.string.close_info))
+                Text(text = stringResource(R.string.close_info))
             }
         }
     )

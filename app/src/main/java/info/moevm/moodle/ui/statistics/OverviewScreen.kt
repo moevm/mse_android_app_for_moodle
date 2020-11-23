@@ -1,15 +1,13 @@
-// Reference: https://github.com/android/compose-samples
-
 package info.moevm.moodle.ui.statistics
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.*
@@ -71,9 +69,6 @@ fun OverviewScreen(
         }
     }
 
-    /**
-     * A Scaffold is a layout which implements the basic material design layout structure
-     */
     val allScreens = SettingsScreen.values().toList()
     var currentScreen by savedInstanceState { SettingsScreen.Overview }
     Scaffold(
@@ -124,15 +119,12 @@ fun OverviewBody(onScreenChange: (SettingsScreen) -> Unit = {}) {
     ScrollableColumn(contentPadding = PaddingValues(16.dp)) {
         AlertCard()
         Spacer(Modifier.preferredHeight(RallyDefaultPadding))
-        AccountsCard(onScreenChange)
+        CoursesCard(onScreenChange)
         Spacer(Modifier.preferredHeight(RallyDefaultPadding))
-        BillsCard(onScreenChange)
+        StudentsCard(onScreenChange)
     }
 }
 
-/**
- * The Alerts card
- */
 @Composable
 private fun AlertCard() {
     var showDialog by remember { mutableStateOf(false) }
@@ -265,11 +257,11 @@ private fun <T> OverViewDivider(
 }
 
 /**
- * The Accounts card
+ * The Courses card
  */
 @Composable
-private fun AccountsCard(onScreenChange: (SettingsScreen) -> Unit) {
-    val amount = UserData.courses.map { account -> account.percent }.sum()
+private fun CoursesCard(onScreenChange: (SettingsScreen) -> Unit) {
+    val amount = UserData.courses.map { courses -> courses.percent }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.accounts),
         amount = amount,
@@ -288,10 +280,12 @@ private fun AccountsCard(onScreenChange: (SettingsScreen) -> Unit) {
         )
     }
 }
-
+/**
+ * The Students card
+ */
 @Composable
-private fun BillsCard(onScreenChange: (SettingsScreen) -> Unit) {
-    val amount = UserData.students.map { bill -> bill.amount }.sum()
+private fun StudentsCard(onScreenChange: (SettingsScreen) -> Unit) {
+    val amount = UserData.students.map { students -> students.amount }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.bills),
         amount = amount * 1f,
