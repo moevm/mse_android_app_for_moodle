@@ -1,6 +1,6 @@
 // Reference: https://github.com/android/compose-samples
 
-package info.moevm.moodle.ui
+package info.moevm.moodle.ui.statistics
 
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import info.moevm.moodle.R
 import info.moevm.moodle.data.statistics.UserData
 import info.moevm.moodle.model.Post
+import info.moevm.moodle.ui.Screen
+import info.moevm.moodle.ui.SwipeToRefreshLayout
 import info.moevm.moodle.ui.components.*
 import info.moevm.moodle.ui.state.UiState
 import java.util.*

@@ -22,8 +22,19 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        // We use a bundled debug keystore, to allow debug builds from CI to be upgradable
+        debug {
+            storeFile rootProject.file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
+
     buildTypes {
         debug {
+            debuggable true
             signingConfig signingConfigs.debug
         }
 
@@ -56,10 +67,13 @@ android {
 dependencies {
     implementation Libs.Kotlin.stdlib
 
+    implementation Libs.timber
+
     implementation Libs.AndroidX.coreKtx
     implementation Libs.AndroidX.appcompat
     implementation Libs.AndroidX.Navigation.fragment
     implementation Libs.AndroidX.Navigation.uiKtx
+    implementation Libs.AndroidX.Navigation.jetpackNavigation
     implementation Libs.AndroidX.Material.material
     implementation Libs.material
 

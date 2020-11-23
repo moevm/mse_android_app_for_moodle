@@ -3,11 +3,11 @@ package info.moevm.moodle.ui.interests
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,6 +16,7 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -149,10 +150,14 @@ fun InterestsScreen(
         },
         topBar = {
             TopAppBar(
-                title = { Text("Courses") },
+                modifier = Modifier.testTag("topAppBarInterests"),
+                title = { androidx.compose.material.Text("Interests") },
                 navigationIcon = {
-                    IconButton(onClick = { scaffoldState.drawerState.open() }) {
-                        Icon(vectorResource(R.drawable.ic_logo_light))
+                    IconButton(
+                        modifier = Modifier.testTag("appDrawer"),
+                        onClick = { scaffoldState.drawerState.open() },
+                    ) {
+                        androidx.compose.material.Icon(vectorResource(R.drawable.ic_logo_light))
                     }
                 }
             )

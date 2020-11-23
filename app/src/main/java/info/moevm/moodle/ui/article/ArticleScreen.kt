@@ -2,16 +2,13 @@ package info.moevm.moodle.ui.article
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
@@ -19,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
@@ -98,15 +96,15 @@ fun ArticleScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "${post.publication?.name}",
+                    androidx.compose.material.Text(
+                        text = "Published in: ${post.publication?.name}",
                         style = MaterialTheme.typography.subtitle2,
-                        color = AmbientContentColor.current
+                        color = androidx.compose.material.AmbientContentColor.current
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack)
+                        androidx.compose.material.Icon(Icons.Filled.ArrowBack)
                     }
                 }
             )
@@ -118,8 +116,7 @@ fun ArticleScreen(
         bottomBar = {
             BottomBar(
                 post = post,
-                // FIXME: return - it's just because warning
-//                onUnimplementedAction = { showDialog = true },
+                onUnimplementedAction = { showDialog = true },
                 isFavorite = isFavorite,
                 onToggleFavorite = onToggleFavorite
             )
@@ -138,7 +135,7 @@ fun ArticleScreen(
 @Composable
 private fun BottomBar(
     post: Post,
-//    onUnimplementedAction: () -> Unit,
+    onUnimplementedAction: () -> Unit,
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit
 ) {
@@ -149,13 +146,20 @@ private fun BottomBar(
                 .preferredHeight(56.dp)
                 .fillMaxWidth()
         ) {
+            IconButton(onClick = onUnimplementedAction) {
+                androidx.compose.material.Icon(Icons.Filled.FavoriteBorder)
+            }
             BookmarkButton(
                 isBookmarked = isFavorite,
                 onClick = onToggleFavorite
             )
             val context = ContextAmbient.current
             IconButton(onClick = { sharePost(post, context) }) {
-                Icon(Icons.Filled.Share)
+                androidx.compose.material.Icon(Icons.Filled.Share)
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = onUnimplementedAction) {
+                androidx.compose.material.Icon(vectorResource(R.drawable.ic_text_settings))
             }
         }
     }
@@ -171,14 +175,14 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         text = {
-            Text(
+            androidx.compose.material.Text(
                 text = stringResource(R.string.function_not_available_info),
                 style = MaterialTheme.typography.body2
             )
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = stringResource(R.string.close_info))
+                androidx.compose.material.Text(text = stringResource(R.string.close_info))
             }
         }
     )

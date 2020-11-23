@@ -1,17 +1,17 @@
 package info.moevm.moodle.ui.signin.authorization
 
-import androidx.compose.foundation.AmbientTextStyle
-import androidx.compose.foundation.Icon
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -39,8 +39,8 @@ fun Email(
             emailState.text = it
         },
         label = {
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
-                Text(
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                androidx.compose.material.Text(
                     text = stringResource(id = R.string.email),
                     style = MaterialTheme.typography.body2
                 )
@@ -55,7 +55,7 @@ fun Email(
         },
         textStyle = MaterialTheme.typography.body2,
         isErrorValue = emailState.showErrors(),
-        imeAction = imeAction,
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
         onImeActionPerformed = { action, softKeyboardController ->
             if (action == ImeAction.Done) {
                 softKeyboardController?.hideSoftwareKeyboard()
@@ -67,6 +67,7 @@ fun Email(
     emailState.getError()?.let { error -> TextFieldError(textError = error) }
 }
 
+@OptIn(ExperimentalFocus::class)
 @Composable
 fun Password(
     label: String,
@@ -82,11 +83,17 @@ fun Password(
             passwordState.text = it
             passwordState.enableShowErrors()
         },
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().focusObserver { focusState ->
+            val focused = focusState == FocusState.Active
+            passwordState.onFocusChange(focused)
+            if (!focused) {
+                passwordState.enableShowErrors()
+            }
+        },
         textStyle = MaterialTheme.typography.body2,
         label = {
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
-                Text(
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                androidx.compose.material.Text(
                     text = label,
                     style = MaterialTheme.typography.body2
                 )
@@ -95,11 +102,11 @@ fun Password(
         trailingIcon = {
             if (showPassword.value) {
                 IconButton(onClick = { showPassword.value = false }) {
-                    Icon(asset = Icons.Filled.Visibility)
+                    androidx.compose.material.Icon(asset = Icons.Filled.Visibility)
                 }
             } else {
                 IconButton(onClick = { showPassword.value = true }) {
-                    Icon(asset = Icons.Filled.VisibilityOff)
+                    androidx.compose.material.Icon(asset = Icons.Filled.VisibilityOff)
                 }
             }
         },
@@ -109,7 +116,7 @@ fun Password(
             PasswordVisualTransformation()
         },
         isErrorValue = passwordState.showErrors(),
-        imeAction = imeAction,
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
         onImeActionPerformed = { action, softKeyboardController ->
             if (action == ImeAction.Done) {
                 softKeyboardController?.hideSoftwareKeyboard()
@@ -128,10 +135,10 @@ fun Password(
 fun TextFieldError(textError: String) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.preferredWidth(16.dp))
-        Text(
+        androidx.compose.material.Text(
             text = textError,
             modifier = Modifier.fillMaxWidth(),
-            style = AmbientTextStyle.current.copy(color = MaterialTheme.colors.error)
+            style = androidx.compose.material.AmbientTextStyle.current.copy(color = MaterialTheme.colors.error)
         )
     }
 }
