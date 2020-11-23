@@ -108,7 +108,7 @@ private fun PostMetadata(metadata: Metadata) {
                 AmbientContentAlpha provides ContentAlpha.high,
                 children = {
                     Text(
-                        text = "${metadata.date} • ${metadata.hoursToPass}" + stringResource(R.string.hours_to_pass),
+                        text = "${metadata.date} • ${metadata.hoursToPass} ${stringResource(R.string.hours_to_pass)}",
                         style = typography.caption
                     )
                 }
