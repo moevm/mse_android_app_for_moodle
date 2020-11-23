@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Timber.i("onCreate was called");
+        Timber.i("onCreate was called")
 
         setContent {
             MOEVMMoodleApp(
