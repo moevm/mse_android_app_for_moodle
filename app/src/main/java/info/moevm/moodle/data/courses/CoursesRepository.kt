@@ -1,5 +1,3 @@
-// reference: https://github.com/android/compose-samples
-
 package info.moevm.moodle.data.courses
 
 import info.moevm.moodle.data.Result
