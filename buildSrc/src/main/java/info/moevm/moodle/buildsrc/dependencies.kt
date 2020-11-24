@@ -1,11 +1,11 @@
 package info.moevm.moodle.buildsrc
 
 object Versions {
-    const val ktlint = "0.39.0"
+    const val ktlint = "0.38.1"
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha16"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha10"
     const val jdkDesugar = "com.android.tools:desugar_jdk_libs:1.0.9"
 
     const val junit = "junit:junit:4.13"
