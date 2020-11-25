@@ -1,14 +1,11 @@
 package info.moevm.moodle.ui.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.AmbientEmphasisLevels
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
@@ -42,28 +39,34 @@ fun PostCardPopular(
                     .fillMaxWidth()
             )
             Column(modifier = Modifier.padding(16.dp)) {
-                val emphasisLevels = AmbientEmphasisLevels.current
-                ProvideEmphasis(emphasisLevels.high) {
-                    Text(
-                        text = post.title,
-                        style = MaterialTheme.typography.h6,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = post.metadata.author.name,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.body2
-                    )
-                }
-                ProvideEmphasis(emphasisLevels.high) {
-                    Text(
-                        text = "${post.metadata.date} - " +
-                            "${post.metadata.hoursToPass}h to pass",
-                        style = MaterialTheme.typography.body2
-                    )
-                }
+                val emphasisLevels = AmbientContentAlpha.current
+                Providers(
+                    AmbientContentAlpha provides ContentAlpha.high,
+                    children = {
+                        Text(
+                            text = post.title,
+                            style = MaterialTheme.typography.h6,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = post.metadata.author.name,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.body2
+                        )
+                    }
+                )
+                Providers(
+                    AmbientContentAlpha provides ContentAlpha.high,
+                    children = {
+                        Text(
+                            text = "${post.metadata.date} - " +
+                                "${post.metadata.hoursToPass}h to pass",
+                            style = MaterialTheme.typography.body2
+                        )
+                    }
+                )
             }
         }
     }

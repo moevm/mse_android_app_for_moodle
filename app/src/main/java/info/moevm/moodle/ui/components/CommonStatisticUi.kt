@@ -1,7 +1,5 @@
 package info.moevm.moodle.ui.components
 
-import androidx.compose.foundation.Icon
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,13 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.material.AmbientEmphasisLevels
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,12 +67,18 @@ private fun BaseRow(
         )
         Spacer(Modifier.preferredWidth(12.dp))
         Column(Modifier) {
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
-                Text(text = title, style = typography.body1)
-            }
-            ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
-                Text(text = subtitle, style = typography.subtitle1)
-            }
+            Providers(
+                AmbientContentAlpha provides ContentAlpha.high,
+                children = {
+                    Text(text = title, style = typography.body1)
+                }
+            )
+            Providers(
+                AmbientContentAlpha provides ContentAlpha.high,
+                children = {
+                    Text(text = subtitle, style = typography.subtitle1)
+                }
+            )
         }
         Spacer(Modifier.weight(1f))
         Row(
@@ -98,14 +100,17 @@ private fun BaseRow(
         }
         Spacer(Modifier.preferredWidth(16.dp))
 
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.medium) {
-            Icon(
-                asset = Icons.Filled.ChevronRight,
-                modifier = Modifier
-                    .padding(end = 12.dp)
-                    .preferredSize(24.dp)
-            )
-        }
+        Providers(
+            AmbientContentAlpha provides ContentAlpha.high,
+            children = {
+                Icon(
+                    asset = Icons.Filled.ChevronRight,
+                    modifier = Modifier
+                        .padding(end = 12.dp)
+                        .preferredSize(24.dp)
+                )
+            }
+        )
     }
     StatisticsDivider()
 }
