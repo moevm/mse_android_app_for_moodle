@@ -164,13 +164,16 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
         modifier = Modifier.padding(RallyDefaultPadding).fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
-            Text(
-                text = stringResource(R.string.alert),
-                style = MaterialTheme.typography.subtitle2,
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
-        })
+        Providers(
+            AmbientContentAlpha provides ContentAlpha.high,
+            children = {
+                Text(
+                    text = stringResource(R.string.alert),
+                    style = MaterialTheme.typography.subtitle2,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+        )
         TextButton(
             onClick = onClickSeeAll,
             contentPadding = PaddingValues(0.dp),
@@ -190,19 +193,22 @@ private fun AlertItem(message: String) {
         modifier = Modifier.padding(RallyDefaultPadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
-            Text(
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier.weight(1f),
-                text = message
-            )
-            IconButton(
-                onClick = {},
-                modifier = Modifier.align(Alignment.Top)
-            ) {
-                Icon(Icons.Filled.Sort)
+        Providers(
+            AmbientContentAlpha provides ContentAlpha.high,
+            children = {
+                Text(
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.weight(1f),
+                    text = message
+                )
+                IconButton(
+                    onClick = {},
+                    modifier = Modifier.align(Alignment.Top)
+                ) {
+                    Icon(Icons.Filled.Sort)
+                }
             }
-        })
+        )
     }
 }
 

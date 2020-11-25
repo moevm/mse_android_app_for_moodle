@@ -1,11 +1,11 @@
 package info.moevm.moodle.ui.home
 
-import androidx.compose.material.Icon
 import androidx.compose.foundation.Image
-import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
@@ -30,17 +30,20 @@ fun AuthorAndReadTime(
     modifier: Modifier = Modifier
 ) {
     Row(modifier) {
-        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
-            val textStyle = MaterialTheme.typography.body2
-            Text(
-                text = post.metadata.author.name,
-                style = textStyle
-            )
-            Text(
-                text = " - ${post.metadata.hoursToPass}" + stringResource(R.string.hours_to_pass),
-                style = textStyle
-            )
-        })
+        Providers(
+            AmbientContentAlpha provides ContentAlpha.high,
+            children = {
+                val textStyle = MaterialTheme.typography.body2
+                Text(
+                    text = post.metadata.author.name,
+                    style = textStyle
+                )
+                Text(
+                    text = " - ${post.metadata.hoursToPass}" + stringResource(R.string.hours_to_pass),
+                    style = textStyle
+                )
+            }
+        )
     }
 }
 
@@ -57,9 +60,12 @@ fun PostImage(post: Post, modifier: Modifier = Modifier) {
 
 @Composable
 fun PostTitle(post: Post) {
-    Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
-        Text(post.title, style = MaterialTheme.typography.subtitle1)
-    })
+    Providers(
+        AmbientContentAlpha provides ContentAlpha.high,
+        children = {
+            Text(post.title, style = MaterialTheme.typography.subtitle1)
+        }
+    )
 }
 
 @Composable
@@ -96,21 +102,27 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
             modifier = Modifier.padding(end = 16.dp)
         )
         Column(Modifier.weight(1f)) {
-            Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
-                Text(
-                    text = "Open course",
-                    style = MaterialTheme.typography.overline
-                )
-            })
+            Providers(
+                AmbientContentAlpha provides ContentAlpha.high,
+                children = {
+                    Text(
+                        text = "Open course",
+                        style = MaterialTheme.typography.overline
+                    )
+                }
+            )
             PostTitle(post = post)
             AuthorAndReadTime(
                 post = post,
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
-        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
-            Icon(asset = Icons.Filled.MoreVert)
-        })
+        Providers(
+            AmbientContentAlpha provides ContentAlpha.high,
+            children = {
+                Icon(asset = Icons.Filled.MoreVert)
+            }
+        )
     }
 }
 

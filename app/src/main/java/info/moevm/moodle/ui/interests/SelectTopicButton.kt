@@ -1,10 +1,10 @@
 package info.moevm.moodle.ui.interests
 
-import androidx.compose.material.Icon
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
@@ -31,9 +31,12 @@ fun SelectTopicButton(
         shape = CircleShape,
         modifier = modifier.preferredSize(36.dp, 36.dp)
     ) {
-        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
-            Icon(icon)
-        })
+        Providers(
+            AmbientContentAlpha provides ContentAlpha.high,
+            children = {
+                Icon(icon)
+            }
+        )
     }
 }
 

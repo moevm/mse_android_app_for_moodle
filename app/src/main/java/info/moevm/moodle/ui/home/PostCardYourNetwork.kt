@@ -40,27 +40,33 @@ fun PostCardPopular(
             )
             Column(modifier = Modifier.padding(16.dp)) {
                 val emphasisLevels = AmbientContentAlpha.current
-                Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
-                    Text(
-                        text = post.title,
-                        style = MaterialTheme.typography.h6,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = post.metadata.author.name,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.body2
-                    )
-                })
-                Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
-                    Text(
-                        text = "${post.metadata.date} - " +
-                            "${post.metadata.hoursToPass}h to pass",
-                        style = MaterialTheme.typography.body2
-                    )
-                })
+                Providers(
+                    AmbientContentAlpha provides ContentAlpha.high,
+                    children = {
+                        Text(
+                            text = post.title,
+                            style = MaterialTheme.typography.h6,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = post.metadata.author.name,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.body2
+                        )
+                    }
+                )
+                Providers(
+                    AmbientContentAlpha provides ContentAlpha.high,
+                    children = {
+                        Text(
+                            text = "${post.metadata.date} - " +
+                                "${post.metadata.hoursToPass}h to pass",
+                            style = MaterialTheme.typography.body2
+                        )
+                    }
+                )
             }
         }
     }
