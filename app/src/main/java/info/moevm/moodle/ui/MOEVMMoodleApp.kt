@@ -16,6 +16,7 @@ import info.moevm.moodle.ui.article.ArticleScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
 import info.moevm.moodle.ui.signin.SignInScreen
+import info.moevm.moodle.ui.signin.TokenAuthScreen
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 
 @Composable
@@ -39,7 +40,12 @@ private fun AppContent(
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
-            NavHost(navController, startDestination = ScreenName.SIGN_IN.name) {
+            NavHost(navController, startDestination = ScreenName.TOKEN_AUTH.name) {
+                composable(ScreenName.TOKEN_AUTH.name) {
+                    TokenAuthScreen(
+                        navigateTo = actions.select
+                    )
+                }
                 composable(ScreenName.SIGN_IN.name) {
                     SignInScreen(
                         navigateTo = actions.select

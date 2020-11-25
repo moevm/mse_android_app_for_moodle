@@ -8,7 +8,7 @@ import info.moevm.moodle.ui.ScreenName.*
 /**
  * Screen names (used for serialization)
  */
-enum class ScreenName { SIGN_IN, HOME, INTERESTS, ARTICLE }
+enum class ScreenName { TOKEN_AUTH, SIGN_IN, HOME, INTERESTS, ARTICLE }
 
 /**
  * Class defining the screens we have in the app:
@@ -18,6 +18,7 @@ enum class ScreenName { SIGN_IN, HOME, INTERESTS, ARTICLE }
  * - interests
  */
 sealed class Screen(val id: ScreenName) {
+    object TokenAuth : Screen(TOKEN_AUTH)
     object SignIn : Screen(SIGN_IN)
     object Home : Screen(HOME)
     object Interests : Screen(INTERESTS)
