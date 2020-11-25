@@ -16,6 +16,12 @@ data class Post(
     val imageThumb: ImageAsset? = null
 )
 
+data class Auth(
+    var service:String?="moodle_mobile_app",
+    var username:String?="",
+    var password:String?=""
+)
+
 data class PostModel(
     var userId:Int?=0,
     var id:Int?=0,

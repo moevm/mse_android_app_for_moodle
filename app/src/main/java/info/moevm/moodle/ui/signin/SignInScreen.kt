@@ -27,6 +27,8 @@ import info.moevm.moodle.ui.signin.authorization.EmailState
 import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
+//outh
+import info.moevm.moodle.data.viewmodel.HomeViewModel
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
@@ -169,6 +171,10 @@ fun SignInContent(
 ) {
 
     Column(modifier = Modifier.fillMaxWidth()) {
+        //our auth begins
+
+
+
         val focusRequester = remember { FocusRequester() }
         val emailState = remember { EmailState() }
         Email(emailState, onImeAction = { focusRequester.requestFocus() })
