@@ -3,7 +3,7 @@ package info.moevm.moodle.ui.signin
 import androidx.compose.animation.animate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -50,14 +50,14 @@ private fun Branding(modifier: Modifier = Modifier) {
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
         Logo(modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 76.dp))
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
+        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
             Text(
                 text = stringResource(id = R.string.app_tagline),
                 style = MaterialTheme.typography.subtitle1,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 24.dp).fillMaxWidth()
             )
-        }
+        })
     }
 }
 

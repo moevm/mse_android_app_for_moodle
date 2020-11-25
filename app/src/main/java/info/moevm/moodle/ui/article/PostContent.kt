@@ -1,9 +1,9 @@
 package info.moevm.moodle.ui.article
 
-import androidx.compose.foundation.AmbientContentColor
+import androidx.compose.material.AmbientContentColor
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Box

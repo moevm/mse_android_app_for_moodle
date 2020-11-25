@@ -57,7 +57,7 @@ fun OverviewScreen(
         // Show snackbar using a coroutine, when the coroutine is cancelled the snackbar will
         // automatically dismiss. This coroutine will cancel whenever posts.hasError changes, and
         // only start when posts.hasError is true (due to the above if-check).
-        LaunchedTask(posts.hasError) {
+        LaunchedEffect(posts.hasError) {
             val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                 message = errorMessage,
                 actionLabel = retryMessage
@@ -73,7 +73,7 @@ fun OverviewScreen(
     var currentScreen by savedInstanceState { SettingsScreen.Overview }
     Scaffold(
         topBar = {
-            RallyTopAppBar(
+            StatisticsTopAppBar(
                 allScreens = allScreens,
                 onTabSelected = { screen -> currentScreen = screen },
                 currentScreen = currentScreen
@@ -164,13 +164,13 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
         modifier = Modifier.padding(RallyDefaultPadding).fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
+        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
             Text(
                 text = stringResource(R.string.alert),
                 style = MaterialTheme.typography.subtitle2,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
-        }
+        })
         TextButton(
             onClick = onClickSeeAll,
             contentPadding = PaddingValues(0.dp),
@@ -190,7 +190,7 @@ private fun AlertItem(message: String) {
         modifier = Modifier.padding(RallyDefaultPadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
+        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
             Text(
                 style = MaterialTheme.typography.body2,
                 modifier = Modifier.weight(1f),
@@ -202,7 +202,7 @@ private fun AlertItem(message: String) {
             ) {
                 Icon(Icons.Filled.Sort)
             }
-        }
+        })
     }
 }
 

@@ -1,12 +1,11 @@
 package info.moevm.moodle.ui.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.AmbientEmphasisLevels
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -33,8 +32,8 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
         }
         Spacer(Modifier.preferredHeight(16.dp))
 
-        val emphasisLevels = AmbientEmphasisLevels.current
-        ProvideEmphasis(emphasisLevels.high) {
+        val emphasisLevels = AmbientContentAlpha.current
+        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
             Text(
                 text = post.title,
                 style = typography.h6
@@ -43,13 +42,13 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
                 text = post.metadata.author.name,
                 style = typography.body2
             )
-        }
-        ProvideEmphasis(emphasisLevels.medium) {
+        })
+        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
             Text(
                 text = "${post.metadata.date} - ${post.metadata.hoursToPass}h to pass",
                 style = typography.body2
             )
-        }
+        })
     }
 }
 // TUTORIAL CONTENT ENDS HERE

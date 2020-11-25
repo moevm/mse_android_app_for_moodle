@@ -5,7 +5,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Icon
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +26,7 @@ import info.moevm.moodle.ui.statistics.SettingsScreen
 import java.util.*
 
 @Composable
-fun RallyTopAppBar(
+fun StatisticsTopAppBar(
     allScreens: List<SettingsScreen>,
     onTabSelected: (SettingsScreen) -> Unit,
     currentScreen: SettingsScreen

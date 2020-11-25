@@ -1,6 +1,6 @@
 package info.moevm.moodle.ui.interests
 
-import androidx.compose.foundation.Icon
+import androidx.compose.material.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
@@ -151,7 +151,7 @@ fun InterestsScreen(
         topBar = {
             TopAppBar(
                 modifier = Modifier.testTag("topAppBarInterests"),
-                title = { androidx.compose.material.Text("Interests") },
+                title = { Text("Interests") },
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),

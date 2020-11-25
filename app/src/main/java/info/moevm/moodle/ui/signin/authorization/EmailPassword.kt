@@ -40,7 +40,7 @@ fun Email(
         },
         label = {
             Providers(AmbientContentAlpha provides ContentAlpha.medium) {
-                androidx.compose.material.Text(
+                Text(
                     text = stringResource(id = R.string.email),
                     style = MaterialTheme.typography.body2
                 )
@@ -93,7 +93,7 @@ fun Password(
         textStyle = MaterialTheme.typography.body2,
         label = {
             Providers(AmbientContentAlpha provides ContentAlpha.medium) {
-                androidx.compose.material.Text(
+                Text(
                     text = label,
                     style = MaterialTheme.typography.body2
                 )
@@ -102,11 +102,11 @@ fun Password(
         trailingIcon = {
             if (showPassword.value) {
                 IconButton(onClick = { showPassword.value = false }) {
-                    androidx.compose.material.Icon(asset = Icons.Filled.Visibility)
+                    Icon(asset = Icons.Filled.Visibility)
                 }
             } else {
                 IconButton(onClick = { showPassword.value = true }) {
-                    androidx.compose.material.Icon(asset = Icons.Filled.VisibilityOff)
+                    Icon(asset = Icons.Filled.VisibilityOff)
                 }
             }
         },
@@ -135,10 +135,10 @@ fun Password(
 fun TextFieldError(textError: String) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.preferredWidth(16.dp))
-        androidx.compose.material.Text(
+        Text(
             text = textError,
             modifier = Modifier.fillMaxWidth(),
-            style = androidx.compose.material.AmbientTextStyle.current.copy(color = MaterialTheme.colors.error)
+            style = AmbientTextStyle.current.copy(color = MaterialTheme.colors.error)
         )
     }
 }

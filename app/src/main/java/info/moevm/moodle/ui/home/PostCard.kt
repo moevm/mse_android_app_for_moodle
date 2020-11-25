@@ -1,8 +1,8 @@
 package info.moevm.moodle.ui.home
 
-import androidx.compose.foundation.Icon
+import androidx.compose.material.Icon
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.imageResource
@@ -29,7 +30,7 @@ fun AuthorAndReadTime(
     modifier: Modifier = Modifier
 ) {
     Row(modifier) {
-        ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
             val textStyle = MaterialTheme.typography.body2
             Text(
                 text = post.metadata.author.name,
@@ -39,7 +40,7 @@ fun AuthorAndReadTime(
                 text = " - ${post.metadata.hoursToPass}" + stringResource(R.string.hours_to_pass),
                 style = textStyle
             )
-        }
+        })
     }
 }
 
@@ -56,9 +57,9 @@ fun PostImage(post: Post, modifier: Modifier = Modifier) {
 
 @Composable
 fun PostTitle(post: Post) {
-    ProvideEmphasis(AmbientEmphasisLevels.current.high) {
+    Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
         Text(post.title, style = MaterialTheme.typography.subtitle1)
-    }
+    })
 }
 
 @Composable
@@ -95,21 +96,21 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
             modifier = Modifier.padding(end = 16.dp)
         )
         Column(Modifier.weight(1f)) {
-            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
                 Text(
                     text = "Open course",
                     style = MaterialTheme.typography.overline
                 )
-            }
+            })
             PostTitle(post = post)
             AuthorAndReadTime(
                 post = post,
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
-        ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+        Providers(AmbientContentAlpha provides ContentAlpha.high, children = {
             Icon(asset = Icons.Filled.MoreVert)
-        }
+        })
     }
 }
 
