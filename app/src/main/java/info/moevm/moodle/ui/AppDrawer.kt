@@ -59,6 +59,15 @@ fun AppDrawer(
                 closeDrawer()
             }
         )
+        DrawerButton(
+            icon = Icons.Filled.ListAlt,
+            label = stringResource(R.string.statistics_label),
+            isSelected = currentScreen == Screen.Statistics,
+            action = {
+                navigateTo(Screen.Statistics)
+                closeDrawer()
+            }
+        )
     }
 }
 

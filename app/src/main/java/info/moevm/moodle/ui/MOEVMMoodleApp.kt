@@ -4,7 +4,11 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -13,9 +17,11 @@ import info.moevm.moodle.data.AppContainer
 import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.ui.article.ArticleScreen
+import info.moevm.moodle.ui.components.StatisticsTopAppBar
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
 import info.moevm.moodle.ui.signin.SignInScreen
+import info.moevm.moodle.ui.statistics.SettingsScreen
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 
 @Composable
@@ -67,6 +73,23 @@ private fun AppContent(
                         postsRepository = postsRepository,
                         onBack = actions.upPress
                     )
+                }
+                composable(ScreenName.STATISTICS.name) {
+                    val allScreens = SettingsScreen.values().toList()
+                    var currentScreen by savedInstanceState { SettingsScreen.Overview }
+                    Scaffold(
+                        topBar = {
+                            StatisticsTopAppBar(
+                                allScreens = allScreens,
+                                onTabSelected = { screen -> currentScreen = screen },
+                                currentScreen = currentScreen
+                            )
+                        }
+                    ) { innerPadding ->
+                        Box(Modifier.padding(innerPadding)) {
+                            currentScreen.content(onScreenChange = { screen -> currentScreen = screen })
+                        }
+                    }
                 }
             }
         }
