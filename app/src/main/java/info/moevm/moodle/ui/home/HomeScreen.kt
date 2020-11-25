@@ -2,11 +2,12 @@ package info.moevm.moodle.ui.home
 
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.ScrollableRow
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -128,13 +129,13 @@ fun HomeScreen(
             val title = stringResource(id = R.string.app_name)
             TopAppBar(
                 modifier = Modifier.testTag("topAppBarHome"),
-                title = { androidx.compose.material.Text(text = title) },
+                title = { Text(text = title) },
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
                         onClick = { scaffoldState.drawerState.open() },
                     ) {
-                        androidx.compose.material.Icon(vectorResource(R.drawable.ic_logo_light))
+                        Icon(vectorResource(R.drawable.ic_logo_light))
                     }
                 }
             )
@@ -281,7 +282,7 @@ private fun FullScreenLoading() {
  */
 @Composable
 private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
-    androidx.compose.material.Text(
+    Text(
         modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
         text = stringResource(R.string.dominant_home_course_caption),
         style = MaterialTheme.typography.subtitle1
@@ -331,7 +332,7 @@ private fun PostListPopularSection(
     navigateTo: (Screen) -> Unit
 ) {
     Column {
-        androidx.compose.material.Text(
+        Text(
             modifier = Modifier.padding(16.dp),
             text = stringResource(R.string.available_courses),
             style = MaterialTheme.typography.subtitle1
