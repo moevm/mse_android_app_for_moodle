@@ -1,9 +1,9 @@
 package info.moevm.moodle.ui.statistics
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.AssignmentInd
-import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.VectorAsset
 import info.moevm.moodle.data.statistics.UserData
