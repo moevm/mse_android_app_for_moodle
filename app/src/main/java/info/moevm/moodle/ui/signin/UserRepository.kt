@@ -27,6 +27,7 @@ object UserRepository {
         _user = User.LoggedInUser(email)
     }
 
+    //not usefull
     @Suppress("unused")
     fun signUp(email: String, password: String) {
         password.length // TODO: remove it: just for suppress warnings
