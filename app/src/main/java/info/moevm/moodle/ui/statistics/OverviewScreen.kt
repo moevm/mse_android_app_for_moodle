@@ -69,8 +69,8 @@ fun OverviewScreen(
         }
     }
 
-    val allScreens = SettingsScreen.values().toList()
-    var currentScreen by savedInstanceState { SettingsScreen.Overview }
+    val allScreens = SettingsScreenForStatistics.values().toList()
+    var currentScreen by savedInstanceState { SettingsScreenForStatistics.Overview }
     Scaffold(
         topBar = {
             StatisticsTopAppBar(
@@ -115,7 +115,7 @@ private fun LoadingContent(
 }
 
 @Composable
-fun OverviewBody(onScreenChange: (SettingsScreen) -> Unit = {}) {
+fun OverviewBody(onScreenChange: (SettingsScreenForStatistics) -> Unit = {}) {
     ScrollableColumn(contentPadding = PaddingValues(16.dp)) {
         AlertCard()
         Spacer(Modifier.preferredHeight(StatisticsDefaultPadding))
@@ -266,13 +266,13 @@ private fun <T> OverViewDivider(
  * The Courses card
  */
 @Composable
-private fun CoursesCard(onScreenChange: (SettingsScreen) -> Unit) {
+private fun CoursesCard(onScreenChange: (SettingsScreenForStatistics) -> Unit) {
     val amount = UserData.courses.map { courses -> courses.percent }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.accounts),
         amount = amount,
         onClickSeeAll = {
-            onScreenChange(SettingsScreen.Courses)
+            onScreenChange(SettingsScreenForStatistics.Courses)
         },
         data = UserData.courses,
         colors = { it.color },
@@ -290,13 +290,13 @@ private fun CoursesCard(onScreenChange: (SettingsScreen) -> Unit) {
  * The Students card
  */
 @Composable
-private fun StudentsCard(onScreenChange: (SettingsScreen) -> Unit) {
+private fun StudentsCard(onScreenChange: (SettingsScreenForStatistics) -> Unit) {
     val amount = UserData.students.map { students -> students.amount }.sum()
     OverviewScreenCard(
         title = stringResource(R.string.bills),
         amount = amount * 1f,
         onClickSeeAll = {
-            onScreenChange(SettingsScreen.Students)
+            onScreenChange(SettingsScreenForStatistics.Students)
         },
         data = UserData.students,
         colors = { it.color },

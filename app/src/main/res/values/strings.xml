@@ -26,11 +26,13 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="done">Done</string>
+    <string name="settings_name">Settings</string>
 
     <!--  Labels  -->
     <string name="home_label">Home</string>
     <string name="courses_label">Courses</string>
     <string name="statistics_label">Statistics</string>
+    <string name="settings_label">Settings</string>
 
     <!--  Service information  -->
     <string name="function_not_available_info">Functionality not available 🙈</string>
@@ -99,4 +101,7 @@
     <string name="alert">Alert</string>
     <string name="amount">Кол-во</string>
     <string name="mark">Оценка</string>
+
+    <!-- Settings -->
+    <string name="change_theme">Change theme</string>
 </resources>
