@@ -36,34 +36,30 @@ class HomeRepository {
                 } else {
                     data.value = null
                 }
-
             }
         })
 
         return data
-
     }
 
-    fun createPost(postModel: PostModel):LiveData<PostModel>{
+    fun createPost(postModel: PostModel): LiveData<PostModel> {
         val data = MutableLiveData<PostModel>()
 
-        apiInterface?.createPost(postModel)?.enqueue(object : Callback<PostModel>{
+        apiInterface?.createPost(postModel)?.enqueue(object : Callback<PostModel> {
             override fun onFailure(call: Call<PostModel>, t: Throwable) {
                 data.value = null
             }
 
             override fun onResponse(call: Call<PostModel>, response: Response<PostModel>) {
                 val res = response.body()
-                if (response.code() == 201 && res!=null){
+                if (response.code() == 201 && res != null) {
                     data.value = res
-                }else{
+                } else {
                     data.value = null
                 }
             }
         })
 
         return data
-
     }
-
 }

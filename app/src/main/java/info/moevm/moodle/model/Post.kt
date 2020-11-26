@@ -16,18 +16,26 @@ data class Post(
     val imageThumb: ImageAsset? = null
 )
 
-data class Auth(
-    var service:String?="moodle_mobile_app",
-    var username:String?="",
-    var password:String?=""
+// data class Auth(
+data class PostModel(
+    var service: String? = "moodle_mobile_app",
+    var username: String? = "",
+    var password: String? = "",
+    var token: String? = "",
+    var privattoken: String? = "",
+    var error: String? = "",
+    var errorcode: String? = "",
+    var stacktrace: String? = "",
+    var debuginfo: String? = "",
+    var reproductionlink: String? = ""
 )
 
-data class PostModel(
-    var userId:Int?=0,
-    var id:Int?=0,
-    var title:String?="",
-    var body:String?=""
-)
+// data class PostModel(
+//    var userId:Int?=0,
+//    var id:Int?=0,
+//    var title:String?="",
+//    var body:String?=""
+// )
 
 data class Metadata(
     val author: PostAuthor,

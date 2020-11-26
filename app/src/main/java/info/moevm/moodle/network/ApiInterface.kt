@@ -10,9 +10,8 @@ interface ApiInterface {
     fun fetchAllPosts(): Call<List<PostModel>>
 
     @POST("posts")
-    fun createPost(@Body postModel: PostModel):Call<PostModel>
+    fun createPost(@Body postModel: PostModel): Call<PostModel>
 
     @DELETE("posts/{id}")
-    fun deletePost(@Path("id") id:Int):Call<String>
-
+    fun deletePost(@Path("id") id: Int): Call<String>
 }

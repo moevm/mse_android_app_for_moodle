@@ -21,14 +21,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
+import info.moevm.moodle.data.viewmodel.HomeViewModel
+import info.moevm.moodle.model.PostModel
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.signin.authorization.Email
 import info.moevm.moodle.ui.signin.authorization.EmailState
 import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
-//outh
-import info.moevm.moodle.data.viewmodel.HomeViewModel
+// outh
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
@@ -171,9 +172,9 @@ fun SignInContent(
 ) {
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        //our auth begins
+        // our auth begins
 
-
+        var vm: HomeViewModel = HomeViewModel() // ViewModelProvider()//[HomeViewModel::class.java]
 
         val focusRequester = remember { FocusRequester() }
         val emailState = remember { EmailState() }
@@ -195,7 +196,16 @@ fun SignInContent(
         Button(
             onClick = {
 //                onSignInSubmitted(emailState.text, passwordState.text)
-                onSignInSubmitted(Screen.Home)
+                val postModel = PostModel()
+                postModel.username = emailState.text
+                postModel.password = passwordState.text
+//
+                val data = vm.createPost(postModel)
+                if (data.value.token) {
+                    onSignInSubmitted(Screen.Home)
+                } else {
+                    //  todo not user!!!
+                }
             },
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
             enabled = emailState.isValid && passwordState.isValid
