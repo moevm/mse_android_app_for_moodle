@@ -11,16 +11,16 @@ import info.moevm.moodle.ui.components.SuccessCoursesRow
 fun SuccessCoursesBody(courses: List<SuccessCourses>) {
     StatementBody(
         items = courses,
-        amounts = { account -> account.percent },
-        colors = { account -> account.color },
-        amountsTotal = courses.map { account -> account.percent }.sum(),
+        amounts = { course -> course.percent },
+        colors = { course -> course.color },
+        amountsTotal = courses.map { course -> course.percent }.sum(),
         circleLabel = stringResource(R.string.total),
-        rows = { account ->
+        rows = { course ->
             SuccessCoursesRow(
-                name = account.name,
-                number = account.number,
-                percent = account.percent,
-                color = account.color
+                name = course.name,
+                number = course.number,
+                percent = course.percent,
+                color = course.color
             )
         }
     )

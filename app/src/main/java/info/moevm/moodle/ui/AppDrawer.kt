@@ -16,6 +16,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DonutLarge
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.runtime.Composable
@@ -56,6 +57,15 @@ fun AppDrawer(
             isSelected = currentScreen == Screen.Interests,
             action = {
                 navigateTo(Screen.Interests)
+                closeDrawer()
+            }
+        )
+        DrawerButton(
+            icon = Icons.Filled.DonutLarge,
+            label = stringResource(R.string.statistics_label),
+            isSelected = currentScreen == Screen.Statistics,
+            action = {
+                navigateTo(Screen.Statistics)
                 closeDrawer()
             }
         )

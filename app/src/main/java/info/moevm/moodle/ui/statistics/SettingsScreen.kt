@@ -1,9 +1,9 @@
 package info.moevm.moodle.ui.statistics
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.MoneyOff
-import androidx.compose.material.icons.filled.PieChart
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.Assessment
+import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.VectorAsset
 import info.moevm.moodle.data.statistics.UserData
@@ -17,15 +17,15 @@ enum class SettingsScreen(
     val body: @Composable ((SettingsScreen) -> Unit) -> Unit
 ) {
     Overview(
-        icon = Icons.Filled.PieChart,
+        icon = Icons.Filled.Analytics,
         body = { onScreenChange -> OverviewBody(onScreenChange) }
     ),
     Courses(
-        icon = Icons.Filled.AttachMoney,
+        icon = Icons.Filled.Assessment,
         body = { SuccessCoursesBody(UserData.courses) }
     ),
     Students(
-        icon = Icons.Filled.MoneyOff,
+        icon = Icons.Filled.AssignmentInd,
         body = { SuccessStudentsBody(UserData.students) }
     );
 

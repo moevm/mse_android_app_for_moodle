@@ -118,9 +118,9 @@ private fun LoadingContent(
 fun OverviewBody(onScreenChange: (SettingsScreen) -> Unit = {}) {
     ScrollableColumn(contentPadding = PaddingValues(16.dp)) {
         AlertCard()
-        Spacer(Modifier.preferredHeight(RallyDefaultPadding))
+        Spacer(Modifier.preferredHeight(StatisticsDefaultPadding))
         CoursesCard(onScreenChange)
-        Spacer(Modifier.preferredHeight(RallyDefaultPadding))
+        Spacer(Modifier.preferredHeight(StatisticsDefaultPadding))
         StudentsCard(onScreenChange)
     }
 }
@@ -151,7 +151,7 @@ private fun AlertCard() {
                 showDialog = true
             }
             StatisticsDivider(
-                modifier = Modifier.padding(start = RallyDefaultPadding, end = RallyDefaultPadding)
+                modifier = Modifier.padding(start = StatisticsDefaultPadding, end = StatisticsDefaultPadding)
             )
             AlertItem(alertMessage)
         }
@@ -161,7 +161,7 @@ private fun AlertCard() {
 @Composable
 private fun AlertHeader(onClickSeeAll: () -> Unit) {
     Row(
-        modifier = Modifier.padding(RallyDefaultPadding).fillMaxWidth(),
+        modifier = Modifier.padding(StatisticsDefaultPadding).fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Providers(
@@ -190,7 +190,7 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
 @Composable
 private fun AlertItem(message: String) {
     Row(
-        modifier = Modifier.padding(RallyDefaultPadding),
+        modifier = Modifier.padding(StatisticsDefaultPadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Providers(
@@ -228,7 +228,7 @@ private fun <T> OverviewScreenCard(
 ) {
     Card {
         Column {
-            Column(Modifier.padding(RallyDefaultPadding)) {
+            Column(Modifier.padding(StatisticsDefaultPadding)) {
                 Text(text = title, style = MaterialTheme.typography.subtitle2)
                 val amountText = stringResource(R.string.amount) + formatAmount(
                     amount
@@ -277,12 +277,12 @@ private fun CoursesCard(onScreenChange: (SettingsScreen) -> Unit) {
         data = UserData.courses,
         colors = { it.color },
         values = { it.percent }
-    ) { account ->
+    ) { course ->
         SuccessCoursesRow(
-            name = account.name,
-            number = account.number,
-            percent = account.percent,
-            color = account.color
+            name = course.name,
+            number = course.number,
+            percent = course.percent,
+            color = course.color
         )
     }
 }
@@ -301,12 +301,12 @@ private fun StudentsCard(onScreenChange: (SettingsScreen) -> Unit) {
         data = UserData.students,
         colors = { it.color },
         values = { it.amount * 1f }
-    ) { bill ->
+    ) { student ->
         SuccessStudentsRow(
-            name = bill.course,
-            mark = bill.mark,
-            amount = bill.amount,
-            color = bill.color
+            name = student.course,
+            mark = student.mark,
+            amount = student.amount,
+            color = student.color
         )
     }
 }
@@ -321,6 +321,6 @@ private fun SeeAllButton(onClick: () -> Unit) {
     }
 }
 
-private val RallyDefaultPadding = 12.dp
+private val StatisticsDefaultPadding = 12.dp
 
 private const val SHOWN_ITEMS = 3

@@ -11,15 +11,15 @@ import info.moevm.moodle.ui.components.SuccessStudentsRow
  * The Bills screen.
  */
 @Composable
-fun SuccessStudentsBody(bills: List<SuccessStudents>) {
+fun SuccessStudentsBody(students: List<SuccessStudents>) {
     StatementBody(
-        items = bills,
-        amounts = { bill -> bill.amount * 1f },
-        colors = { bill -> bill.color },
-        amountsTotal = bills.map { bill -> bill.amount * 1f }.sum(),
+        items = students,
+        amounts = { student -> student.amount * 1f },
+        colors = { student -> student.color },
+        amountsTotal = students.map { student -> student.amount * 1f }.sum(),
         circleLabel = stringResource(R.string.due),
-        rows = { bill ->
-            SuccessStudentsRow(bill.course, bill.mark, bill.amount, bill.color)
+        rows = { student ->
+            SuccessStudentsRow(student.course, student.mark, student.amount, student.color)
         }
     )
 }
