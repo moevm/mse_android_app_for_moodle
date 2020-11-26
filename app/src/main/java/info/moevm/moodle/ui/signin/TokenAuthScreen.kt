@@ -20,8 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.signin.authorization.Email
-import info.moevm.moodle.ui.signin.authorization.EmailState
 import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
@@ -75,9 +73,9 @@ fun TokenAuthScreen(
                 ) {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         TokenAuthContent(
-                            //onSignInSubmitted = { email, password ->
+                            // onSignInSubmitted = { email, password ->
                             //    SignInEvent.SignIn(email, password)
-                            //}
+                            // }
                             onAuthSubmitted = navigateTo
                         )
                     }
