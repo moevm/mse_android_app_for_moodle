@@ -22,14 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.unit.dp
-import info.moevm.moodle.ui.statistics.SettingsScreen
+import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import java.util.*
 
 @Composable
 fun StatisticsTopAppBar(
-    allScreens: List<SettingsScreen>,
-    onTabSelected: (SettingsScreen) -> Unit,
-    currentScreen: SettingsScreen
+    allScreens: List<SettingsScreenForStatistics>,
+    onTabSelected: (SettingsScreenForStatistics) -> Unit,
+    currentScreen: SettingsScreenForStatistics
 ) {
     Surface(Modifier.preferredHeight(TabHeight).fillMaxWidth()) {
         Row {

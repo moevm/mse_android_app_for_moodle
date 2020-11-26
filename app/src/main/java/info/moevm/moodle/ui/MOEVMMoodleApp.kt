@@ -20,9 +20,10 @@ import info.moevm.moodle.ui.article.ArticleScreen
 import info.moevm.moodle.ui.components.StatisticsTopAppBar
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
+import info.moevm.moodle.ui.settings.SettingsScreen
 import info.moevm.moodle.ui.signin.SignInScreen
 import info.moevm.moodle.ui.signin.TokenAuthScreen
-import info.moevm.moodle.ui.statistics.SettingsScreen
+import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import info.moevm.moodle.ui.user.UserScreen
 
@@ -88,8 +89,8 @@ private fun AppContent(
                     )
                 }
                 composable(ScreenName.STATISTICS.name) {
-                    val allScreens = SettingsScreen.values().toList()
-                    var currentScreen by savedInstanceState { SettingsScreen.Overview }
+                    val allScreens = SettingsScreenForStatistics.values().toList()
+                    var currentScreen by savedInstanceState { SettingsScreenForStatistics.Overview }
                     Scaffold(
                         topBar = {
                             StatisticsTopAppBar(
@@ -103,6 +104,12 @@ private fun AppContent(
                             currentScreen.content(onScreenChange = { screen -> currentScreen = screen })
                         }
                     }
+                }
+                composable(ScreenName.SETTINGS.name) {
+                    SettingsScreen(
+                        navigateTo = actions.select,
+                        scaffoldState = scaffoldState,
+                    )
                 }
             }
         }

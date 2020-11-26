@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DonutLarge
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,6 +79,15 @@ fun AppDrawer(
             isSelected = currentScreen == Screen.Statistics,
             action = {
                 navigateTo(Screen.Statistics)
+                closeDrawer()
+            }
+        )
+        DrawerButton(
+            icon = Icons.Filled.Settings,
+            label = stringResource(R.string.settings_label),
+            isSelected = currentScreen == Screen.Settings,
+            action = {
+                navigateTo(Screen.Settings)
                 closeDrawer()
             }
         )
