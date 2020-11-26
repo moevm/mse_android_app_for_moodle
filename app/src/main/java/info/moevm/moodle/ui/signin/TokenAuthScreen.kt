@@ -4,11 +4,12 @@ import androidx.compose.animation.animate
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focusRequester
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
@@ -19,25 +20,20 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.signin.authorization.Email
-import info.moevm.moodle.ui.signin.authorization.EmailState
 import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 
-sealed class SignInEvent {
-    data class SignIn(val email: String, val password: String) : SignInEvent()
-}
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SignInScreen(
+fun TokenAuthScreen(
     navigateTo: (Screen) -> Unit
 ) {
 
     // FIXME: return it - just remove warning
     // val snackbarHostState = remember { SnackbarHostState() }
 
+    // Parameters for branding stuff
     var brandingBottom by remember { mutableStateOf(0f) }
     val showBranding by remember { mutableStateOf(true) }
     var heightWithBranding by remember { mutableStateOf(0) }
@@ -50,8 +46,8 @@ fun SignInScreen(
 
     Scaffold(
         topBar = {
-            SignInSignUpTopAppBar(
-                topAppBarText = stringResource(id = R.string.sign_in),
+            TokenAuthScreenTopAppBar(
+                topAppBarText = stringResource(id = R.string.token_auth),
             )
         },
         bodyContent = {
@@ -72,15 +68,15 @@ fun SignInScreen(
                         }
                     }
                 )
-                SignInSignUpScreen(
+                TokenAuthPartScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        SignInContent(
-//                            onSignInSubmitted = { email, password ->
-//                                SignInEvent.SignIn(email, password)
-//                            }
-                            onSignInSubmitted = navigateTo
+                        TokenAuthContent(
+                            // onSignInSubmitted = { email, password ->
+                            //    SignInEvent.SignIn(email, password)
+                            // }
+                            onAuthSubmitted = navigateTo
                         )
                     }
                 }
@@ -93,7 +89,7 @@ fun SignInScreen(
  * Just "Sign In" text on the top bar of the app
  */
 @Composable
-fun SignInSignUpTopAppBar(topAppBarText: String) {
+fun TokenAuthScreenTopAppBar(topAppBarText: String) {
     TopAppBar(
         title = {
             Text(
@@ -111,46 +107,44 @@ fun SignInSignUpTopAppBar(topAppBarText: String) {
 
 @OptIn(ExperimentalFocus::class)
 @Composable
-fun SignInContent(
-//    onSignInSubmitted: (email: String, password: String) -> Unit
-    onSignInSubmitted: (Screen) -> Unit
+fun TokenAuthContent(
+    // Maybe another navigation as in sign in
+    // onSignInSubmitted: (email: String, password: String) -> Unit
+    onAuthSubmitted: (Screen) -> Unit
 ) {
 
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }
-        val emailState = remember { EmailState() }
-        Email(emailState, onImeAction = { focusRequester.requestFocus() })
 
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
-
+        // Just use ready password class for token handling
         val passwordState = remember { PasswordState() }
         Password(
-            label = stringResource(id = R.string.password),
+            label = stringResource(id = R.string.token),
             passwordState = passwordState,
             modifier = Modifier.focusRequester(focusRequester),
             onImeAction = {
-//                onSignInSubmitted(emailState.text, passwordState.text)
-                onSignInSubmitted(Screen.Home)
+                // HANDLE passwordState.text HERE
+                onAuthSubmitted(Screen.SignIn)
             }
         )
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
             onClick = {
-//                onSignInSubmitted(emailState.text, passwordState.text)
-                onSignInSubmitted(Screen.Home)
+                // HANDLE passwordState.text HERE
+                // as example: onSignInSubmitted(emailState.text, passwordState.text)
+                onAuthSubmitted(Screen.SignIn)
             },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-            enabled = emailState.isValid && passwordState.isValid
+            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.sign_in)
+                text = stringResource(id = R.string.token_use)
             )
         }
     }
 }
 
 @Composable
-fun SignInSignUpScreen(
+fun TokenAuthPartScreen(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -162,18 +156,18 @@ fun SignInSignUpScreen(
     }
 }
 
-@Preview(name = "Sign in light theme")
+@Preview(name = "TokenAuthScreen in light theme")
 @Composable
-fun SignInPreview() {
+fun TokenAuthPreview() {
     MOEVMMoodleTheme {
-        SignInScreen {}
+        TokenAuthScreen {}
     }
 }
 
-@Preview(name = "Sign in dark theme")
+@Preview(name = "TokenAuthScreen in dark theme")
 @Composable
-fun SignInPreviewDark() {
+fun TokenAuthPreviewDark() {
     MOEVMMoodleTheme(darkTheme = true) {
-        SignInScreen {}
+        TokenAuthScreen {}
     }
 }

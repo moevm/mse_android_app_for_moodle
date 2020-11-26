@@ -10,7 +10,15 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_in">Sign in</string>
+    <string name="token_auth">Token authorization</string>
+    <string name="token">Token</string>
+    <string name="token_use">Use token</string>
     <string name="sign_in_create_account">Sign in to your Moodle account</string>
+    <string name="user_name">Alexander Popov</string>
+    <string name="hello">Hello</string>
+    <string name="profile_label">Profile</string>
+    <string name="setups">Setups</string>
+    <string name="all_courses">All courses</string>
     <string name="or">or</string>
     <string name="forgot_password">Forgot password</string>
     <string name="user_continue">Continue</string>

@@ -16,6 +16,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DonutLarge
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
@@ -41,6 +42,7 @@ fun AppDrawer(
         Spacer(Modifier.preferredHeight(24.dp))
         MOEVMMoodleLogo(Modifier.padding(16.dp))
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
+
         DrawerButton(
             icon = Icons.Filled.Home,
             label = stringResource(R.string.home_label),
@@ -60,6 +62,16 @@ fun AppDrawer(
                 closeDrawer()
             }
         )
+
+        DrawerButton(
+            icon = Icons.Filled.AccountCircle,
+            label = stringResource(R.string.profile_label),
+            isSelected = currentScreen == Screen.User,
+            action = {
+                navigateTo(Screen.User)
+            }
+        )
+
         DrawerButton(
             icon = Icons.Filled.DonutLarge,
             label = stringResource(R.string.statistics_label),
