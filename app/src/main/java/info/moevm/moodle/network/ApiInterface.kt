@@ -9,7 +9,7 @@ interface ApiInterface {
     @GET("posts")
     fun fetchAllPosts(): Call<List<PostModel>>
 
-    @POST("posts")
+    @POST("login/token.php")
     fun createPost(@Body postModel: PostModel): Call<PostModel>
 
     @DELETE("posts/{id}")

@@ -7,7 +7,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 // const val BASEURL = "https://jsonplaceholder.typicode.com/"
-const val BASEURL = "http://localhost:1010/login/token.php"
+const val BASEURL = "http://localhost:1010/"
+// login/token.php
 // ?service=moodle_mobile_app
 class ApiClient {
     companion object {

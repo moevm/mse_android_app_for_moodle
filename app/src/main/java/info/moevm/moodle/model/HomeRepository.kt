@@ -53,9 +53,9 @@ class HomeRepository {
             override fun onResponse(call: Call<PostModel>, response: Response<PostModel>) {
                 val res = response.body()
                 if (response.code() == 201 && res != null) {
-                    data.value = res
+                    data.value?.token = res.token
                 } else {
-                    data.value = null
+                    data.value?.errorcode = res?.errorcode
                 }
             }
         })

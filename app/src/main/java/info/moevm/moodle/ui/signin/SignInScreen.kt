@@ -47,6 +47,13 @@ private fun Modifier.brandingPreferredHeight(
     }
 }
 
+// fun Context.toast(message: CharSequence) =
+//    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+//
+// fun myFun(context: Context) {
+//    context.toast("no auth")
+// }
+
 @Composable
 private fun Branding(modifier: Modifier = Modifier) {
     Column(
@@ -200,11 +207,12 @@ fun SignInContent(
                 postModel.username = emailState.text
                 postModel.password = passwordState.text
 //
-                val data = vm.createPost(postModel)
-                if (data.value.token) {
+                vm.createPost(postModel)
+                val data = vm.createPostLiveData
+                if (data != null && data.value != null) {
                     onSignInSubmitted(Screen.Home)
                 } else {
-                    //  todo not user!!!
+//                    myFun()
                 }
             },
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
