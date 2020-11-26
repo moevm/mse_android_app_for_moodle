@@ -62,13 +62,16 @@ fun AppDrawer(
                 closeDrawer()
             }
         )
+
         DrawerButton(
             icon = Icons.Filled.AccountCircle,
             label = stringResource(R.string.profile_label),
             isSelected = currentScreen == Screen.User,
             action = {
                 navigateTo(Screen.User)
+            }
         )
+
         DrawerButton(
             icon = Icons.Filled.DonutLarge,
             label = stringResource(R.string.statistics_label),

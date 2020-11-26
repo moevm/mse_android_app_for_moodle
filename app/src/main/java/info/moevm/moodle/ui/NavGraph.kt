@@ -8,7 +8,7 @@ import info.moevm.moodle.ui.ScreenName.*
 /**
  * Screen names (used for serialization)
  */
-enum class ScreenName { SIGN_IN, HOME, USER, ITERESTS, ARTICLE, STATISTICS }
+enum class ScreenName { TOKEN_AUTH, SIGN_IN, HOME, USER, INTERESTS, ARTICLE, STATISTICS }
 
 /**
  * Class defining the screens we have in the app:
