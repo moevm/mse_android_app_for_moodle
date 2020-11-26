@@ -18,6 +18,7 @@ import info.moevm.moodle.ui.interests.InterestsScreen
 import info.moevm.moodle.ui.signin.SignInScreen
 import info.moevm.moodle.ui.signin.TokenAuthScreen
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
+import info.moevm.moodle.ui.user.UserScreen
 
 @Composable
 fun MOEVMMoodleApp(appContainer: AppContainer) {
@@ -55,6 +56,12 @@ private fun AppContent(
                     HomeScreen(
                         navigateTo = actions.select,
                         postsRepository = postsRepository,
+                        scaffoldState = scaffoldState
+                    )
+                }
+                composable(ScreenName.USER.name) {
+                    UserScreen(
+                        navigateTo = actions.select,
                         scaffoldState = scaffoldState
                     )
                 }

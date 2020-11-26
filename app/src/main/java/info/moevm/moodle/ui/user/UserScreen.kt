@@ -6,12 +6,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
+import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.components.CircularImage
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
@@ -19,12 +22,40 @@ import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UserScreen(
-    navigateTo: (Screen) -> Unit
+    navigateTo: (Screen) -> Unit,
+    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     Scaffold(
+        scaffoldState = scaffoldState,
+        drawerContent = {
+            AppDrawer(
+                currentScreen = Screen.User,
+                closeDrawer = { scaffoldState.drawerState.close() },
+                navigateTo = navigateTo
+            )
+        },
         topBar = {
-            UserScreenTopAppBar(
-                topAppBarText = "${stringResource(id = R.string.hello)}, ${stringResource(id = R.string.user_name)}",
+            TopAppBar(
+                modifier = Modifier.testTag("topAppBarHome"),
+                title = {
+                    Text(
+                        text = "${stringResource(id = R.string.hello)}, ${stringResource(id = R.string.user_name)}",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(Alignment.Center)
+                    )
+                },
+                navigationIcon = {
+                    IconButton(
+                        modifier = Modifier.testTag("appDrawer"),
+                        onClick = { scaffoldState.drawerState.open() },
+                    ) {
+                        androidx.compose.material.Icon(vectorResource(R.drawable.ic_logo_light))
+                    }
+                },
+                backgroundColor = MaterialTheme.colors.surface,
+                elevation = 0.dp
             )
         },
         bodyContent = {
@@ -34,26 +65,6 @@ fun UserScreen(
                 )
             }
         }
-    )
-}
-
-/**
- * A greeting to the user
- */
-@Composable
-fun UserScreenTopAppBar(topAppBarText: String) {
-    TopAppBar(
-        title = {
-            Text(
-                text = topAppBarText,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
-            )
-        },
-        backgroundColor = MaterialTheme.colors.surface,
-        elevation = 0.dp
     )
 }
 
@@ -105,7 +116,10 @@ fun UserContent(
 @Composable
 fun UserPreview() {
     MOEVMMoodleTheme {
-        UserScreen {}
+        val scaffoldState = rememberScaffoldState(
+            drawerState = rememberDrawerState(DrawerValue.Closed)
+        )
+        UserScreen(navigateTo = { }, scaffoldState = scaffoldState)
     }
 }
 
@@ -113,6 +127,9 @@ fun UserPreview() {
 @Composable
 fun UserPreviewDark() {
     MOEVMMoodleTheme(darkTheme = true) {
-        UserScreen {}
+        val scaffoldState = rememberScaffoldState(
+            drawerState = rememberDrawerState(DrawerValue.Closed)
+        )
+        UserScreen(navigateTo = { }, scaffoldState = scaffoldState)
     }
 }
