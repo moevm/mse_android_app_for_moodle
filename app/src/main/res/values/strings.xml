@@ -30,6 +30,7 @@
     <!--  Labels  -->
     <string name="home_label">Home</string>
     <string name="courses_label">Courses</string>
+    <string name="statistics_label">Statistics</string>
 
     <!--  Service information  -->
     <string name="function_not_available_info">Functionality not available 🙈</string>

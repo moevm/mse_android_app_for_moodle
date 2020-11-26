@@ -17,6 +17,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DonutLarge
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.runtime.Composable
@@ -61,13 +62,19 @@ fun AppDrawer(
                 closeDrawer()
             }
         )
-
         DrawerButton(
             icon = Icons.Filled.AccountCircle,
             label = stringResource(R.string.profile_label),
             isSelected = currentScreen == Screen.User,
             action = {
                 navigateTo(Screen.User)
+        )
+        DrawerButton(
+            icon = Icons.Filled.DonutLarge,
+            label = stringResource(R.string.statistics_label),
+            isSelected = currentScreen == Screen.Statistics,
+            action = {
+                navigateTo(Screen.Statistics)
                 closeDrawer()
             }
         )
