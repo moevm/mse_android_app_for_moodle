@@ -1,5 +1,13 @@
 #  Мобильное приложение для кафедральной платформы moodle
 
+## Результаты 3 итерации
+
+- [Видео](https://youtu.be/H2cfZDBNv9M) - демонстрация работы приложения на устройстве;
+
+- Аналогичное [видео](https://youtu.be/94tF29jdSq0) с запуском из Android Studio Canary;
+
+- [Документ](https://docs.google.com/document/d/14Bg3srnNCECyeyT5MLd4HjY_eD7NNs4EuxQuUbKDz5U/edit?usp=sharing) с отчётом по проделанной работе.
+
 <div>
   <a href="https://id.atlassian.com/invite/p/jira-software?id=NZvq9D7rREaxtU86oWmxVA">
   <img
