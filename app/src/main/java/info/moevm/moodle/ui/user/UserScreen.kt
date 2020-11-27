@@ -51,7 +51,7 @@ fun UserScreen(
                         modifier = Modifier.testTag("appDrawer"),
                         onClick = { scaffoldState.drawerState.open() },
                     ) {
-                        androidx.compose.material.Icon(vectorResource(R.drawable.ic_logo_light))
+                        Icon(vectorResource(R.drawable.ic_logo_light))
                     }
                 },
                 backgroundColor = MaterialTheme.colors.surface,

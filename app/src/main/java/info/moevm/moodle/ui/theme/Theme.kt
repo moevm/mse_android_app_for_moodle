@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
@@ -49,13 +48,19 @@ val DarkThemeColors = darkColors(
     onError = Color.Black
 )
 
+var isDarkTheme = false
+
+fun changeTheme() {
+    isDarkTheme = !isDarkTheme
+}
+
 @Composable
 val Colors.snackbarAction: Color
     get() = if (isLight) Purple300 else Purple700
 
 @Composable
 fun MOEVMMoodleTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = isDarkTheme,
     content: @Composable () -> Unit
 ) {
     MaterialTheme(

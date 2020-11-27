@@ -16,6 +16,7 @@ import info.moevm.moodle.R
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
+import info.moevm.moodle.ui.theme.changeTheme
 
 private fun Modifier.brandingPreferredHeight(
     showBranding: Boolean,
@@ -85,6 +86,7 @@ fun SettingsScreen(
 @OptIn(ExperimentalFocus::class)
 @Composable
 fun SettingsContent(
+    isDarkTheme: Boolean = false,
     onNavigate: (Screen) -> Unit
 ) {
     Column(
@@ -98,7 +100,7 @@ fun SettingsContent(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
             onClick = {
-                val changeTheme = null
+                changeTheme()
             },
             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
         ) {
