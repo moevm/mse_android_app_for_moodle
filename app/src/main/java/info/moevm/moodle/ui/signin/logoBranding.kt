@@ -36,23 +36,22 @@ fun Branding(modifier: Modifier = Modifier) {
     ) {
         Logo(modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 76.dp))
         Providers(
-            AmbientContentAlpha provides ContentAlpha.high,
-            children = {
-                Text(
-                    text = stringResource(id = R.string.app_tagline),
-                    style = MaterialTheme.typography.subtitle1,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 24.dp).fillMaxWidth()
-                )
-            }
-        )
+            AmbientContentAlpha provides ContentAlpha.high
+        ) {
+            Text(
+                text = stringResource(id = R.string.app_tagline),
+                style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 24.dp).fillMaxWidth()
+            )
+        }
     }
 }
 
 @Composable
 private fun Logo(
-    lightTheme: Boolean = MaterialTheme.colors.isLight,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    lightTheme: Boolean = MaterialTheme.colors.isLight
 ) {
     val assetId = if (lightTheme) {
         R.drawable.ic_logo_light
@@ -60,7 +59,7 @@ private fun Logo(
         R.drawable.ic_logo_dark
     }
     Image(
-        asset = vectorResource(id = assetId),
+        imageVector = vectorResource(id = assetId),
         modifier = modifier
     )
 }

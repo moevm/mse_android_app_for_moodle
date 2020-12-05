@@ -102,11 +102,11 @@ fun Password(
         trailingIcon = {
             if (showPassword.value) {
                 IconButton(onClick = { showPassword.value = false }) {
-                    Icon(asset = Icons.Filled.Visibility)
+                    Icon(imageVector = Icons.Filled.Visibility)
                 }
             } else {
                 IconButton(onClick = { showPassword.value = true }) {
-                    Icon(asset = Icons.Filled.VisibilityOff)
+                    Icon(imageVector = Icons.Filled.VisibilityOff)
                 }
             }
         },
