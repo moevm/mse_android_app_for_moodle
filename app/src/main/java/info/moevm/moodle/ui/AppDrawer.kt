@@ -26,11 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
 
 @Composable
@@ -82,6 +82,7 @@ fun AppDrawer(
                 closeDrawer()
             }
         )
+
         DrawerButton(
             icon = Icons.Filled.Settings,
             label = stringResource(R.string.settings_label),
@@ -98,7 +99,7 @@ fun AppDrawer(
 private fun MOEVMMoodleLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
         Image(
-            asset = vectorResource(R.drawable.ic_logo_light),
+            imageVector = vectorResource(R.drawable.ic_logo_light),
             colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
         )
         // TODO: Add MOEVM text
@@ -107,7 +108,7 @@ private fun MOEVMMoodleLogo(modifier: Modifier = Modifier) {
 
 @Composable
 private fun DrawerButton(
-    icon: VectorAsset,
+    icon: ImageVector,
     label: String,
     isSelected: Boolean,
     action: () -> Unit,
@@ -148,7 +149,7 @@ private fun DrawerButton(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Image(
-                    asset = icon,
+                    imageVector = icon,
                     colorFilter = ColorFilter.tint(textIconColor),
                     alpha = imageAlpha
                 )

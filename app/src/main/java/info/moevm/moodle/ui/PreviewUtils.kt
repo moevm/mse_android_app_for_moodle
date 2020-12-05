@@ -7,11 +7,11 @@ import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 @Composable
 internal fun ThemedPreview(
     darkTheme: Boolean = false,
-    children: @Composable () -> Unit
+    content: @Composable () -> Unit
 ) {
     MOEVMMoodleTheme(darkTheme = darkTheme) {
         Surface {
-            children()
+            content()
         }
     }
 }

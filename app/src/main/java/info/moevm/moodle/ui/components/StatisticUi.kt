@@ -68,17 +68,15 @@ private fun BaseRow(
         Spacer(Modifier.preferredWidth(12.dp))
         Column(Modifier) {
             Providers(
-                AmbientContentAlpha provides ContentAlpha.high,
-                children = {
-                    Text(text = title, style = typography.body1)
-                }
-            )
+                AmbientContentAlpha provides ContentAlpha.high
+            ) {
+                Text(text = title, style = typography.body1)
+            }
             Providers(
-                AmbientContentAlpha provides ContentAlpha.high,
-                children = {
-                    Text(text = subtitle, style = typography.subtitle1)
-                }
-            )
+                AmbientContentAlpha provides ContentAlpha.high
+            ) {
+                Text(text = subtitle, style = typography.subtitle1)
+            }
         }
         Spacer(Modifier.weight(1f))
         Row(
@@ -101,16 +99,15 @@ private fun BaseRow(
         Spacer(Modifier.preferredWidth(16.dp))
 
         Providers(
-            AmbientContentAlpha provides ContentAlpha.high,
-            children = {
-                Icon(
-                    asset = Icons.Filled.ChevronRight,
-                    modifier = Modifier
-                        .padding(end = 12.dp)
-                        .preferredSize(24.dp)
-                )
-            }
-        )
+            AmbientContentAlpha provides ContentAlpha.high
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ChevronRight,
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .preferredSize(24.dp)
+            )
+        }
     }
     StatisticsDivider()
 }

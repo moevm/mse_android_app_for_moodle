@@ -5,10 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.test.ExperimentalTesting
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import androidx.test.filters.SdkSuppress
-import androidx.ui.test.createComposeRule
 import info.moevm.moodle.ui.components.AnimatedCircle
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import org.junit.Rule
@@ -36,26 +37,31 @@ class AnimatingCircleTests {
         assertScreenshotMatchesGolden("circle_done", composeTestRule.onRoot())
     }
 
+    @ExperimentalTesting
     @Test
     fun circleAnimation_initial_screenshot() {
         compareTimeScreenshot(0, "circle_initial")
     }
 
+    @ExperimentalTesting
     @Test
     fun circleAnimation_beforeDelay_screenshot() {
         compareTimeScreenshot(499, "circle_initial")
     }
 
+    @ExperimentalTesting
     @Test
     fun circleAnimation_midAnimation_screenshot() {
         compareTimeScreenshot(600, "circle_100")
     }
 
+    @ExperimentalTesting
     @Test
     fun circleAnimation_animationDone_screenshot() {
         compareTimeScreenshot(1400, "circle_done")
     }
 
+    @ExperimentalTesting
     private fun compareTimeScreenshot(timeMs: Long, goldenName: String) {
         // Start with a paused clock
         composeTestRule.clockTestRule.pauseClock()

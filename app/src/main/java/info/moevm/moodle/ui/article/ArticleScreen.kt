@@ -13,11 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.posts.PostsRepository
@@ -152,7 +152,7 @@ private fun BottomBar(
                 isBookmarked = isFavorite,
                 onClick = onToggleFavorite
             )
-            val context = ContextAmbient.current
+            val context = AmbientContext.current
             IconButton(onClick = { sharePost(post, context) }) {
                 Icon(Icons.Filled.Share)
             }
@@ -222,7 +222,7 @@ fun PreviewArticleDark() {
 
 @Composable
 private fun loadFakePost(postId: String): Post {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
     val post = runBlocking {
         (BlockingFakePostsRepository(context).getPost(postId) as Result.Success).data
     }

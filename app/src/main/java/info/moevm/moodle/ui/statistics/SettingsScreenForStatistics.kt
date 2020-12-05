@@ -5,7 +5,7 @@ import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.ImageVector
 import info.moevm.moodle.data.statistics.UserData
 
 /**
@@ -13,7 +13,7 @@ import info.moevm.moodle.data.statistics.UserData
  * navigation is not supported.
  */
 enum class SettingsScreenForStatistics(
-    val icon: VectorAsset,
+    val icon: ImageVector,
     val body: @Composable ((SettingsScreenForStatistics) -> Unit) -> Unit
 ) {
     Overview(
@@ -30,7 +30,7 @@ enum class SettingsScreenForStatistics(
     );
 
     @Composable
-    fun content(onScreenChange: (SettingsScreenForStatistics) -> Unit) {
+    fun Content(onScreenChange: (SettingsScreenForStatistics) -> Unit) {
         body(onScreenChange)
     }
 }
