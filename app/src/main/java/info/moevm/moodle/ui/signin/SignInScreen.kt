@@ -1,5 +1,6 @@
 package info.moevm.moodle.ui.signin
 
+import android.os.SystemClock
 import android.util.Log
 import androidx.compose.animation.animate
 import androidx.compose.foundation.ScrollableColumn
@@ -26,10 +27,7 @@ import info.moevm.moodle.ui.signin.authorization.EmailState
 import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
@@ -133,22 +131,18 @@ fun SignInContent(
             .build()
             .create(ApiRequests::class.java)
 
+        Log.d(TAG, "before enter the global scope")
+//         global scope - ассинхрон, mb be back later
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                val response = api.getCatFacts().awaitResponse()
+                Log.d(TAG, "enter the global scope")
+                val response = api.getCatFacts().execute()
                 if (response.isSuccessful) {
+                    Log.i(TAG, "get resopnse "+ response.body())
 
                     data = response.body()!!
                     Log.d(TAG, data.toString())
 
-//                    withContext(Dispatchers.Main) {
-//                        tv_textView.visibility = View.VISIBLE
-//                        tv_timeStamp.visibility = View.VISIBLE
-//                        progressBar.visibility = View.GONE
-//                        tv_timeStamp.text = data.createdAt
-//                        tv_textView.text = data.text
-//
-//                    }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
@@ -160,6 +154,24 @@ fun SignInContent(
                 }
             }
         }
+
+//        try {
+//            Log.d(TAG, "enter the global scope")
+//            val response = api.getCatFacts().execute()
+////            if (response.isSuccessful) {
+//                Log.d(TAG, "get resopnse "+ response.body())
+//
+//                data = response.body()!!
+//                Log.d(TAG, data.toString())
+//
+////            }
+//        } catch (e: Exception) {
+//            Log.e(TAG, "no answer" + e.message);
+//        }
+        while (data == null){
+            Log.d(TAG, "still null")
+        }
+        Log.d(TAG, "return data that is "+ data.toString())
         return data
     }
 
@@ -184,6 +196,7 @@ fun SignInContent(
         Button(
             onClick = {
                 val data = getCurrentData()
+                Log.d(TAG, "in auth "+data.toString())
 //                onSignInSubmitted(emailState.text, passwordState.text)
                 onSignInSubmitted(Screen.Home)
             },
