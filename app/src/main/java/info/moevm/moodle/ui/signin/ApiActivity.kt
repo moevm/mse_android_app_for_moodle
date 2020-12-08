@@ -1,6 +1,7 @@
 package info.moevm.moodle.ui.signin
 
 import android.util.Log
+import info.moevm.moodle.model.RandomCatFacts
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -10,12 +11,14 @@ import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://cat-fact.herokuapp.com"
+const val MOODLE = "http://e.moevm.info"
+//const val MOODLE = "https://10.0.2.2:1010"
 val TAG = "ApiActivity"
 
 class ApiActivity {
     public fun getCurrentData() {
         val api = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(MOODLE)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiRequests::class.java)

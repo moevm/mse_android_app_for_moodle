@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
+import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.model.RandomCatFacts
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.signin.authorization.Email
@@ -158,6 +159,82 @@ fun SignInContent(
         Log.d(TAG, "return data that is " + data.toString())
         return data
     }
+    fun tmpTest(): LoginSuccess? {
+        var data: LoginSuccess? = null
+        val api = Retrofit.Builder()
+            .baseUrl(MOODLE)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiRequests::class.java)
+
+        Log.d(TAG, "before enter the global scope")
+//         global scope - ассинхрон, mb be back later
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                Log.d(TAG, "enter the global scope")
+                val response = api.tmpFun().execute()
+                if (response.isSuccessful) {
+                    Log.i(TAG, "get resopnse " + response.body())
+
+                    data = response.body()!!
+                    Log.d(TAG, data.toString())
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+//                    Toast.makeText(
+//                        applicationContext,
+//                        "Seems like something went wrong...",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+                }
+            }
+        }
+
+        while (data == null) {
+            Log.d(TAG, "still null")
+        }
+        Log.d(TAG, "return data that is " + data.toString())
+        return data
+    }
+    fun checkLogIn(serviceName:String, userName:String , passWord:String ): LoginSuccess?{
+        var data: LoginSuccess? = null
+        val api = Retrofit.Builder()
+            .baseUrl(MOODLE)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiRequests::class.java)
+
+        Log.d(TAG, "1before enter the global scope")
+//         global scope - ассинхрон, mb be back later
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                Log.d(TAG, "1enter the global scope")
+                val response = api.logIn(serviceName, userName, passWord).execute()
+                if (response.isSuccessful) {
+                    Log.i(TAG, "1get resopnse " + response.body())
+
+                    data = response.body()!!
+                    Log.d(TAG, data.toString())
+                }
+                else
+                    Log.d(TAG, "1bad answer"+ response.message())
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+//                    Toast.makeText(
+//                        applicationContext,
+//                        "Seems like something went wrong...",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+                }
+            }
+        }
+        // DANGEROUSE
+        while (data == null) {
+            Log.d(TAG, "1still null")
+        }
+        Log.d(TAG, "1return data that is " + data.toString())
+        return data
+    }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }
@@ -179,9 +256,20 @@ fun SignInContent(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
             onClick = {
-                val data = getCurrentData()
+//                val user_name = emailState.text
+//                val user_password = passwordState.text
+                // only for test
+                val user_name = "---"
+                val user_password = "----"
+                Log.d(TAG, "login = " + user_name + "\n password = "+ user_password)
+//                val data = getCurrentData()
+                val data = tmpTest()
+//                val data1 = checkLogIn("moodle_mobile_app", user_name, user_password)
                 Log.d(TAG, "in auth " + data.toString())
+//                Log.d(TAG, "in auth " + data1.toString())
 //                onSignInSubmitted(emailState.text, passwordState.text)
+
+
                 onSignInSubmitted(Screen.Home)
             },
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),

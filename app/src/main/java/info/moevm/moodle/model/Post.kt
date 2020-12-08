@@ -50,6 +50,16 @@ data class Status(
     val verified: Boolean
 )
 
+data class LoginSuccess(
+    val token: String,
+    val privatetoken:String,
+    val error: String,
+    val errorcode: String,
+    val stacktrace: String,
+    val debuginfo: String,
+    val reproductionlink: String
+)
+
 data class RandomCatFacts(
     val __v: Int,
     val _id: String,
