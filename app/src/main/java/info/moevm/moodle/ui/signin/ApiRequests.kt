@@ -6,19 +6,15 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 /*TODO
-*  apiActivvity
-*  format
-*  on butt too
 *  push
+* format???
+* on butt too
 * remade for post
 * kill while if too long*/
 //service=moodle_mobile_app&username=test&password=test@22G
 interface ApiRequests {
     @GET("/facts/random")
     fun getCatFacts(): Call<RandomCatFacts>
-
-    @GET("/login/token.php?service=moodle_mobile_app&username=fgghhh&password=ffdgdg")
-    fun tmpFun(): Call<LoginSuccess>
 
     @GET("/login/token.php")
     fun logIn(@Query("service") serviceName:String, @Query("username") userName:String , @Query("password") passWord:String ):Call<LoginSuccess>
