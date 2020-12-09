@@ -8,12 +8,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
-import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://cat-fact.herokuapp.com"
 const val MOODLE = "http://e.moevm.info"
-//const val MOODLE = "https://10.0.2.2:1010"
+// const val MOODLE = "https://10.0.2.2:1010"
 val TAG = "ApiActivity"
 // retrofit
 class ApiActivity {
@@ -55,7 +54,7 @@ class ApiActivity {
         return data
     }
 
-    public fun checkLogIn(serviceName:String, userName:String , passWord:String ): LoginSuccess?{
+    public fun checkLogIn(serviceName: String, userName: String, passWord: String): LoginSuccess? {
         var data: LoginSuccess? = null
         val api = Retrofit.Builder()
             .baseUrl(MOODLE)
@@ -63,7 +62,7 @@ class ApiActivity {
             .build()
             .create(ApiRequests::class.java)
 
-        Log.d(TAG, "before enter the global scope") //global scope - ассинхрон, корутина
+        Log.d(TAG, "before enter the global scope") // global scope - ассинхрон, корутина
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 Log.d(TAG, "enter the global scope")
@@ -72,7 +71,7 @@ class ApiActivity {
                     Log.i(TAG, "get response " + response.body())
 
                     data = response.body()!!
-                    //Log.d(TAG, data.toString())
+                    // Log.d(TAG, data.toString())
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {

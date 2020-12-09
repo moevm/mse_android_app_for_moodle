@@ -132,7 +132,7 @@ fun SignInContent(
             modifier = Modifier.focusRequester(focusRequester),
             onImeAction = {
 //                onSignInSubmitted(emailState.text, passwordState.text)
-                //todo add check here to!!!!
+                // todo add check here to!!!!
                 onSignInSubmitted(Screen.Home)
             }
         )
@@ -142,11 +142,11 @@ fun SignInContent(
                 val userName = emailState.text
                 val userPassword = passwordState.text
                 val data = apiclient.checkLogIn("moodle_mobile_app", userName, userPassword)
-                if(data?.token!= null){
-                    //todo toast
-                    Log.d(TAG, "you are welcome");
+                if (data?.token != null) {
+                    // todo toast
+                    Log.d(TAG, "you are welcome")
                     onSignInSubmitted(Screen.Home)
-                } else{
+                } else {
                     Log.d(TAG, data?.error.toString())
                 }
 //                onSignInSubmitted(emailState.text, passwordState.text)

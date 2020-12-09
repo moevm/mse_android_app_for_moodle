@@ -52,7 +52,7 @@ data class Status(
 
 data class LoginSuccess(
     val token: String,
-    val privatetoken:String,
+    val privatetoken: String,
     val error: String,
     val errorcode: String,
     val stacktrace: String,
