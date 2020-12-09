@@ -256,15 +256,12 @@ fun SignInContent(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
             onClick = {
-//                val user_name = emailState.text
-//                val user_password = passwordState.text
-                // only for test
-                val user_name = "---"
-                val user_password = "----"
+                val user_name = emailState.text
+                val user_password = passwordState.text
                 Log.d(TAG, "login = " + user_name + "\n password = "+ user_password)
 //                val data = getCurrentData()
-                val data = tmpTest()
-//                val data1 = checkLogIn("moodle_mobile_app", user_name, user_password)
+//                val data = tmpTest()
+                val data = checkLogIn("moodle_mobile_app", user_name, user_password)
                 Log.d(TAG, "in auth " + data.toString())
 //                Log.d(TAG, "in auth " + data1.toString())
 //                onSignInSubmitted(emailState.text, passwordState.text)

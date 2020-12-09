@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 
 private const val EMAIL_VALIDATION_REGEX =
 //    "^([A-Za-z0-9_\\-\\.])+\\@([A-Za-z0-9_\\-\\.])+\\.([A-Za-z]{2,4})\$"
-    "([A-Za-z]{2,15})\$"
+    "([A-Za-z0-9]{2,15})\$"
 
 class EmailState :
     TextFieldState(validator = ::isEmailValid, errorFor = ::emailValidationError)
