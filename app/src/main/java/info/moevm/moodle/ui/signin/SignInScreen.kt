@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui.signin
 
-import android.util.Log
 import androidx.compose.animation.animate
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
@@ -143,11 +142,15 @@ fun SignInContent(
                 val userPassword = passwordState.text
                 val data = apiclient.checkLogIn("moodle_mobile_app", userName, userPassword)
                 if (data?.token != null) {
-                    // todo toast
-                    Log.d(TAG, "you are welcome")
                     onSignInSubmitted(Screen.Home)
                 } else {
-                    Log.d(TAG, data?.error.toString())
+                    // TODO toast in alpha 0.8
+//                    val context = AmbientContext.current
+//                    Toast.makeText(
+//                        context,
+//                        "wrong login or password",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                 }
 //                onSignInSubmitted(emailState.text, passwordState.text)
             },
