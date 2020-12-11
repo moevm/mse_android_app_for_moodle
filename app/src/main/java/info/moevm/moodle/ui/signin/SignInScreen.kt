@@ -1,5 +1,7 @@
 package info.moevm.moodle.ui.signin
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.animate
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
@@ -12,6 +14,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +30,10 @@ import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
+}
+
+fun showMessage(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -116,7 +123,7 @@ fun SignInContent(
     onSignInSubmitted: (Screen) -> Unit
 ) {
     val apiclient = ApiActivity()
-
+    val context = ContextAmbient.current
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }
         val emailState = remember { EmailState() }
@@ -140,17 +147,17 @@ fun SignInContent(
             onClick = {
                 val userName = emailState.text
                 val userPassword = passwordState.text
-                val data = apiclient.checkLogIn("moodle_mobile_app", userName, userPassword)
-                if (data?.token != null) {
-                    onSignInSubmitted(Screen.Home)
-                } else {
-                    // TODO toast in alpha 0.8
-//                    val context = AmbientContext.current
-//                    Toast.makeText(
-//                        context,
-//                        "wrong login or password",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
+                val data = apiclient.checkLogIn(userName, userPassword)
+                when {
+                    data?.token != null -> {
+                        onSignInSubmitted(Screen.Home)
+                    }
+                    data?.error != null -> {
+                        showMessage(context, message = "wrong login or password")
+                    }
+                    else -> {
+                        showMessage(context, message = "network problems, check internet connection")
+                    }
                 }
 //                onSignInSubmitted(emailState.text, passwordState.text)
             },
