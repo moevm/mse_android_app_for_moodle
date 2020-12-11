@@ -13,10 +13,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 const val BASE_URL = "https://cat-fact.herokuapp.com"
 const val MOODLE = "http://e.moevm.info"
 // const val MOODLE = "https://10.0.2.2:1010"
-val TAG = "ApiActivity"
+const val TAG = "ApiActivity"
 class ApiActivity {
     // function to test work of retrofit
-    public fun getCurrentData(): RandomCatFacts? {
+    fun getCurrentData(): RandomCatFacts? {
         var data: RandomCatFacts? = null
         val api = Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -39,7 +39,7 @@ class ApiActivity {
         return data
     }
 
-    public fun checkLogIn(serviceName: String, userName: String, passWord: String): LoginSuccess? {
+    fun checkLogIn(serviceName: String, userName: String, passWord: String): LoginSuccess? {
         var data: LoginSuccess? = null
         val api = Retrofit.Builder()
             .baseUrl(MOODLE)
