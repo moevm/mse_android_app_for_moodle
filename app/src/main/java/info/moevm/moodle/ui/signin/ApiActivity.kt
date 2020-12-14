@@ -22,7 +22,7 @@ class ApiActivity {
         // global scope - ассинхрон, корутина
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                val response = api.logIn(APIVariables.MOODLE_MOBILE_APP.toString(), userName, passWord).execute()
+                val response = api.logIn(APIVariables.MOODLE_MOBILE_APP.value, userName, passWord).execute()
                 if (response.isSuccessful) {
                     data = response.body()!!
                 }
@@ -34,7 +34,7 @@ class ApiActivity {
         }
         val time = System.currentTimeMillis()
         while (data == null) {
-            if (System.currentTimeMillis() - time > 1000)
+            if (System.currentTimeMillis() - time > 2000)
                 break
         }
         return data
