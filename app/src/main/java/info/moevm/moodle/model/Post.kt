@@ -60,6 +60,46 @@ data class LoginSuccess(
     val reproductionlink: String
 )
 
+data class Course(
+    val id: Int,
+    val fullname: String,
+    val displayname: String,
+    val shortname: String,
+    val categoryid: Int,
+    val categoryname: String,
+    val sortorder: Int,
+    val summary: String,
+    val summaryformat: Int,
+    val summaryfiles: Array<String>,
+    val overviewfiles: Array<String>,
+    val contacts: Array<String>,
+    val enrollmentmethods: Array<String>,
+    val format: String,
+    val showgrades: Int,
+    val newsitems: Int,
+    val startdate: Int,
+    val enddate: Int,
+    val maxbytes: Int,
+    val showreports: Int,
+    val visible: Int,
+    val groupmode: Int,
+    val groupmodeforce: Int,
+    val defaultgroupingid: Int,
+    val enablecompletion: Int,
+    val completionnotify: Int,
+    val lang: String,
+    val theme: String,
+    val marker: Int
+    )
+data class CurrentCourse(
+    val id: Int,
+    val fullname: String,
+    val shortname: String,
+    val timemodified: Int,
+    val assignments: Array<String>
+)
+
+
 enum class MarkupType {
     Link,
     Code,

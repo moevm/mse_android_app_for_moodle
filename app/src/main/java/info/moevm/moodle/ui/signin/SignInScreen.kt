@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
+import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.signin.authorization.Email
 import info.moevm.moodle.ui.signin.authorization.EmailState
@@ -122,7 +123,7 @@ fun SignInContent(
 //    onSignInSubmitted: (email: String, password: String) -> Unit
     onSignInSubmitted: (Screen) -> Unit
 ) {
-    val apiclient = ApiActivity()
+    val apiclient = MoodleApi()
     val context = ContextAmbient.current
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }
@@ -132,6 +133,7 @@ fun SignInContent(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
 
         val passwordState = remember { PasswordState() }
+        var tokenState: String?
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
@@ -150,6 +152,7 @@ fun SignInContent(
                 val data = apiclient.checkLogIn(userName, userPassword)
                 when {
                     data?.token != null -> {
+                        tokenState = data.token
                         onSignInSubmitted(Screen.Home)
                     }
                     data?.error != null -> {

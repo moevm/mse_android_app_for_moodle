@@ -1,4 +1,4 @@
-package info.moevm.moodle.ui.signin
+package info.moevm.moodle.api
 
 import info.moevm.moodle.model.APIVariables
 import info.moevm.moodle.model.LoginSuccess
@@ -13,7 +13,7 @@ import timber.log.Timber
 const val MOODLE = "http://e.moevm.info"
 // const val MOODLE = "https://10.0.2.2:1010"
 
-class ApiActivity {
+class MoodleApi {
     fun checkLogIn(userName: String, passWord: String): LoginSuccess? {
         var data: LoginSuccess? = null
         val api = Retrofit.Builder()
