@@ -1,4 +1,4 @@
-package info.moevm.moodle.ui.signin
+package info.moevm.moodle.api
 
 import info.moevm.moodle.model.APIVariables
 import info.moevm.moodle.model.LoginSuccess
@@ -10,8 +10,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 
-class ApiActivity {
-    private val api: ApiRequests = Retrofit.Builder()
+class MoodleApi {
+    private val api = Retrofit.Builder()
         .baseUrl(APIVariables.MOODLE_URL.value)
         .addConverterFactory(GsonConverterFactory.create())
         .build()

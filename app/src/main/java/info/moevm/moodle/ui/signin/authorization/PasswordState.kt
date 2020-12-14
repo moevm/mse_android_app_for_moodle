@@ -2,6 +2,8 @@ package info.moevm.moodle.ui.signin.authorization
 
 import info.moevm.moodle.ui.signin.TextFieldState
 
+// private const val PASSWORD_VALIDATION_REGEX = "([A-Za-z0-9]{2,15})\$"
+
 class PasswordState :
     TextFieldState(validator = ::isPasswordValid, errorFor = ::passwordValidationError)
 
@@ -23,7 +25,8 @@ private fun passwordAndConfirmationValid(password: String, confirmedPassword: St
 }
 
 private fun isPasswordValid(password: String): Boolean {
-    return password.length > 3
+//    return Pattern.matches(PASSWORD_VALIDATION_REGEX, password)
+    return true
 }
 
 @Suppress("unused")
