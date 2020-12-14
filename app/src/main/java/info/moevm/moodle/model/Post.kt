@@ -90,7 +90,7 @@ data class Course(
     val lang: String,
     val theme: String,
     val marker: Int
-    )
+)
 data class CurrentCourse(
     val id: Int,
     val fullname: String,
@@ -98,7 +98,6 @@ data class CurrentCourse(
     val timemodified: Int,
     val assignments: Array<String>
 )
-
 
 enum class MarkupType {
     Link,

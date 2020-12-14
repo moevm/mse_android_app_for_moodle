@@ -14,5 +14,4 @@ interface ApiRequests {
     fun getCourses(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<Course>
     @GET("/webservice/rest/server.php")
     fun getCurrentCourses(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<CurrentCourse>
-
 }
