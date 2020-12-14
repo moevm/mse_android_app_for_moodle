@@ -10,17 +10,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 
-const val MOODLE = "http://e.moevm.info"
-// const val MOODLE = "https://10.0.2.2:1010"
-
 class ApiActivity {
+    private val api: ApiRequests = Retrofit.Builder()
+        .baseUrl(APIVariables.MOODLE_URL.value)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(ApiRequests::class.java)
+
     fun checkLogIn(userName: String, passWord: String): LoginSuccess? {
         var data: LoginSuccess? = null
-        val api = Retrofit.Builder()
-            .baseUrl(MOODLE)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiRequests::class.java)
         // global scope - ассинхрон, корутина
         GlobalScope.launch(Dispatchers.IO) {
             try {

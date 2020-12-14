@@ -78,6 +78,8 @@ enum class ParagraphType {
     Bullet,
 }
 
-enum class APIVariables(val service: String) {
-    MOODLE_MOBILE_APP("moodle_mobile_app")
+enum class APIVariables(var value: String) {
+    MOODLE_MOBILE_APP("moodle_mobile_app"),
+    MOODLE_URL("http://e.moevm.info")
+// const val MOODLE = "https://10.0.2.2:1010"   need for local server
 }
