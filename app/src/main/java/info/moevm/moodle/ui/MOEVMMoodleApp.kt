@@ -48,12 +48,7 @@ private fun AppContent(
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
-            NavHost(navController, startDestination = ScreenName.TOKEN_AUTH.name) {
-                composable(ScreenName.TOKEN_AUTH.name) {
-                    TokenAuthScreen(
-                        navigateTo = actions.select
-                    )
-                }
+            NavHost(navController, startDestination = ScreenName.SIGN_IN.name) {
                 composable(ScreenName.SIGN_IN.name) {
                     SignInScreen(
                         navigateTo = actions.select

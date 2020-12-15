@@ -1,7 +1,9 @@
 package info.moevm.moodle.ui.signin
 
 import androidx.compose.animation.animate
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.Text
@@ -9,11 +11,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,19 +53,20 @@ fun SignInScreen(
     currentOffsetHolder.value = animate(
         if (showBranding) 0f else -brandingBottom
     )
-    val heightDp = with(DensityAmbient.current) { heightWithBranding.toDp() }
+    val heightDp = with(AmbientDensity.current) { heightWithBranding.toDp() }
 
     Scaffold(
         topBar = {
             SignInSignUpTopAppBar(
                 topAppBarText = stringResource(id = R.string.sign_in),
+                onSetupTouch = navigateTo
             )
         },
         bodyContent = {
             Column(
                 modifier = Modifier.fillMaxWidth()
                     .brandingPreferredHeight(showBranding, heightDp)
-                    .offsetPx(y = currentOffsetHolder)
+                    .offset({ mutableStateOf(0f).value }, { currentOffsetHolder.value })
                     .onSizeChanged {
                         if (showBranding) {
                             heightWithBranding = it.height
@@ -77,6 +85,7 @@ fun SignInScreen(
                 ) {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         SignInContent(
+                            // TODO: check correction of login key
 //                            onSignInSubmitted = { email, password ->
 //                                SignInEvent.SignIn(email, password)
 //                            }
@@ -93,7 +102,11 @@ fun SignInScreen(
  * Just "Sign In" text on the top bar of the app
  */
 @Composable
-fun SignInSignUpTopAppBar(topAppBarText: String) {
+fun SignInSignUpTopAppBar(
+    topAppBarText: String,
+    onSetupTouch: (Screen) -> Unit
+) {
+    val image = vectorResource(id = R.drawable.settings)
     TopAppBar(
         title = {
             Text(
@@ -103,6 +116,15 @@ fun SignInSignUpTopAppBar(topAppBarText: String) {
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center)
             )
+            Button(
+                onClick = {
+                    onSetupTouch(Screen.EnterSetup)
+                }
+            ) {
+                Row {
+                    Image(imageVector = image)
+                }
+            }
         },
         backgroundColor = MaterialTheme.colors.surface,
         elevation = 0.dp
