@@ -11,8 +11,8 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.ui.ThemedPreview
 
 @Composable
@@ -31,12 +31,9 @@ fun SelectTopicButton(
         shape = CircleShape,
         modifier = modifier.preferredSize(36.dp, 36.dp)
     ) {
-        Providers(
-            AmbientContentAlpha provides ContentAlpha.high,
-            children = {
-                Icon(icon)
-            }
-        )
+        Providers(AmbientContentAlpha provides ContentAlpha.high) {
+            Icon(icon)
+        }
     }
 }
 

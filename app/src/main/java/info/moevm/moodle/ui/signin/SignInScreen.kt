@@ -20,11 +20,8 @@ import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.model.LoginSuccess

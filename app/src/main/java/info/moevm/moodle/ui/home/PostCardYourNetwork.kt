@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
 import info.moevm.moodle.data.posts.impl.post1
 import info.moevm.moodle.model.Post
@@ -32,7 +32,7 @@ fun PostCardPopular(
         Column(modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })) {
             val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
             Image(
-                asset = image,
+                bitmap = image,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .preferredHeight(100.dp)
@@ -40,33 +40,29 @@ fun PostCardPopular(
             )
             Column(modifier = Modifier.padding(16.dp)) {
                 val emphasisLevels = AmbientContentAlpha.current
+                Providers(AmbientContentAlpha provides ContentAlpha.high) {
+                    Text(
+                        text = post.title,
+                        style = MaterialTheme.typography.h6,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = post.metadata.author.name,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.body2
+                    )
+                }
                 Providers(
-                    AmbientContentAlpha provides ContentAlpha.high,
-                    children = {
-                        Text(
-                            text = post.title,
-                            style = MaterialTheme.typography.h6,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Text(
-                            text = post.metadata.author.name,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.body2
-                        )
-                    }
-                )
-                Providers(
-                    AmbientContentAlpha provides ContentAlpha.high,
-                    children = {
-                        Text(
-                            text = "${post.metadata.date} - " +
-                                "${post.metadata.hoursToPass}h to pass",
-                            style = MaterialTheme.typography.body2
-                        )
-                    }
-                )
+                    AmbientContentAlpha provides ContentAlpha.high
+                ) {
+                    Text(
+                        text = "${post.metadata.date} - " +
+                            "${post.metadata.hoursToPass}h to pass",
+                        style = MaterialTheme.typography.body2
+                    )
+                }
             }
         }
     }

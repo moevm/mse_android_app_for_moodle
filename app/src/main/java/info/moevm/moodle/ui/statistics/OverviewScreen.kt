@@ -81,7 +81,7 @@ fun OverviewScreen(
         }
     ) { innerPadding ->
         Box(Modifier.padding(innerPadding)) {
-            currentScreen.content(onScreenChange = { screen -> currentScreen = screen })
+            currentScreen.Content(onScreenChange = { screen -> currentScreen = screen })
         }
     }
 }
@@ -165,15 +165,14 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Providers(
-            AmbientContentAlpha provides ContentAlpha.high,
-            children = {
-                Text(
-                    text = stringResource(R.string.alert),
-                    style = MaterialTheme.typography.subtitle2,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
-        )
+            AmbientContentAlpha provides ContentAlpha.high
+        ) {
+            Text(
+                text = stringResource(R.string.alert),
+                style = MaterialTheme.typography.subtitle2,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        }
         TextButton(
             onClick = onClickSeeAll,
             contentPadding = PaddingValues(0.dp),
@@ -194,21 +193,20 @@ private fun AlertItem(message: String) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Providers(
-            AmbientContentAlpha provides ContentAlpha.high,
-            children = {
-                Text(
-                    style = MaterialTheme.typography.body2,
-                    modifier = Modifier.weight(1f),
-                    text = message
-                )
-                IconButton(
-                    onClick = {},
-                    modifier = Modifier.align(Alignment.Top)
-                ) {
-                    Icon(Icons.Filled.Sort)
-                }
+            AmbientContentAlpha provides ContentAlpha.high
+        ) {
+            Text(
+                style = MaterialTheme.typography.body2,
+                modifier = Modifier.weight(1f),
+                text = message
+            )
+            IconButton(
+                onClick = {},
+                modifier = Modifier.align(Alignment.Top)
+            ) {
+                Icon(Icons.Filled.Sort)
             }
-        )
+        }
     }
 }
 

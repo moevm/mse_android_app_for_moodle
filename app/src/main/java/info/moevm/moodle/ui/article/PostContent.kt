@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
@@ -30,10 +30,10 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextIndent
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
 import info.moevm.moodle.data.posts.impl.post3
 import info.moevm.moodle.model.*
@@ -51,16 +51,13 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
         Text(text = post.title, style = MaterialTheme.typography.h4)
         Spacer(Modifier.preferredHeight(8.dp))
         post.subtitle?.let { subtitle ->
-            Providers(
-                AmbientContentAlpha provides ContentAlpha.high,
-                children = {
-                    Text(
-                        text = subtitle,
-                        lineHeight = 20.sp,
-                        style = MaterialTheme.typography.body2
-                    )
-                }
-            )
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.body2,
+                    lineHeight = 20.sp
+                )
+            }
             Spacer(Modifier.preferredHeight(defaultSpacerSize))
         }
         PostMetadata(post.metadata)
@@ -87,32 +84,24 @@ private fun PostMetadata(metadata: Metadata) {
     val typography = MaterialTheme.typography
     Row {
         Image(
-            asset = Icons.Filled.AccountCircle,
+            imageVector = Icons.Filled.AccountCircle,
             modifier = Modifier.preferredSize(40.dp),
             colorFilter = ColorFilter.tint(AmbientContentColor.current),
             contentScale = ContentScale.Fit
         )
         Spacer(Modifier.preferredWidth(8.dp))
         Column {
-            Providers(
-                AmbientContentAlpha provides ContentAlpha.high,
-                children = {
-                    Text(
-                        text = metadata.author.name,
-                        style = typography.caption,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
+            Text(
+                text = metadata.author.name,
+                style = typography.caption,
+                modifier = Modifier.padding(top = 4.dp)
             )
-            Providers(
-                AmbientContentAlpha provides ContentAlpha.high,
-                children = {
-                    Text(
-                        text = "${metadata.date} • ${metadata.hoursToPass} ${stringResource(R.string.hours_to_pass)}",
-                        style = typography.caption
-                    )
-                }
-            )
+            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+                Text(
+                    text = "${metadata.date} • ${metadata.hoursToPass} ${stringResource(R.string.hours_to_pass)}",
+                    style = typography.caption
+                )
+            }
         }
     }
 }
@@ -187,7 +176,7 @@ private fun BulletParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Row {
-        with(DensityAmbient.current) {
+        with(AmbientDensity.current) {
             // this box is acting as a character, so it's sized with font scaling (sp)
             Box(
                 modifier = Modifier
