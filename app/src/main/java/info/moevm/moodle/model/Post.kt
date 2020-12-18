@@ -51,13 +51,13 @@ data class Status(
 )
 
 data class LoginSuccess(
-    val token: String,
-    val privatetoken: String,
-    val error: String,
-    val errorcode: String,
-    val stacktrace: String,
-    val debuginfo: String,
-    val reproductionlink: String
+    val token: String? = null,
+    val privatetoken: String? = null,
+    val error: String? = null,
+    val errorcode: String? = null,
+    val stacktrace: String? = null,
+    val debuginfo: String? = null,
+    val reproductionlink: String? = null
 )
 
 data class Course(

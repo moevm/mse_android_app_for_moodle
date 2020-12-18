@@ -1,6 +1,8 @@
 package info.moevm.moodle.ui.signin
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.widget.Toast
 import androidx.compose.animation.animate
 import androidx.compose.foundation.ScrollableColumn
@@ -19,9 +21,13 @@ import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.ui.tooling.preview.Preview
 import info.moevm.moodle.R
 import info.moevm.moodle.api.MoodleApi
+import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.signin.authorization.Email
 import info.moevm.moodle.ui.signin.authorization.EmailState
@@ -33,8 +39,8 @@ sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
 }
 
-fun showMessage(context: Context, message: String) {
-    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+fun showMessage(context: Context, message: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(context, message, duration).show()
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -123,8 +129,25 @@ fun SignInContent(
 //    onSignInSubmitted: (email: String, password: String) -> Unit
     onSignInSubmitted: (Screen) -> Unit
 ) {
+
+    fun Context.lifecycleOwner(): LifecycleOwner? {
+        var curContext = this
+        var maxDepth = 20
+        while (maxDepth-- > 0 && curContext !is LifecycleOwner) {
+            curContext = (curContext as ContextWrapper).baseContext
+        }
+        return if (curContext is LifecycleOwner) {
+            curContext
+        } else {
+            null
+        }
+    }
+
     val apiclient = MoodleApi()
     val context = ContextAmbient.current
+    val lifeSO = context.lifecycleOwner()
+
+    ContextAmbient.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }
         val emailState = remember { EmailState() }
@@ -149,20 +172,26 @@ fun SignInContent(
             onClick = {
                 val userName = emailState.text
                 val userPassword = passwordState.text
-                val data = apiclient.checkLogIn(userName, userPassword)
-                when {
-                    data?.token != null -> {
-                        tokenState = data.token
-                        onSignInSubmitted(Screen.Home)
+                val data: LiveData<LoginSuccess>?
+                data = apiclient.checkLogIn(userName, userPassword)
+                data.observe(
+                    lifeSO!!,
+                    Observer {
+                        when {
+                            data.value?.token != null -> {
+                                tokenState = data.value?.token
+                                onSignInSubmitted(Screen.Home)
+                            }
+                            data.value?.error != null -> {
+                                showMessage(context, message = "wrong login or password")
+                            }
+                            else -> {
+                                showMessage(context, message = "network problems, check internet connection")
+                            }
+                        }
                     }
-                    data?.error != null -> {
-                        showMessage(context, message = "wrong login or password")
-                    }
-                    else -> {
-                        showMessage(context, message = "network problems, check internet connection")
-                    }
-                }
-//                onSignInSubmitted(emailState.text, passwordState.text)
+                )
+                showMessage(context, "checking...", 5000)
             },
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
             enabled = emailState.isValid && passwordState.isValid
