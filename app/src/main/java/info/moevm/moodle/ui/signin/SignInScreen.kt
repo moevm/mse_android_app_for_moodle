@@ -184,10 +184,10 @@ fun SignInContent(
                                 onSignInSubmitted(Screen.Home)
                             }
                             data.value?.error != null -> {
-                                showMessage(context, message = "wrong login or password")
+                                showMessage(context, message = context.resources.getString(R.string.wrong_login))
                             }
                             else -> {
-                                showMessage(context, message = "network problems, check internet connection")
+                                showMessage(context, message = context.resources.getString(R.string.network_problems))
                             }
                         }
                     }
