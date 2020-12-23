@@ -30,7 +30,6 @@ import info.moevm.moodle.data.courses.impl.FakeCoursesRepository
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.ThemedPreview
-import info.moevm.moodle.utils.Filler
 import info.moevm.moodle.utils.produceUiState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -458,7 +457,6 @@ private fun loadFakePeople(): List<String> {
     val people = runBlocking {
         FakeCoursesRepository().getPeople()
     }
-
 
     return (people as Result.Success).data
 }

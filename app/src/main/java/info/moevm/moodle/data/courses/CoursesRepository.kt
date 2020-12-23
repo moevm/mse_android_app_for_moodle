@@ -1,6 +1,5 @@
 package info.moevm.moodle.data.courses
 
-import androidx.compose.runtime.Composable
 import info.moevm.moodle.data.Result
 import kotlinx.coroutines.flow.Flow
 

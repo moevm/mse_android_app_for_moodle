@@ -1,15 +1,10 @@
 package info.moevm.moodle.data.courses.impl
 
-import android.service.controls.ControlsProviderService.TAG
-import android.util.Log
-import androidx.lifecycle.LiveData
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.courses.TopicSelection
-import info.moevm.moodle.model.APIVariables
-import info.moevm.moodle.model.CurrentCourses
 import info.moevm.moodle.utils.addOrRemove
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -76,16 +71,16 @@ class FakeCoursesRepository : CoursesRepository {
 
     override suspend fun getPeople(): Result<List<String>> {
         val apiclient = MoodleApi()
-        //val data: LiveData<CurrentCourses>?
+        // val data: LiveData<CurrentCourses>?
         val data = apiclient.getCurrentCourses("bdb63ddf3497ad850020d3482c87fbde")
         System.out.println(data)
 
         val coursesList = data?.courses?.toMutableList()
         System.out.println(coursesList)
-        val topicList : MutableList<String> = ArrayList()
+        val topicList: MutableList<String> = ArrayList()
 
         if (coursesList != null) {
-            for(i in coursesList){
+            for (i in coursesList) {
                 topicList.add(i.fullname.toString())
             }
         }
