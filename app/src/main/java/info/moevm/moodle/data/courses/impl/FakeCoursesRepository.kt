@@ -1,17 +1,19 @@
-// reference: https://github.com/android/compose-samples
-
 package info.moevm.moodle.data.courses.impl
 
+import androidx.lifecycle.LiveData
+import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.courses.TopicSelection
+import info.moevm.moodle.model.CurrentCourses
 import info.moevm.moodle.utils.addOrRemove
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import java.util.ArrayList
 
 /**
  * Implementation of InterestRepository that returns a hardcoded list of
@@ -28,7 +30,7 @@ class FakeCoursesRepository : CoursesRepository {
         )
     }
 
-    private val people by lazy {
+    private val currentTopics by lazy {
         listOf(
             "Kobalt Toral",
             "K'Kola Uvarek",
@@ -65,11 +67,24 @@ class FakeCoursesRepository : CoursesRepository {
     private val mutex = Mutex()
 
     override suspend fun getTopics(): Result<CoursesMap> {
+
+
         return Result.Success(topics)
     }
 
     override suspend fun getPeople(): Result<List<String>> {
-        return Result.Success(people)
+        val apiclient = MoodleApi()
+        val data: LiveData<CurrentCourses>?
+        data = apiclient.getCurrentCourses("bdb63ddf3497ad850020d3482c87fbde")
+        val coursesList = data.value?.courses?.toMutableList()
+        val topicList : MutableList<String> = ArrayList()
+        if (coursesList != null) {
+            for(i in coursesList){
+                topicList.add(i.fullname.toString())
+            }
+        }
+
+        return Result.Success(topicList)
     }
 
     override suspend fun getPublications(): Result<List<String>> {

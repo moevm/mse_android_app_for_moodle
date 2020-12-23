@@ -191,8 +191,6 @@ data class Course(
     val cacherev: Int? = null,
     val filters: Array<Filter>? = null,
     val courseformatoptions: Array<CourseFormatOption>? = null
-
-
 )
 
 data class Courses(
