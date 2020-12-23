@@ -60,8 +60,7 @@ data class LoginSuccess(
     val reproductionlink: String? = null
 )
 
-data class  File
-(
+data class File(
     val filename: String? = null,
     val filepath: String? = null,
     val filesize: Int? = null,
@@ -191,7 +190,6 @@ data class Course(
     val cacherev: Int? = null,
     val filters: Array<Filter>? = null,
     val courseformatoptions: Array<CourseFormatOption>? = null
-
 
 )
 
