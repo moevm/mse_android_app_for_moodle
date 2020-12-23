@@ -1,6 +1,5 @@
 package info.moevm.moodle.api
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import info.moevm.moodle.model.*
@@ -35,8 +34,8 @@ class MoodleApi {
                 ) {
                     val res = response.body()
                     if (response.code() == 200 && res != null) {
-                        data.value = res;
-                        System.out.println(data.value);
+                        data.value = res
+                        System.out.println(data.value)
                     } else {
                         data.value = null
                     }
@@ -59,8 +58,8 @@ class MoodleApi {
                 ) {
                     val res = response.body()
                     if (response.code() == 200 && res != null) {
-                        data.value = res;
-                        System.out.println(data.value);
+                        data.value = res
+                        System.out.println(data.value)
                     } else {
                         data.value = null
                     }
@@ -82,8 +81,8 @@ class MoodleApi {
                 ) {
                     val res = response.body()
                     if (response.code() == 200 && res != null) {
-                        data.value = res;
-                        System.out.println(data.value);
+                        data.value = res
+                        System.out.println(data.value)
                     } else {
                         data.value = null
                     }

@@ -97,8 +97,8 @@ fun SettingsContent(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Switch(
             checked = false,
-            onCheckedChange = {  },
-            //colors = defaultColors{Color.Black, Color.Black, 0.54f, Color.LTGRAY, Color.LTGRAY, 0.38f, }
+            onCheckedChange = { },
+            // colors = defaultColors{Color.Black, Color.Black, 0.54f, Color.LTGRAY, Color.LTGRAY, 0.38f, }
 
         )
         Spacer(modifier = Modifier.preferredHeight(16.dp))

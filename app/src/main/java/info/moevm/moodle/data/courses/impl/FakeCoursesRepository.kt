@@ -68,7 +68,6 @@ class FakeCoursesRepository : CoursesRepository {
 
     override suspend fun getTopics(): Result<CoursesMap> {
 
-
         return Result.Success(topics)
     }
 
@@ -77,9 +76,9 @@ class FakeCoursesRepository : CoursesRepository {
         val data: LiveData<CurrentCourses>?
         data = apiclient.getCurrentCourses("bdb63ddf3497ad850020d3482c87fbde")
         val coursesList = data.value?.courses?.toMutableList()
-        val topicList : MutableList<String> = ArrayList()
+        val topicList: MutableList<String> = ArrayList()
         if (coursesList != null) {
-            for(i in coursesList){
+            for (i in coursesList) {
                 topicList.add(i.fullname.toString())
             }
         }
