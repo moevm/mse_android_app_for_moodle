@@ -15,13 +15,13 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 class UserPreferencesRepository(context: Context) {
-//TODO dipatcher
+    //TODO dipatcher
     //TODO in sign in use COURUTINES
-    private val dataStore:DataStore<Preferences> = context.createDataStore(
+    private val dataStore: DataStore<Preferences> = context.createDataStore(
         name = APIVariables.USER_PREFERENCES_NAME.value
     )
 
-//    object UserScheme {
+    //    object UserScheme {
     companion object {
         val FIELD_LOGIN = preferencesKey<String>("login")
         val FIELD_PASSWORD = preferencesKey<String>("password")
@@ -41,31 +41,14 @@ class UserPreferencesRepository(context: Context) {
             preferences[FIELD_PASSWORD] = password
             preferences[FIELD_TOKEN] = token
         }
-    //TODO add in courutin
+        //TODO add in courutin
     }
 
     val tokenFlow: Flow<String> = dataStore.data.map {
-        val tok = it[FIELD_TOKEN] ?:""
-        Toast.makeText(context, "get "+tok, Toast.LENGTH_SHORT).show()
+        val tok = it[FIELD_TOKEN] ?: ""
+        Toast.makeText(context, "get " + tok, Toast.LENGTH_SHORT).show()
         tok
     }
-
-//    suspend fun getTokenFlow(): Flow<String> {
-//        return dataStore.data
-//            .catch { exception ->
-//                if (exception is IOException) {
-//                    emit(emptyPreferences())
-//                } else {
-//                    throw exception
-//                }
-//            }
-//            .map {
-//                it[FIELD_LOGIN] ?: ""
-//            }
-//    }
-//        .map { preferences ->
-//            preferences[FIELD_TOKEN] ?: ""
-//        }
 
 }
 
