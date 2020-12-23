@@ -15,8 +15,6 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 class DataStoreUser(context: Context) {
-    //TODO dipatcher
-    //TODO in sign in use COURUTINES
     private val dataStore: DataStore<Preferences> = context.createDataStore(
         name = APIVariables.USER_PREFERENCES_NAME.value
     )
@@ -41,7 +39,6 @@ class DataStoreUser(context: Context) {
             preferences[FIELD_PASSWORD] = password
             preferences[FIELD_TOKEN] = token
         }
-        //TODO add in courutin
     }
 
     val tokenFlow: Flow<String> = dataStore.data.map {
