@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-class UserPreferencesRepository(context: Context) {
+class DataStoreUser(context: Context) {
     //TODO dipatcher
     //TODO in sign in use COURUTINES
     private val dataStore: DataStore<Preferences> = context.createDataStore(
@@ -46,7 +46,6 @@ class UserPreferencesRepository(context: Context) {
 
     val tokenFlow: Flow<String> = dataStore.data.map {
         val tok = it[FIELD_TOKEN] ?: ""
-        Toast.makeText(context, "get " + tok, Toast.LENGTH_SHORT).show()
         tok
     }
 

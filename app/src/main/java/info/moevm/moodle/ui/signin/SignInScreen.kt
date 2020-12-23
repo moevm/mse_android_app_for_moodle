@@ -3,7 +3,6 @@ package info.moevm.moodle.ui.signin
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.animate
 import androidx.compose.foundation.ScrollableColumn
@@ -24,17 +23,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.preferencesKey
-import androidx.datastore.preferences.createDataStore
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import info.moevm.moodle.R
 import info.moevm.moodle.api.MoodleApi
-import info.moevm.moodle.api.UserPreferencesRepository
-import info.moevm.moodle.model.APIVariables
+import info.moevm.moodle.api.DataStoreUser
 import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.signin.authorization.Email
@@ -43,11 +38,7 @@ import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
@@ -160,7 +151,7 @@ fun SignInContent(
     val apiclient = MoodleApi()
     val context = AmbientContext.current
     val lifeSO = context.lifecycleOwner()
-    val dataStore = UserPreferencesRepository(context)
+    val dataStore = DataStoreUser(context)
     var tokenState: String
 
     fun checkLogIn(){
