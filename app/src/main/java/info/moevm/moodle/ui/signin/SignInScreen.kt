@@ -161,40 +161,20 @@ fun SignInContent(
     val context = AmbientContext.current
     val lifeSO = context.lifecycleOwner()
     val dataStore = UserPreferencesRepository(context)
-    var tokenState: String = ""
-//
-//    val job = GlobalScope.launch {
-//        val flow_token = dataStore.getTokenFlow()
-//        flow_token.collect(){
-//
-//        }
-//        // TODO if
-////        val fgg:Flow<>
-////        dataStore.getTokenFlow.asLiveData().observe(lifeSO!!){
-////            token -> tokenState = token
-////        }
-////        dataStore.getTokenFlow().collect{
-//////            value->
-//////            tokenState = value;
-////            showMessage(context, "Username is $it");
-////        }
-//
-//
-////        Log.d("DATASTORE", "get token: " + tokenState)
-//    }
-//    job.join()
-//    dataStore.getTokenFlow()
-    fun observeData(){
+    var tokenState: String
+
+    fun checkLogIn(){
         dataStore.tokenFlow.asLiveData().observe(lifeSO!!,{
             tokenState = it
+            if (tokenState!= ""){
+                showMessage(context, "already login")
+                onSignInSubmitted(Screen.Home)
+            }
+
         })
-        if (tokenState!= ""){
-            showMessage(context, "already ligin")
-        }else{
-            showMessage(context, "need auth")
-        }
     }
-    observeData()
+    //
+    checkLogIn()
 
     AmbientContext.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -231,7 +211,6 @@ fun SignInContent(
                                 GlobalScope.launch {
                                     // TODO if
                                     dataStore.addUser(userName,userPassword, tokenState)
-                                    Log.d("DATASTORE", "saved i believed")
                                 }
                                 onSignInSubmitted(Screen.Home)
 
