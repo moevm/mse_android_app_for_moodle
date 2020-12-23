@@ -24,11 +24,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import info.moevm.moodle.R
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.api.UserPreferencesRepository
@@ -41,6 +43,9 @@ import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -156,12 +161,41 @@ fun SignInContent(
     val context = AmbientContext.current
     val lifeSO = context.lifecycleOwner()
     val dataStore = UserPreferencesRepository(context)
-    var tokenState: String
-    GlobalScope.launch {
-        // TODO if
-        tokenState = dataStore.getToken().toString()
-        Log.d("DATASTORE", "get token: " + tokenState)
+    var tokenState: String = ""
+//
+//    val job = GlobalScope.launch {
+//        val flow_token = dataStore.getTokenFlow()
+//        flow_token.collect(){
+//
+//        }
+//        // TODO if
+////        val fgg:Flow<>
+////        dataStore.getTokenFlow.asLiveData().observe(lifeSO!!){
+////            token -> tokenState = token
+////        }
+////        dataStore.getTokenFlow().collect{
+//////            value->
+//////            tokenState = value;
+////            showMessage(context, "Username is $it");
+////        }
+//
+//
+////        Log.d("DATASTORE", "get token: " + tokenState)
+//    }
+//    job.join()
+//    dataStore.getTokenFlow()
+    fun observeData(){
+        dataStore.tokenFlow.asLiveData().observe(lifeSO!!,{
+            tokenState = it
+        })
+        if (tokenState!= ""){
+            showMessage(context, "already ligin")
+        }else{
+            showMessage(context, "need auth")
+        }
     }
+    observeData()
+
     AmbientContext.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }

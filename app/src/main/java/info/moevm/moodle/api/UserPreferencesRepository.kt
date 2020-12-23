@@ -1,28 +1,28 @@
 package info.moevm.moodle.api
 
 import android.content.Context
+import android.widget.Toast
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.preferencesKey
-import androidx.datastore.preferences.core.preferencesOf
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.createDataStore
-import info.moevm.moodle.api.UserPreferencesRepository.UserScheme.FIELD_LOGIN
-import info.moevm.moodle.api.UserPreferencesRepository.UserScheme.FIELD_PASSWORD
-import info.moevm.moodle.api.UserPreferencesRepository.UserScheme.FIELD_TOKEN
+//import info.moevm.moodle.api.UserPreferencesRepository.UserScheme.FIELD_LOGIN
+//import info.moevm.moodle.api.UserPreferencesRepository.UserScheme.FIELD_PASSWORD
+//import info.moevm.moodle.api.UserPreferencesRepository.UserScheme.FIELD_TOKEN
 import info.moevm.moodle.model.APIVariables
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import java.io.IOException
 
 class UserPreferencesRepository(context: Context) {
 //TODO dipatcher
     //TODO in sign in use COURUTINES
-    private val dataStore: DataStore<Preferences> = context.createDataStore(
+    private val dataStore:DataStore<Preferences> = context.createDataStore(
         name = APIVariables.USER_PREFERENCES_NAME.value
     )
 
-    object UserScheme {
+//    object UserScheme {
+    companion object {
         val FIELD_LOGIN = preferencesKey<String>("login")
         val FIELD_PASSWORD = preferencesKey<String>("password")
         val FIELD_TOKEN = preferencesKey<String>("token")
@@ -41,20 +41,32 @@ class UserPreferencesRepository(context: Context) {
             preferences[FIELD_PASSWORD] = password
             preferences[FIELD_TOKEN] = token
         }
-
+    //TODO add in courutin
     }
 
-    fun getToken(): Flow<String> {
-        val token: Flow<String> = dataStore.data
-            .catch {
-                throw it
-            }
-            .map {
-                preferences->
-                preferences[FIELD_TOKEN]?:""
-            }
-        return token
+    val tokenFlow: Flow<String> = dataStore.data.map {
+        val tok = it[FIELD_TOKEN] ?:""
+        Toast.makeText(context, "get "+tok, Toast.LENGTH_SHORT).show()
+        tok
     }
+
+//    suspend fun getTokenFlow(): Flow<String> {
+//        return dataStore.data
+//            .catch { exception ->
+//                if (exception is IOException) {
+//                    emit(emptyPreferences())
+//                } else {
+//                    throw exception
+//                }
+//            }
+//            .map {
+//                it[FIELD_LOGIN] ?: ""
+//            }
+//    }
+//        .map { preferences ->
+//            preferences[FIELD_TOKEN] ?: ""
+//        }
+
 }
 
 
