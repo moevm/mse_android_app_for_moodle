@@ -3,6 +3,7 @@ package info.moevm.moodle.ui.signin
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.animate
 import androidx.compose.foundation.ScrollableColumn
@@ -23,11 +24,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.preferencesKey
+import androidx.datastore.preferences.createDataStore
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import info.moevm.moodle.R
 import info.moevm.moodle.api.MoodleApi
+import info.moevm.moodle.api.UserPreferencesRepository
+import info.moevm.moodle.model.APIVariables
 import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.signin.authorization.Email
@@ -35,6 +40,9 @@ import info.moevm.moodle.ui.signin.authorization.EmailState
 import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
@@ -147,7 +155,13 @@ fun SignInContent(
     val apiclient = MoodleApi()
     val context = AmbientContext.current
     val lifeSO = context.lifecycleOwner()
-
+    val dataStore = UserPreferencesRepository(context)
+    var tokenState: String
+    GlobalScope.launch {
+        // TODO if
+        tokenState = dataStore.getToken().toString()
+        Log.d("DATASTORE", "get token: " + tokenState)
+    }
     AmbientContext.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }
@@ -157,7 +171,6 @@ fun SignInContent(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
 
         val passwordState = remember { PasswordState() }
-        var tokenState: String?
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
@@ -180,8 +193,14 @@ fun SignInContent(
                     Observer {
                         when {
                             data.value?.token != null -> {
-                                tokenState = data.value?.token
+                                tokenState = data.value?.token!!
+                                GlobalScope.launch {
+                                    // TODO if
+                                    dataStore.addUser(userName,userPassword, tokenState)
+                                    Log.d("DATASTORE", "saved i believed")
+                                }
                                 onSignInSubmitted(Screen.Home)
+
                             }
                             data.value?.error != null -> {
                                 showMessage(context, message = context.resources.getString(R.string.wrong_login))

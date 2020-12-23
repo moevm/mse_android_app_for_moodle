@@ -116,9 +116,10 @@ enum class ParagraphType {
     Quote,
     Bullet,
 }
-
+// /data/user/0/info.moevm.moodle/files/datastore/user_data_store.preferences_pb
 enum class APIVariables(var value: String) {
     MOODLE_MOBILE_APP("moodle_mobile_app"),
-    MOODLE_URL("http://e.moevm.info")
+    MOODLE_URL("http://e.moevm.info"),
+    USER_PREFERENCES_NAME("user_data_store")
 // const val MOODLE = "https://10.0.2.2:1010"   need for local server
 }
