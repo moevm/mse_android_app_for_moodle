@@ -1,5 +1,7 @@
 package info.moevm.moodle.ui.interests
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
@@ -16,13 +18,15 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
 import info.moevm.moodle.R
-// import info.moevm.moodle.api.DataStoreUser                  TODO раскомить
+//import info.moevm.moodle.api.DataStoreUser                  TODO раскомить
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.data.courses.CoursesRepository
