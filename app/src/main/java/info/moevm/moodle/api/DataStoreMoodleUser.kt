@@ -39,6 +39,14 @@ class DataStoreMoodleUser(context: Context) {
         return dataStore.data.map { it[FIELD_FULL_NAME] ?: "" }.first()
     }
 
+    suspend fun getCityCurrent(): String {
+        return dataStore.data.map { it[FIELD_CITY] ?: "" }.first()
+    }
+
+    suspend fun getCountryCurrent(): String {
+        return dataStore.data.map { it[FIELD_COUNTRY] ?: "" }.first()
+    }
+
     val fullNameFlow: Flow<String> = dataStore.data.map {
         val fn = it[FIELD_FULL_NAME] ?: ""
         fn

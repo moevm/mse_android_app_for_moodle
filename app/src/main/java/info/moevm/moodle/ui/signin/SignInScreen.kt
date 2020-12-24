@@ -219,11 +219,11 @@ fun SignInContent(
                 Timber.tag("GET_user_info").i("GET value from Moodle: value: ${answ.value}")
                 val moodleProfile = answ.value?.get(0)
                     ?: MoodleUser(
-                    0, context.resources.getString(R.string.user_name_placeholder),
-                    context.resources.getString(R.string.user_img_placeholder),
-                    context.resources.getString(R.string.user_city_placeholder),
-                    context.resources.getString(R.string.user_country_placeholder)
-                )
+                        0, context.resources.getString(R.string.user_name_placeholder),
+                        context.resources.getString(R.string.user_img_placeholder),
+                        context.resources.getString(R.string.user_city_placeholder),
+                        context.resources.getString(R.string.user_country_placeholder)
+                    )
                 GlobalScope.launch(Dispatchers.Main) {
                     moodleProfileDataStore.addMoodleUser(
                         moodleProfile.id,

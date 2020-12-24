@@ -56,10 +56,14 @@ private fun AppContent(
     val moodleProfileDataStore = DataStoreMoodleUser(lifeSO)
 
     val fullNameMoodleUser: String
+    val cityMoodleUser: String
+    val countryMoodleUser: String
 
     runBlocking {
         withContext(Dispatchers.IO) {
             fullNameMoodleUser = moodleProfileDataStore.getFullNameCurrent()
+            cityMoodleUser = moodleProfileDataStore.getCityCurrent()
+            countryMoodleUser = moodleProfileDataStore.getCountryCurrent()
         }
     }
 
@@ -87,7 +91,9 @@ private fun AppContent(
                     UserScreen(
                         navigateTo = actions.select,
                         scaffoldState = scaffoldState,
-                        fullNameMoodleProfile = fullNameMoodleUser
+                        fullNameMoodleProfile = fullNameMoodleUser,
+                        cityMoodleProfile = cityMoodleUser,
+                        countryMoodleProfile = countryMoodleUser
                     )
                 }
                 composable(ScreenName.INTERESTS.name) {

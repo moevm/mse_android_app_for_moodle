@@ -27,6 +27,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun UserScreen(
     fullNameMoodleProfile: String,
+    cityMoodleProfile: String,
+    countryMoodleProfile: String,
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
@@ -66,6 +68,8 @@ fun UserScreen(
         bodyContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 UserContent(
+                    cityMoodleProfile,
+                    countryMoodleProfile,
                     onNavigate = navigateTo
                 )
             }
@@ -98,14 +102,15 @@ fun UserScreen(
 @OptIn(ExperimentalFocus::class)
 @Composable
 fun UserContent(
+    cityMoodleProfile: String,
+    countryMoodleProfile: String,
     onNavigate: (Screen) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(
-            top = 10.dp,
             start = 10.dp,
             end = 10.dp
-        ).fillMaxWidth().wrapContentHeight(),
+        ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.preferredHeight(16.dp))
@@ -113,7 +118,13 @@ fun UserContent(
             image = imageResource(id = R.drawable.popov),
             modifier = Modifier.preferredSize(120.dp)
         )
-        Spacer(modifier = Modifier.preferredHeight(64.dp))
+        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Text(
+            text = "$cityMoodleProfile, $countryMoodleProfile",
+            textAlign = TextAlign.Justify,
+            style = MaterialTheme.typography.h5
+        )
+        Spacer(modifier = Modifier.preferredHeight(32.dp))
         Button(
             onClick = {
                 onNavigate(Screen.Home)
@@ -146,7 +157,7 @@ fun UserPreview() {
         val scaffoldState = rememberScaffoldState(
             drawerState = rememberDrawerState(DrawerValue.Closed)
         )
-        UserScreen(navigateTo = { }, scaffoldState = scaffoldState, fullNameMoodleProfile = "")
+        UserScreen(navigateTo = { }, scaffoldState = scaffoldState, fullNameMoodleProfile = "", cityMoodleProfile = "", countryMoodleProfile = "")
     }
 }
 
@@ -157,6 +168,6 @@ fun UserPreviewDark() {
         val scaffoldState = rememberScaffoldState(
             drawerState = rememberDrawerState(DrawerValue.Closed)
         )
-        UserScreen(navigateTo = { }, scaffoldState = scaffoldState, fullNameMoodleProfile = "")
+        UserScreen(navigateTo = { }, scaffoldState = scaffoldState, fullNameMoodleProfile = "", cityMoodleProfile = "", countryMoodleProfile = "")
     }
 }
