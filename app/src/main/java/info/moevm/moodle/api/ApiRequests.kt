@@ -22,5 +22,5 @@ interface ApiRequests {
      * Retrieve users' information for a specified unique field, in this case - email
      */
     @GET("/webservice/rest/server.php")
-    fun getUserInformation(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("moodlewsrestformat") moodlewsRestFormat: String, @Query("field") username: String, @Query("values[0]") userLogin: String): Call<MoodleUser>
+    fun getUserInformation(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("moodlewsrestformat") moodlewsRestFormat: String, @Query("field") username: String, @Query("values[0]") userLogin: String): Call<List<MoodleUser>>
 }

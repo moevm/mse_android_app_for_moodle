@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui.user
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Bottom
 import androidx.compose.material.*
@@ -81,13 +80,9 @@ fun UserScreen(
             ) {
                 Button(
                     onClick = {
-                        // FIXME: can't access `current`
                         GlobalScope.launch {
                             DataStoreUser(context).addUser("", "", "")
                         }
-                        // TODO: maybe we have navigate to the sign in screen?
-                        // onSignInSubmitted(Screen.Home)
-//                        navigateTo(Screen.SignIn)
                         navigateTo(Screen.SignIn)
                     },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 8.dp),

@@ -177,15 +177,15 @@ fun SignInContent(
     val context = AmbientContext.current
     val lifeSO = context.lifecycleOwner()
     val dataStore = DataStoreUser(context)
-    var tokenState: String
-    var loginState: String
+    lateinit var tokenState: String
+    lateinit var loginState: String
 
     fun checkToken(token: String) {
         val answ = apiclient.checkToken(token)
         answ.observe(
             lifeSO!!,
             {
-                Timber.tag("Check_token").e("checkLogIn was called with answ: ${answ.value}")
+                Timber.tag("Check_token").i("checkLogIn was called with answ: ${answ.value}")
                 if (answ.value?.errorcode != "invalidtoken") {
                     showMessage(context, "already login")
                     onSignInSubmitted(Screen.Home)
@@ -196,7 +196,7 @@ fun SignInContent(
     }
 
     fun checkLogIn() {
-        Timber.tag("Check_token").e("checkLogIn was called")
+        Timber.tag("Check_token").i("checkLogIn was called")
         dataStore.tokenFlow.asLiveData().observe(
             lifeSO!!,
             {
@@ -208,25 +208,31 @@ fun SignInContent(
         )
     }
 
-    fun setLoginName(userName: String) {
-        val answ = apiclient.getMoodleUserInfo(userName)
+    fun setLoginName(token: String, userName: String) {
+        val answ = apiclient.getMoodleUserInfo(token, userName)
         answ.observe(
             lifeSO!!,
             {
-                Timber.tag("GET_user_info").e("${answ.value}")
+                Timber.tag("GET_user_info").i("GET value from Moodle: value: ${answ?.value}")
             }
         )
     }
 
     fun checkLoginName() {
-        Timber.tag("GET_user_info").e("checkLoginName was called")
+        Timber.tag("GET_user_info").i("checkLoginName was called")
         dataStore.loginFlow.asLiveData().observe(
             lifeSO!!,
-            {
-                loginState = it
-                if (loginState != "") {
-                    setLoginName(loginState)
-                }
+            { itLogin ->
+                loginState = itLogin
+                dataStore.tokenFlow.asLiveData().observe(
+                    lifeSO,
+                    {
+                        tokenState = it
+                        if (loginState != "" && tokenState != "") {
+                            setLoginName(tokenState, loginState)
+                        }
+                    }
+                )
             }
         )
     }

@@ -29,7 +29,7 @@ class MoodleApi {
         .create(ApiRequests::class.java)
 
     fun checkLogIn(userName: String, passWord: String): LiveData<LoginSuccess> {
-        Timber.tag("Check_login").e("checkLogIn with API was called")
+        Timber.tag("Check_login").i("checkLogIn with API was called")
         val data = MutableLiveData<LoginSuccess>()
         api.logIn(APIVariables.MOODLE_MOBILE_APP.value, userName, passWord)
             .enqueue(object : Callback<LoginSuccess> { // асинхронный вызов.
@@ -39,7 +39,7 @@ class MoodleApi {
                 ) {
                     val res = response.body()
                     if (response.code() == 200 && res != null) {
-                        Timber.tag("Check_login").e("$res")
+                        Timber.tag("Check_login").i("$res")
                         data.value = res
                     } else {
                         data.value = null
@@ -53,24 +53,27 @@ class MoodleApi {
         return data
     }
 
-    fun getMoodleUserInfo(userName: String): LiveData<MoodleUser> {
-        val data = MutableLiveData<MoodleUser>()
-        api.getUserInformation(userName, APIVariables.CORE_USER_GET_USERS_BY_FIELD.value, APIVariables.MOODLE_WS_REST_FORMAT.value, "username", userLogin)
-            .enqueue(object : Callback<MoodleUser> {
+    fun getMoodleUserInfo(token: String, userLogin: String): LiveData<List<MoodleUser>> {
+        Timber.tag("GET_user_info").i("getMoodleUserInfo was called with token: |$token|, userLogin: |$userLogin|")
+        val data = MutableLiveData<List<MoodleUser>>()
+        api.getUserInformation(token, APIVariables.CORE_USER_GET_USERS_BY_FIELD.value, APIVariables.MOODLE_WS_REST_FORMAT.value, "username", userLogin)
+            .enqueue(object : Callback<List<MoodleUser>> {
                 override fun onResponse(
-                    call: Call<MoodleUser>,
-                    response: Response<MoodleUser>
+                    call: Call<List<MoodleUser>>,
+                    response: Response<List<MoodleUser>>
                 ) {
                     val res = response.body()
                     if (response.code() == 200 && res != null) {
                         data.value = res
-                        Timber.tag("GET_user_info").e("${data.value}")
+                        Timber.tag("GET_user_info").i("GOT response from server with: ${data.value?.get(0)}")
                     } else {
                         data.value = null
+                        Timber.tag("GET_user_info").i("No correct user data response from server")
                     }
                 }
 
-                override fun onFailure(call: Call<MoodleUser>, t: Throwable) {
+                override fun onFailure(call: Call<List<MoodleUser>>, t: Throwable) {
+                    Timber.tag("GET_user_info").i("onFailure GET user info was called because ${t.cause}, call: $call")
                     data.value = null
                 }
             })

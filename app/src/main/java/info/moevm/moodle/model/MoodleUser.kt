@@ -45,5 +45,7 @@ package info.moevm.moodle.model
 data class MoodleUser(
     var id: Int,
     var fullname: String,
-    var profileimageurl: String
+    var profileimageurl: String,
+    var city: String,
+    var country: String
 )
