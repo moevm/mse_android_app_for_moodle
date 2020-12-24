@@ -1,5 +1,6 @@
 package info.moevm.moodle.data.courses.impl
 
+import androidx.lifecycle.Transformations.map
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.courses.CoursesMap
@@ -66,7 +67,34 @@ class FakeCoursesRepository : CoursesRepository {
 
     override suspend fun getTopics(): Result<CoursesMap> {
 
-        return Result.Success(topics)
+        val apiclient = MoodleApi()
+        // val data: LiveData<CurrentCourses>?
+        val data = apiclient.getCourses("bdb63ddf3497ad850020d3482c87fbde")
+        System.out.println(data)
+
+        val coursesList = data?.courses?.toMutableList()
+        System.out.println(coursesList)
+        val topicMap: MutableMap<String, List<String>> = HashMap<String, List<String>>()
+
+        if (coursesList != null) {
+            for (i in coursesList) {
+                topicMap.put(i.categoryname.toString(), emptyList())
+            }
+            for( i in topicMap) {
+                val topicList: MutableList<String> = ArrayList()
+                for (j in coursesList) {
+                    if(i.key == j.categoryname.toString()){
+                        topicList.add(j.shortname.toString())
+                    }
+                }
+                topicMap.put(i.key, topicList)
+            }
+            System.out.println(topicMap)
+            return Result.Success(topicMap)
+        }
+        System.out.println(topicMap)
+
+        return Result.Success(topicMap)
     }
 
     override suspend fun getPeople(): Result<List<String>> {

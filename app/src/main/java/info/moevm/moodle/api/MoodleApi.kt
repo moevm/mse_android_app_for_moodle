@@ -79,8 +79,10 @@ class MoodleApi {
             }
         }
         // DANGEROUSE
+        val time = System.currentTimeMillis()
         while (data == null) {
-            Log.d(TAG, "still null")
+            if (System.currentTimeMillis() - time > 1000)
+                break
         }
         Log.d(TAG, "answer is received")
         /*api.getCurrentCourses(token, APIVariables.MOD_ASSIGN_GET_ASSIGMENTS.value, APIVariables.MOODLE_WS_REST_FORMAT.value)
@@ -105,8 +107,37 @@ class MoodleApi {
 
         return data
     }
-    fun getCourses(token: String): LiveData<Courses> {
-        val data = MutableLiveData<Courses>()
+    fun getCourses(token: String): Courses? {
+        var data: Courses? = null
+        val api = Retrofit.Builder()
+            .baseUrl(APIVariables.MOODLE_URL.value)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiRequests::class.java)
+        Log.d(TAG, "before enter the global scope") // global scope - ассинхрон, корутина
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                Log.d(TAG, "enter the global scope")
+                val response = api.getCourses(token, APIVariables.CORE_COURSE_GET_COURSES_BY_FIELD.value, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
+                if (response.isSuccessful) {
+                    Log.i(TAG, "get response " + response.body())
+                    data = response.body()!!
+                    // Log.d(TAG, data.toString())
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Log.e(TAG, "smth went wrong")
+                }
+            }
+        }
+        // DANGEROUSE
+        val time = System.currentTimeMillis()
+        while (data == null) {
+            if (System.currentTimeMillis() - time > 1000)
+                break
+        }
+        Log.d(TAG, "answer is received")
+        /*val data = MutableLiveData<Courses>()
         api.getCourses(token, APIVariables.CORE_COURSE_GET_COURSES_BY_FIELD.value, APIVariables.MOODLE_WS_REST_FORMAT.value)
             .enqueue(object : Callback<Courses> { // асинхронный вызов.
                 override fun onResponse(
@@ -125,7 +156,7 @@ class MoodleApi {
                 override fun onFailure(call: Call<Courses>, t: Throwable) {
                     data.value = null
                 }
-            })
+            })*/
         return data
     }
 }
