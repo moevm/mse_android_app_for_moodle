@@ -31,15 +31,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import info.moevm.moodle.R
+import info.moevm.moodle.api.DataStoreMoodleUser
 import info.moevm.moodle.api.DataStoreUser
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.model.LoginSuccess
+import info.moevm.moodle.model.MoodleUser
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.signin.authorization.Login
 import info.moevm.moodle.ui.signin.authorization.LoginState
 import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -176,6 +179,7 @@ fun SignInContent(
     val context = AmbientContext.current
     val lifeSO = context.lifecycleOwner()
     val dataStore = DataStoreUser(context)
+    val moodleProfileDataStore = DataStoreMoodleUser(context)
     lateinit var tokenState: String
     lateinit var loginState: String
 
@@ -212,7 +216,23 @@ fun SignInContent(
         answ.observe(
             lifeSO!!,
             {
-                Timber.tag("GET_user_info").i("GET value from Moodle: value: ${answ?.value}")
+                Timber.tag("GET_user_info").i("GET value from Moodle: value: ${answ.value}")
+                val moodleProfile = answ.value?.get(0)
+                    ?: MoodleUser(
+                    0, context.resources.getString(R.string.user_name_placeholder),
+                    context.resources.getString(R.string.user_img_placeholder),
+                    context.resources.getString(R.string.user_city_placeholder),
+                    context.resources.getString(R.string.user_country_placeholder)
+                )
+                GlobalScope.launch(Dispatchers.Main) {
+                    moodleProfileDataStore.addMoodleUser(
+                        moodleProfile.id,
+                        moodleProfile.fullname,
+                        moodleProfile.profileimageurl,
+                        moodleProfile.city,
+                        moodleProfile.country
+                    )
+                }
             }
         )
     }

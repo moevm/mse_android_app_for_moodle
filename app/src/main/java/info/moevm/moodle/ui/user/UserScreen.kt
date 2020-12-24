@@ -1,11 +1,9 @@
 package info.moevm.moodle.ui.user
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.Bottom
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.platform.AmbientContext
@@ -45,7 +43,7 @@ fun UserScreen(
                 modifier = Modifier.testTag("topAppBarHome"),
                 title = {
                     Text(
-                        text = "${stringResource(id = R.string.hello)}, ${stringResource(id = R.string.user_name)}",
+                        text = "${stringResource(id = R.string.hello)}, ${stringResource(id = R.string.user_name_placeholder)}",
                         textAlign = TextAlign.Justify,
                         modifier = Modifier
                             .fillMaxSize()
