@@ -185,7 +185,7 @@ fun SignInContent(
         answ.observe(
             lifeSO!!,
             {
-                Timber.tag("Check_token").e("checkLogIn was called with answ: ${answ.value}");
+                Timber.tag("Check_token").e("checkLogIn was called with answ: ${answ.value}")
                 if (answ.value?.errorcode != "invalidtoken") {
                     showMessage(context, "already login")
                     onSignInSubmitted(Screen.Home)
@@ -196,7 +196,7 @@ fun SignInContent(
     }
 
     fun checkLogIn() {
-        Timber.tag("Check_token").e("checkLogIn was called");
+        Timber.tag("Check_token").e("checkLogIn was called")
         dataStore.tokenFlow.asLiveData().observe(
             lifeSO!!,
             {
@@ -213,13 +213,13 @@ fun SignInContent(
         answ.observe(
             lifeSO!!,
             {
-                Timber.tag("GET_user_info").e("${answ.value}");
+                Timber.tag("GET_user_info").e("${answ.value}")
             }
         )
     }
 
     fun checkLoginName() {
-        Timber.tag("GET_user_info").e("checkLoginName was called");
+        Timber.tag("GET_user_info").e("checkLoginName was called")
         dataStore.loginFlow.asLiveData().observe(
             lifeSO!!,
             {

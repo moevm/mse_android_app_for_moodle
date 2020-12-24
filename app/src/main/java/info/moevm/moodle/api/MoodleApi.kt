@@ -29,7 +29,7 @@ class MoodleApi {
         .create(ApiRequests::class.java)
 
     fun checkLogIn(userName: String, passWord: String): LiveData<LoginSuccess> {
-        Timber.tag("Check_login").e("checkLogIn with API was called");
+        Timber.tag("Check_login").e("checkLogIn with API was called")
         val data = MutableLiveData<LoginSuccess>()
         api.logIn(APIVariables.MOODLE_MOBILE_APP.value, userName, passWord)
             .enqueue(object : Callback<LoginSuccess> { // асинхронный вызов.
@@ -39,7 +39,7 @@ class MoodleApi {
                 ) {
                     val res = response.body()
                     if (response.code() == 200 && res != null) {
-                        Timber.tag("Check_login").e("${res}");
+                        Timber.tag("Check_login").e("$res")
                         data.value = res
                     } else {
                         data.value = null
@@ -64,7 +64,7 @@ class MoodleApi {
                     val res = response.body()
                     if (response.code() == 200 && res != null) {
                         data.value = res
-                        Timber.tag("GET_user_info").e("${data.value}");
+                        Timber.tag("GET_user_info").e("${data.value}")
                     } else {
                         data.value = null
                     }
