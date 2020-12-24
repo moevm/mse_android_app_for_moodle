@@ -28,33 +28,34 @@ import info.moevm.moodle.ui.signin.TextFieldState
 
 @OptIn(ExperimentalFocus::class)
 @Composable
-fun Email(
-    emailState: TextFieldState = remember { EmailState() },
+fun Login(
+    modifier: Modifier = Modifier,
+    loginState: TextFieldState = remember { LoginState() },
     imeAction: ImeAction = ImeAction.Next,
     onImeAction: () -> Unit = {}
 ) {
     OutlinedTextField(
-        value = emailState.text,
+        value = loginState.text,
         onValueChange = {
-            emailState.text = it
+            loginState.text = it
+        },
+        modifier = modifier.fillMaxWidth().focusObserver { focusState ->
+            val focused = focusState == FocusState.Active
+            loginState.onFocusChange(focused)
+            if (!focused) {
+                loginState.enableShowErrors()
+            }
         },
         label = {
             Providers(AmbientContentAlpha provides ContentAlpha.medium) {
                 Text(
-                    text = stringResource(id = R.string.email),
+                    text = stringResource(id = R.string.username),
                     style = MaterialTheme.typography.body2
                 )
             }
         },
-        modifier = Modifier.fillMaxWidth().focusObserver { focusState ->
-            val focused = focusState == FocusState.Active
-            emailState.onFocusChange(focused)
-            if (!focused) {
-                emailState.enableShowErrors()
-            }
-        },
         textStyle = MaterialTheme.typography.body2,
-        isErrorValue = emailState.showErrors(),
+        isErrorValue = loginState.showErrors(),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
         onImeActionPerformed = { action, softKeyboardController ->
             if (action == ImeAction.Done) {
@@ -64,7 +65,7 @@ fun Email(
         }
     )
 
-    emailState.getError()?.let { error -> TextFieldError(textError = error) }
+    loginState.getError()?.let { error -> TextFieldError(textError = error) }
 }
 
 @OptIn(ExperimentalFocus::class)

@@ -38,4 +38,9 @@ class DataStoreUser(context: Context) {
         val tok = it[FIELD_TOKEN] ?: ""
         tok
     }
+
+    val loginFlow: Flow<String> = dataStore.data.map {
+        val login = it[FIELD_LOGIN] ?: ""
+        login
+    }
 }

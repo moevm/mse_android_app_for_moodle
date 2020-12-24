@@ -9,10 +9,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.AmbientContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import info.moevm.moodle.api.DataStoreMoodleUser
 import info.moevm.moodle.data.AppContainer
 import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.posts.PostsRepository
@@ -26,6 +28,9 @@ import info.moevm.moodle.ui.signin.SignInScreen
 import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import info.moevm.moodle.ui.user.UserScreen
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @Composable
 fun MOEVMMoodleApp(appContainer: AppContainer) {
@@ -45,6 +50,22 @@ private fun AppContent(
     val navController = rememberNavController()
     val actions = remember(navController) { Actions(navController) }
     val scaffoldState = rememberScaffoldState()
+
+    val context = AmbientContext.current
+    val lifeSO = context.applicationContext
+    val moodleProfileDataStore = DataStoreMoodleUser(lifeSO)
+
+    val fullNameMoodleUser: String
+    val cityMoodleUser: String
+    val countryMoodleUser: String
+
+    runBlocking {
+        withContext(Dispatchers.IO) {
+            fullNameMoodleUser = moodleProfileDataStore.getFullNameCurrent()
+            cityMoodleUser = moodleProfileDataStore.getCityCurrent()
+            countryMoodleUser = moodleProfileDataStore.getCountryCurrent()
+        }
+    }
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
@@ -69,7 +90,10 @@ private fun AppContent(
                 composable(ScreenName.USER.name) {
                     UserScreen(
                         navigateTo = actions.select,
-                        scaffoldState = scaffoldState
+                        scaffoldState = scaffoldState,
+                        fullNameMoodleProfile = fullNameMoodleUser,
+                        cityMoodleProfile = cityMoodleUser,
+                        countryMoodleProfile = countryMoodleUser
                     )
                 }
                 composable(ScreenName.INTERESTS.name) {
