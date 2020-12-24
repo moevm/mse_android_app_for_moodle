@@ -5,9 +5,12 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.widget.Toast
 import androidx.compose.animation.animate
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +23,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -67,6 +71,7 @@ fun SignInScreen(
         topBar = {
             SignInSignUpTopAppBar(
                 topAppBarText = stringResource(id = R.string.sign_in),
+                onSetupTouch = navigateTo
             )
         },
         bodyContent = {
@@ -92,6 +97,7 @@ fun SignInScreen(
                 ) {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         SignInContent(
+                            // TODO: check correction of login key
 //                            onSignInSubmitted = { email, password ->
 //                                SignInEvent.SignIn(email, password)
 //                            }
@@ -108,7 +114,11 @@ fun SignInScreen(
  * Just "Sign In" text on the top bar of the app
  */
 @Composable
-fun SignInSignUpTopAppBar(topAppBarText: String) {
+fun SignInSignUpTopAppBar(
+    topAppBarText: String,
+    onSetupTouch: (Screen) -> Unit
+) {
+    val image = vectorResource(id = R.drawable.settings)
     TopAppBar(
         title = {
             Text(
@@ -122,6 +132,20 @@ fun SignInSignUpTopAppBar(topAppBarText: String) {
         backgroundColor = MaterialTheme.colors.surface,
         elevation = 0.dp
     )
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.End
+    ) {
+        IconButton(
+            onClick = {
+                onSetupTouch(Screen.EnterSetup)
+            }
+        ) {
+            Row {
+                Image(imageVector = image)
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalFocus::class)

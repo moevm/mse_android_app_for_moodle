@@ -10,9 +10,10 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_in">Sign in</string>
-    <string name="token_auth">Token authorization</string>
+    <string name="token_url_setup">Token and URL settings</string>
     <string name="token">Token</string>
-    <string name="token_use">Use token</string>
+    <string name="url">URL</string>
+    <string name="current_setup_use">Use current setup</string>
     <string name="sign_in_create_account">Sign in to your Moodle account</string>
     <string name="user_name">Alexander Popov</string>
     <string name="hello">Hello</string>
@@ -27,6 +28,7 @@
     <string name="previous">Previous</string>
     <string name="done">Done</string>
     <string name="settings_name">Settings</string>
+    <string name="enter_screen_info">Enter admin token for extension API. Specify the url of the server to send requests to: local or work.</string>
 
     <!--  Labels  -->
     <string name="home_label">Home</string>
