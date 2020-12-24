@@ -14,8 +14,6 @@ import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 import java.util.ArrayList
 
-val wsToken = "bdb63ddf3497ad850020d3482c87fbde" // for dataStore
-
 /**
  * Implementation of InterestRepository that returns a hardcoded list of
  * topics, people and publications synchronously.
@@ -67,14 +65,12 @@ class FakeCoursesRepository : CoursesRepository {
     // Used to make suspend functions that read and update state safe to call from any thread
     private val mutex = Mutex()
 
-    override suspend fun getTopics(): Result<CoursesMap> {
+    override suspend fun getTopics(token: String): Result<CoursesMap> {
 
         val apiclient = MoodleApi()
-        val data = apiclient.getCourses(wsToken)
-        System.out.println(data)
+        val data = apiclient.getCourses(token)
 
         val coursesList = data?.courses?.toMutableList()
-        System.out.println(coursesList)
         val topicMap: MutableMap<String, List<String>> = HashMap<String, List<String>>()
 
         if (coursesList != null) {
@@ -97,10 +93,9 @@ class FakeCoursesRepository : CoursesRepository {
         return Result.Success(topicMap)
     }
 
-    override suspend fun getPeople(): Result<List<String>> {
+    override suspend fun getPeople(token: String): Result<List<String>> {
         val apiclient = MoodleApi()
-        val data = apiclient.getCurrentCourses(wsToken)
-        System.out.println(data)
+        val data = apiclient.getCurrentCourses(token)
 
         val coursesList = data?.courses?.toMutableList()
         val topicList: MutableList<String> = ArrayList()
