@@ -9,7 +9,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,8 +35,8 @@ import info.moevm.moodle.api.DataStoreUser
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.signin.authorization.Email
-import info.moevm.moodle.ui.signin.authorization.EmailState
+import info.moevm.moodle.ui.signin.authorization.Login
+import info.moevm.moodle.ui.signin.authorization.LoginState
 import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
@@ -242,8 +241,11 @@ fun SignInContent(
     AmbientContext.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }
-        val emailState = remember { EmailState() }
-        Email(emailState, onImeAction = { focusRequester.requestFocus() })
+        val loginState = remember { LoginState() }
+        Login(
+            loginState = loginState, onImeAction = { focusRequester.requestFocus() },
+            modifier = Modifier.focusRequester(focusRequester)
+        )
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
 
@@ -256,7 +258,7 @@ fun SignInContent(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
             onClick = {
-                val userName = emailState.text
+                val userName = loginState.text
                 val userPassword = passwordState.text
                 val data: LiveData<LoginSuccess>?
                 data = apiclient.checkLogIn(userName, userPassword)
@@ -285,7 +287,7 @@ fun SignInContent(
                 showMessage(context, "checking...", 5000)
             },
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-            enabled = emailState.isValid && passwordState.isValid
+            enabled = loginState.isValid && passwordState.isValid
         ) {
             Text(
                 text = stringResource(id = R.string.sign_in)

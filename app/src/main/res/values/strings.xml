@@ -6,6 +6,7 @@
 
     <string name="app_tagline">MOEVM Moodle App</string>
     <string name="email">Email</string>
+    <string name="username">Username</string>
     <string name="dominant_home_course_caption">Your last course</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
