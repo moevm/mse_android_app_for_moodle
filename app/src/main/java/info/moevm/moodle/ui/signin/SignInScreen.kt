@@ -28,8 +28,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import info.moevm.moodle.R
-import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.api.DataStoreUser
+import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.signin.authorization.Email
@@ -154,25 +154,30 @@ fun SignInContent(
     val dataStore = DataStoreUser(context)
     var tokenState: String
 
-    fun checkToken(token:String){
+    fun checkToken(token: String) {
         val answ = apiclient.checkToken(token)
-        answ.observe(lifeSO!!,{
-            if (answ.value?.errorcode != "invalidtoken") {
-                showMessage(context, "already login")
-                onSignInSubmitted(Screen.Home)
+        answ.observe(
+            lifeSO!!,
+            {
+                if (answ.value?.errorcode != "invalidtoken") {
+                    showMessage(context, "already login")
+                    onSignInSubmitted(Screen.Home)
                 }
-            // else - остаемся
-
-        })
+                // else - остаемся
+            }
+        )
     }
 
-    fun checkLogIn(){
-        dataStore.tokenFlow.asLiveData().observe(lifeSO!!,{
-            tokenState = it
-            if (tokenState!= ""){
-                checkToken(tokenState)
+    fun checkLogIn() {
+        dataStore.tokenFlow.asLiveData().observe(
+            lifeSO!!,
+            {
+                tokenState = it
+                if (tokenState != "") {
+                    checkToken(tokenState)
+                }
             }
-        })
+        )
     }
 
     //
@@ -212,10 +217,9 @@ fun SignInContent(
                                 tokenState = data.value?.token!!
                                 GlobalScope.launch {
                                     // TODO if
-                                    dataStore.addUser(userName,userPassword, tokenState)
+                                    dataStore.addUser(userName, userPassword, tokenState)
                                 }
                                 onSignInSubmitted(Screen.Home)
-
                             }
                             data.value?.error != null -> {
                                 showMessage(context, message = context.resources.getString(R.string.wrong_login))
