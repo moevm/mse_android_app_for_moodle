@@ -91,6 +91,12 @@ data class Course(
     val theme: String,
     val marker: Int
 )
+data class WrongToken(
+    val exception: String? = null,
+    val errorcode: String? = null,
+    val message: String? = null
+)
+
 data class CurrentCourse(
     val id: Int,
     val fullname: String,
@@ -119,7 +125,9 @@ enum class ParagraphType {
 // /data/user/0/info.moevm.moodle/files/datastore/user_data_store.preferences_pb
 enum class APIVariables(var value: String) {
     MOODLE_MOBILE_APP("moodle_mobile_app"),
+    MOODLE_WS_REST_FORMAT("json"),
     MOODLE_URL("http://e.moevm.info"),
-    USER_PREFERENCES_NAME("user_data_store")
+    USER_PREFERENCES_NAME("user_data_store"),
+    MOD_ASSIGN_GET_ASSIGMENTS("mod_assign_get_assignments"),
 // const val MOODLE = "https://10.0.2.2:1010"   need for local server
 }

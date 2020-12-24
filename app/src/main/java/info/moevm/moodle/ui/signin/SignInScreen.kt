@@ -154,16 +154,34 @@ fun SignInContent(
     val dataStore = DataStoreUser(context)
     var tokenState: String
 
-    fun checkLogIn(){
-        dataStore.tokenFlow.asLiveData().observe(lifeSO!!,{
-            tokenState = it
-            if (tokenState!= ""){
+    fun checkToken(token:String){
+        val answ = apiclient.checkToken(token)
+        var isDone = false
+        answ.observe(lifeSO!!,{
+            if (answ.value?.errorcode == "invalidtoken") {
+                if (!isDone){
+                    isDone = true
+                    showMessage(context, "TokenLife ended")
+                    onSignInSubmitted(Screen.SignIn)
+
+                }
+            } else {
                 showMessage(context, "already login")
                 onSignInSubmitted(Screen.Home)
             }
 
         })
     }
+
+    fun checkLogIn(){
+        dataStore.tokenFlow.asLiveData().observe(lifeSO!!,{
+            tokenState = it
+            if (tokenState!= ""){
+                checkToken(tokenState)
+            }
+        })
+    }
+
     //
     checkLogIn()
 

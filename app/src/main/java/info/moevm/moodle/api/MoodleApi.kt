@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import info.moevm.moodle.model.APIVariables
 import info.moevm.moodle.model.LoginSuccess
+import info.moevm.moodle.model.WrongToken
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -42,6 +43,29 @@ class MoodleApi {
                 }
 
                 override fun onFailure(call: Call<LoginSuccess>, t: Throwable) {
+                    data.value = null
+                }
+            })
+        return data
+    }
+
+    fun checkToken(token: String): LiveData<WrongToken> {
+        val data = MutableLiveData<WrongToken>()
+        api.checkTokenLife(token, APIVariables.MOD_ASSIGN_GET_ASSIGMENTS.value, APIVariables.MOODLE_WS_REST_FORMAT.value)
+            .enqueue(object : Callback<WrongToken> { // асинхронный вызов.
+                override fun onResponse(
+                    call: Call<WrongToken>,
+                    response: Response<WrongToken>
+                ) {
+                    val res = response.body()
+                    if (response.code() == 200 && res != null) {
+                        data.value = res
+                    } else {
+                        data.value = null
+                    }
+                }
+
+                override fun onFailure(call: Call<WrongToken>, t: Throwable) {
                     data.value = null
                 }
             })
