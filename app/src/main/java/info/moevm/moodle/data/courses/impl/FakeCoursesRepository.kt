@@ -14,6 +14,8 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.ArrayList
 
+val wsToken = "bdb63ddf3497ad850020d3482c87fbde"//for dataStore
+
 /**
  * Implementation of InterestRepository that returns a hardcoded list of
  * topics, people and publications synchronously.
@@ -69,7 +71,7 @@ class FakeCoursesRepository : CoursesRepository {
 
         val apiclient = MoodleApi()
         // val data: LiveData<CurrentCourses>?
-        val data = apiclient.getCourses("bdb63ddf3497ad850020d3482c87fbde")
+        val data = apiclient.getCourses(wsToken)
         System.out.println(data)
 
         val coursesList = data?.courses?.toMutableList()
@@ -100,7 +102,7 @@ class FakeCoursesRepository : CoursesRepository {
     override suspend fun getPeople(): Result<List<String>> {
         val apiclient = MoodleApi()
         // val data: LiveData<CurrentCourses>?
-        val data = apiclient.getCurrentCourses("bdb63ddf3497ad850020d3482c87fbde")
+        val data = apiclient.getCurrentCourses(wsToken)
         System.out.println(data)
 
         val coursesList = data?.courses?.toMutableList()
