@@ -1,6 +1,5 @@
 package info.moevm.moodle.data.courses.impl
 
-import androidx.lifecycle.Transformations.map
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.courses.CoursesMap
@@ -14,7 +13,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.ArrayList
 
-val wsToken = "bdb63ddf3497ad850020d3482c87fbde"//for dataStore
+val wsToken = "bdb63ddf3497ad850020d3482c87fbde" // for dataStore
 
 /**
  * Implementation of InterestRepository that returns a hardcoded list of
@@ -82,10 +81,10 @@ class FakeCoursesRepository : CoursesRepository {
             for (i in coursesList) {
                 topicMap.put(i.categoryname.toString(), emptyList())
             }
-            for( i in topicMap) {
+            for (i in topicMap) {
                 val topicList: MutableList<String> = ArrayList()
                 for (j in coursesList) {
-                    if(i.key == j.categoryname.toString()){
+                    if (i.key == j.categoryname.toString()) {
                         topicList.add(j.shortname.toString())
                     }
                 }
