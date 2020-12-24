@@ -10,7 +10,7 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_in">Sign in</string>
-    <string name="token_url_setup">Token and url settings</string>
+    <string name="token_url_setup">Token and URL settings</string>
     <string name="token">Token</string>
     <string name="url">URL</string>
     <string name="current_setup_use">Use current setup</string>
