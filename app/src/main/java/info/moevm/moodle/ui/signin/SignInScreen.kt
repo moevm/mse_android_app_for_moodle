@@ -1,5 +1,9 @@
 package info.moevm.moodle.ui.signin
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.widget.Toast
 import androidx.compose.animation.animate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
@@ -8,19 +12,27 @@ import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focusRequester
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import info.moevm.moodle.R
+import info.moevm.moodle.api.MoodleApi
+import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.signin.authorization.Email
 import info.moevm.moodle.ui.signin.authorization.EmailState
@@ -30,6 +42,10 @@ import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
+}
+
+fun showMessage(context: Context, message: String, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(context, message, duration).show()
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -139,6 +155,24 @@ fun SignInContent(
     onSignInSubmitted: (Screen) -> Unit
 ) {
 
+    fun Context.lifecycleOwner(): LifecycleOwner? {
+        var curContext = this
+        var maxDepth = 20
+        while (maxDepth-- > 0 && curContext !is LifecycleOwner) {
+            curContext = (curContext as ContextWrapper).baseContext
+        }
+        return if (curContext is LifecycleOwner) {
+            curContext
+        } else {
+            null
+        }
+    }
+
+    val apiclient = MoodleApi()
+    val context = AmbientContext.current
+    val lifeSO = context.lifecycleOwner()
+
+    AmbientContext.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }
         val emailState = remember { EmailState() }
@@ -147,20 +181,42 @@ fun SignInContent(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
 
         val passwordState = remember { PasswordState() }
+        var tokenState: String?
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
             modifier = Modifier.focusRequester(focusRequester),
             onImeAction = {
 //                onSignInSubmitted(emailState.text, passwordState.text)
+                // TODO add check here to!!!!
                 onSignInSubmitted(Screen.Home)
             }
         )
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
             onClick = {
-//                onSignInSubmitted(emailState.text, passwordState.text)
-                onSignInSubmitted(Screen.Home)
+                val userName = emailState.text
+                val userPassword = passwordState.text
+                val data: LiveData<LoginSuccess>?
+                data = apiclient.checkLogIn(userName, userPassword)
+                data.observe(
+                    lifeSO!!,
+                    Observer {
+                        when {
+                            data.value?.token != null -> {
+                                tokenState = data.value?.token
+                                onSignInSubmitted(Screen.Home)
+                            }
+                            data.value?.error != null -> {
+                                showMessage(context, message = context.resources.getString(R.string.wrong_login))
+                            }
+                            else -> {
+                                showMessage(context, message = context.resources.getString(R.string.network_problems))
+                            }
+                        }
+                    }
+                )
+                showMessage(context, "checking...", 5000)
             },
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
             enabled = emailState.isValid && passwordState.isValid
