@@ -55,7 +55,7 @@ class MoodleApi {
 
     fun getMoodleUserInfo(userName: String): LiveData<MoodleUser> {
         val data = MutableLiveData<MoodleUser>()
-        api.getUserInformation(userName, APIVariables.CORE_USER_GET_USERS_BY_FIELD.value, APIVariables.MOODLE_WS_REST_FORMAT.value)
+        api.getUserInformation(userName, APIVariables.CORE_USER_GET_USERS_BY_FIELD.value, APIVariables.MOODLE_WS_REST_FORMAT.value, "username", userLogin)
             .enqueue(object : Callback<MoodleUser> {
                 override fun onResponse(
                     call: Call<MoodleUser>,

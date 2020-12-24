@@ -1,5 +1,6 @@
 package info.moevm.moodle.ui.user
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Bottom
 import androidx.compose.material.*
@@ -8,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
@@ -16,10 +18,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import info.moevm.moodle.R
+import info.moevm.moodle.api.DataStoreUser
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.components.CircularImage
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -67,6 +72,8 @@ fun UserScreen(
                 )
             }
 
+            val context = AmbientContext.current
+
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Bottom,
@@ -75,11 +82,13 @@ fun UserScreen(
                 Button(
                     onClick = {
                         // FIXME: can't access `current`
-//                    GlobalScope.launch {
-//                        DataStoreUser(AmbientContext.current).addUser("","", "")
-//                    }
+                        GlobalScope.launch {
+                            DataStoreUser(context).addUser("", "", "")
+                            Toast.makeText(context, "logOUT", Toast.LENGTH_SHORT).show()
+                        }
                         // TODO: maybe we have navigate to the sign in screen?
                         // onSignInSubmitted(Screen.Home)
+//                        navigateTo(Screen.SignIn)
                         navigateTo(Screen.SignIn)
                     },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 8.dp),
