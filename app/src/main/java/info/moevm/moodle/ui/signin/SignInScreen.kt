@@ -245,12 +245,7 @@ fun SignInContent(
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
-            modifier = Modifier.focusRequester(focusRequester),
-            onImeAction = {
-//                onSignInSubmitted(emailState.text, passwordState.text)
-                // TODO add check here to!!!!
-                onSignInSubmitted(Screen.Home)
-            }
+            modifier = Modifier.focusRequester(focusRequester)
         )
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
