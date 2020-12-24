@@ -84,7 +84,6 @@ fun UserScreen(
                         // FIXME: can't access `current`
                         GlobalScope.launch {
                             DataStoreUser(context).addUser("", "", "")
-                            Toast.makeText(context, "logOUT", Toast.LENGTH_SHORT).show()
                         }
                         // TODO: maybe we have navigate to the sign in screen?
                         // onSignInSubmitted(Screen.Home)
