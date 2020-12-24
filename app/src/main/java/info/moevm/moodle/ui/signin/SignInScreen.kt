@@ -180,7 +180,6 @@ fun SignInContent(
         )
     }
 
-    //
     checkLogIn()
 
     AmbientContext.current as Activity

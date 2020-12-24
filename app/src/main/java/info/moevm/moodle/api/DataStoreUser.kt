@@ -4,9 +4,6 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.createDataStore
-// import info.moevm.moodle.api.UserPreferencesRepository.UserScheme.FIELD_LOGIN
-// import info.moevm.moodle.api.UserPreferencesRepository.UserScheme.FIELD_PASSWORD
-// import info.moevm.moodle.api.UserPreferencesRepository.UserScheme.FIELD_TOKEN
 import info.moevm.moodle.model.APIVariables
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -16,7 +13,6 @@ class DataStoreUser(context: Context) {
         name = APIVariables.USER_PREFERENCES_NAME.value
     )
 
-    //    object UserScheme {
     companion object {
         val FIELD_LOGIN = preferencesKey<String>("login")
         val FIELD_PASSWORD = preferencesKey<String>("password")
