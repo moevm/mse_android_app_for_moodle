@@ -19,6 +19,7 @@
     <string name="hello">Hello</string>
     <string name="profile_label">Profile</string>
     <string name="setups">Setups</string>
+    <string name="log_out">Log out</string>
     <string name="all_courses">All courses</string>
     <string name="or">or</string>
     <string name="forgot_password">Forgot password</string>
