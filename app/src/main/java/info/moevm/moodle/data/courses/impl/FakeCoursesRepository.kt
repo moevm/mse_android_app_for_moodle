@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import timber.log.Timber
 import java.util.ArrayList
 
 val wsToken = "bdb63ddf3497ad850020d3482c87fbde" // for dataStore
@@ -69,7 +70,6 @@ class FakeCoursesRepository : CoursesRepository {
     override suspend fun getTopics(): Result<CoursesMap> {
 
         val apiclient = MoodleApi()
-        // val data: LiveData<CurrentCourses>?
         val data = apiclient.getCourses(wsToken)
         System.out.println(data)
 
@@ -90,22 +90,19 @@ class FakeCoursesRepository : CoursesRepository {
                 }
                 topicMap.put(i.key, topicList)
             }
-            System.out.println(topicMap)
             return Result.Success(topicMap)
         }
-        System.out.println(topicMap)
+        Timber.d(topicMap.toString())
 
         return Result.Success(topicMap)
     }
 
     override suspend fun getPeople(): Result<List<String>> {
         val apiclient = MoodleApi()
-        // val data: LiveData<CurrentCourses>?
         val data = apiclient.getCurrentCourses(wsToken)
         System.out.println(data)
 
         val coursesList = data?.courses?.toMutableList()
-        System.out.println(coursesList)
         val topicList: MutableList<String> = ArrayList()
 
         if (coursesList != null) {
@@ -113,7 +110,7 @@ class FakeCoursesRepository : CoursesRepository {
                 topicList.add(i.fullname.toString())
             }
         }
-        System.out.println(topicList)
+        Timber.d(topicList.toString())
         return Result.Success(topicList)
     }
 
