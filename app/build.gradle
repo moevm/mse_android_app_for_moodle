@@ -99,6 +99,7 @@ dependencies {
     implementation Libs.AndroidX.Compose.runtimeLivedata
     implementation Libs.AndroidX.Compose.foundation
     implementation Libs.AndroidX.Compose.animation
+    implementation 'androidx.room:room-runtime:2.2.5'
 
     androidTestImplementation Libs.AndroidX.Test.core
     androidTestImplementation Libs.AndroidX.Test.espressoCore
@@ -109,6 +110,7 @@ dependencies {
     // rerofit2
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    annotationProcessor 'androidx.room:room-compiler:2.2.5'
 
     //livedata
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"

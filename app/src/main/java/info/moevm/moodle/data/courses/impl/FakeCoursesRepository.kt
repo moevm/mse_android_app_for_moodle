@@ -1,7 +1,6 @@
-// reference: https://github.com/android/compose-samples
-
 package info.moevm.moodle.data.courses.impl
 
+import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.data.courses.CoursesRepository
@@ -12,6 +11,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import timber.log.Timber
+import java.util.ArrayList
+
+val wsToken = "bdb63ddf3497ad850020d3482c87fbde" // for dataStore
 
 /**
  * Implementation of InterestRepository that returns a hardcoded list of
@@ -28,7 +31,7 @@ class FakeCoursesRepository : CoursesRepository {
         )
     }
 
-    private val people by lazy {
+    private val currentTopics by lazy {
         listOf(
             "Kobalt Toral",
             "K'Kola Uvarek",
@@ -65,11 +68,50 @@ class FakeCoursesRepository : CoursesRepository {
     private val mutex = Mutex()
 
     override suspend fun getTopics(): Result<CoursesMap> {
-        return Result.Success(topics)
+
+        val apiclient = MoodleApi()
+        val data = apiclient.getCourses(wsToken)
+        System.out.println(data)
+
+        val coursesList = data?.courses?.toMutableList()
+        System.out.println(coursesList)
+        val topicMap: MutableMap<String, List<String>> = HashMap<String, List<String>>()
+
+        if (coursesList != null) {
+            for (i in coursesList) {
+                topicMap.put(i.categoryname.toString(), emptyList())
+            }
+            for (i in topicMap) {
+                val topicList: MutableList<String> = ArrayList()
+                for (j in coursesList) {
+                    if (i.key == j.categoryname.toString()) {
+                        topicList.add(j.shortname.toString())
+                    }
+                }
+                topicMap.put(i.key, topicList)
+            }
+            return Result.Success(topicMap)
+        }
+        Timber.d(topicMap.toString())
+
+        return Result.Success(topicMap)
     }
 
     override suspend fun getPeople(): Result<List<String>> {
-        return Result.Success(people)
+        val apiclient = MoodleApi()
+        val data = apiclient.getCurrentCourses(wsToken)
+        System.out.println(data)
+
+        val coursesList = data?.courses?.toMutableList()
+        val topicList: MutableList<String> = ArrayList()
+
+        if (coursesList != null) {
+            for (i in coursesList) {
+                topicList.add(i.fullname.toString())
+            }
+        }
+        Timber.d(topicList.toString())
+        return Result.Success(topicList)
     }
 
     override suspend fun getPublications(): Result<List<String>> {

@@ -65,6 +65,34 @@ fun InterestsScreen(
     coursesRepository: CoursesRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
+
+//    fun Context.lifecycleOwner(): LifecycleOwner? {
+//        var curContext = this
+//        var maxDepth = 20
+//        while (maxDepth-- > 0 && curContext !is LifecycleOwner) {
+//            curContext = (curContext as ContextWrapper).baseContext
+//        }
+//        return if (curContext is LifecycleOwner) {
+//            curContext
+//        } else {
+//            null
+//        }
+//    }
+//    val context = AmbientContext.current
+//    val lifeSO = context.lifecycleOwner()
+//    val dataStore = DataStoreUser(context)
+//    var tokenState: String
+//
+//    dataStore.tokenFlow.asLiveData().observe(
+//        lifeSO!!,
+//        {
+//            tokenState = it
+//            if (tokenState != "") {
+//                //TODO ваши действия именно в этом блоке
+//            }
+//        }
+//    )
+
     // Returns a [CoroutineScope] that is scoped to the lifecycle of [InterestsScreen]. When this
     // screen is removed from composition, the scope will be cancelled.
     val coroutineScope = rememberCoroutineScope()
@@ -457,6 +485,7 @@ private fun loadFakePeople(): List<String> {
     val people = runBlocking {
         FakeCoursesRepository().getPeople()
     }
+
     return (people as Result.Success).data
 }
 
