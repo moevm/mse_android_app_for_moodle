@@ -16,8 +16,8 @@
     <string name="url">URL</string>
     <string name="current_setup_use">Use current setup</string>
     <string name="sign_in_create_account">Sign in to your Moodle account</string>
-    <string name="user_name_placeholder">Alexander Popov</string>
-    <string name="user_img_placeholder">https://upload.wikimedia.org/wikipedia/commons/a/a8/Alexander_Stepanovich_Popov.jpg</string>
+    <string name="user_name_placeholder">Ivanov Ivan</string>
+    <string name="user_img_url_placeholder">https://picsum.photos/200</string>
     <string name="user_city_placeholder">Saint-Petersburg</string>
     <string name="user_country_placeholder">RU</string>
     <string name="hello">Hello</string>

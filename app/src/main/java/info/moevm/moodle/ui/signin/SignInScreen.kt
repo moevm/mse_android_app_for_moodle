@@ -60,10 +60,6 @@ fun showMessage(context: Context, message: String, duration: Int = Toast.LENGTH_
 fun SignInScreen(
     navigateTo: (Screen) -> Unit
 ) {
-
-    // FIXME: return it - just remove warning
-    // val snackbarHostState = remember { SnackbarHostState() }
-
     var brandingBottom by remember { mutableStateOf(0f) }
     val showBranding by remember { mutableStateOf(true) }
     var heightWithBranding by remember { mutableStateOf(0) }
@@ -134,6 +130,7 @@ fun SignInSignUpTopAppBar(
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center)
+                    .padding(end = 12.dp)
             )
         },
         backgroundColor = MaterialTheme.colors.surface,
@@ -158,7 +155,6 @@ fun SignInSignUpTopAppBar(
 @OptIn(ExperimentalFocus::class)
 @Composable
 fun SignInContent(
-//    onSignInSubmitted: (email: String, password: String) -> Unit
     onSignInSubmitted: (Screen) -> Unit
 ) {
 
@@ -220,7 +216,7 @@ fun SignInContent(
                 val moodleProfile = answ.value?.get(0)
                     ?: MoodleUser(
                         0, context.resources.getString(R.string.user_name_placeholder),
-                        context.resources.getString(R.string.user_img_placeholder),
+                        context.resources.getString(R.string.user_img_url_placeholder),
                         context.resources.getString(R.string.user_city_placeholder),
                         context.resources.getString(R.string.user_country_placeholder)
                     )
