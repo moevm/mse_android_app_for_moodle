@@ -1,5 +1,7 @@
 package info.moevm.moodle.ui.interests
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
@@ -16,12 +18,15 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
 import info.moevm.moodle.R
+//import info.moevm.moodle.api.DataStoreUser                  TODO раскомить
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.data.courses.CoursesRepository
@@ -65,6 +70,34 @@ fun InterestsScreen(
     coursesRepository: CoursesRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
+
+//    fun Context.lifecycleOwner(): LifecycleOwner? {
+//        var curContext = this
+//        var maxDepth = 20
+//        while (maxDepth-- > 0 && curContext !is LifecycleOwner) {
+//            curContext = (curContext as ContextWrapper).baseContext
+//        }
+//        return if (curContext is LifecycleOwner) {
+//            curContext
+//        } else {
+//            null
+//        }
+//    }
+//    val context = AmbientContext.current
+//    val lifeSO = context.lifecycleOwner()
+//    val dataStore = DataStoreUser(context)
+//    var tokenState: String
+//
+//    dataStore.tokenFlow.asLiveData().observe(
+//        lifeSO!!,
+//        {
+//            tokenState = it
+//            if (tokenState != "") {
+//                //TODO ваши действия именно в этом блоке
+//            }
+//        }
+//    )
+
     // Returns a [CoroutineScope] that is scoped to the lifecycle of [InterestsScreen]. When this
     // screen is removed from composition, the scope will be cancelled.
     val coroutineScope = rememberCoroutineScope()
