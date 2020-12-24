@@ -156,19 +156,12 @@ fun SignInContent(
 
     fun checkToken(token:String){
         val answ = apiclient.checkToken(token)
-        var isDone = false
         answ.observe(lifeSO!!,{
-            if (answ.value?.errorcode == "invalidtoken") {
-                if (!isDone){
-                    isDone = true
-                    showMessage(context, "TokenLife ended")
-                    onSignInSubmitted(Screen.SignIn)
-
-                }
-            } else {
+            if (answ.value?.errorcode != "invalidtoken") {
                 showMessage(context, "already login")
                 onSignInSubmitted(Screen.Home)
-            }
+                }
+            // else - остаемся
 
         })
     }
