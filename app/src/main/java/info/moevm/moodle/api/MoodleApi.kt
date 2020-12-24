@@ -7,6 +7,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import info.moevm.moodle.model.APIVariables
+import info.moevm.moodle.model.LoginSuccess
+import info.moevm.moodle.model.MoodleUser
+import info.moevm.moodle.model.WrongToken
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -30,6 +34,7 @@ class MoodleApi {
         .create(ApiRequests::class.java)
 
     fun checkLogIn(userName: String, passWord: String): LiveData<LoginSuccess> {
+        Timber.tag("Check_login").i("checkLogIn with API was called")
         val data = MutableLiveData<LoginSuccess>()
         api.logIn(APIVariables.MOODLE_MOBILE_APP.value, userName, passWord)
             .enqueue(object : Callback<LoginSuccess> { // асинхронный вызов.
@@ -39,6 +44,7 @@ class MoodleApi {
                 ) {
                     val res = response.body()
                     if (response.code() == 200 && res != null) {
+                        Timber.tag("Check_login").i("$res")
                         data.value = res
                     } else {
                         data.value = null
@@ -98,6 +104,54 @@ class MoodleApi {
                 break
         }
         Timber.d("answer is received")
+      
+    fun getMoodleUserInfo(token: String, userLogin: String): LiveData<List<MoodleUser>> {
+        Timber.tag("GET_user_info").i("getMoodleUserInfo was called with token: |$token|, userLogin: |$userLogin|")
+        val data = MutableLiveData<List<MoodleUser>>()
+        api.getUserInformation(token, APIVariables.CORE_USER_GET_USERS_BY_FIELD.value, APIVariables.MOODLE_WS_REST_FORMAT.value, "username", userLogin)
+            .enqueue(object : Callback<List<MoodleUser>> {
+                override fun onResponse(
+                    call: Call<List<MoodleUser>>,
+                    response: Response<List<MoodleUser>>
+                ) {
+                    val res = response.body()
+                    if (response.code() == 200 && res != null) {
+                        data.value = res
+                        Timber.tag("GET_user_info").i("GOT response from server with: ${data.value?.get(0)}")
+                    } else {
+                        data.value = null
+                        Timber.tag("GET_user_info").i("No correct user data response from server")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<MoodleUser>>, t: Throwable) {
+                    Timber.tag("GET_user_info").i("onFailure GET user info was called because ${t.cause}, call: $call")
+                    data.value = null
+                }
+            })
+        return data
+    }
+
+    fun checkToken(token: String): LiveData<WrongToken> {
+        val data = MutableLiveData<WrongToken>()
+        api.checkTokenLife(token, APIVariables.MOD_ASSIGN_GET_ASSIGMENTS.value, APIVariables.MOODLE_WS_REST_FORMAT.value)
+            .enqueue(object : Callback<WrongToken> { // асинхронный вызов.
+                override fun onResponse(
+                    call: Call<WrongToken>,
+                    response: Response<WrongToken>
+                ) {
+                    val res = response.body()
+                    if (response.code() == 200 && res != null) {
+                        data.value = res
+                    } else {
+                        data.value = null
+                    }
+                }
+
+                override fun onFailure(call: Call<WrongToken>, t: Throwable) {
+                    data.value = null
+                }
+            })
         return data
     }
 }

@@ -6,18 +6,24 @@
 
     <string name="app_tagline">MOEVM Moodle App</string>
     <string name="email">Email</string>
+    <string name="username">Username</string>
     <string name="dominant_home_course_caption">Your last course</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_in">Sign in</string>
-    <string name="token_auth">Token authorization</string>
+    <string name="token_url_setup">Token and URL settings</string>
     <string name="token">Token</string>
-    <string name="token_use">Use token</string>
+    <string name="url">URL</string>
+    <string name="current_setup_use">Use current setup</string>
     <string name="sign_in_create_account">Sign in to your Moodle account</string>
-    <string name="user_name">Alexander Popov</string>
+    <string name="user_name_placeholder">Alexander Popov</string>
+    <string name="user_img_placeholder">https://upload.wikimedia.org/wikipedia/commons/a/a8/Alexander_Stepanovich_Popov.jpg</string>
+    <string name="user_city_placeholder">Saint-Petersburg</string>
+    <string name="user_country_placeholder">RU</string>
     <string name="hello">Hello</string>
     <string name="profile_label">Profile</string>
     <string name="setups">Setups</string>
+    <string name="log_out">Log out</string>
     <string name="all_courses">All courses</string>
     <string name="or">or</string>
     <string name="forgot_password">Forgot password</string>
@@ -27,6 +33,8 @@
     <string name="previous">Previous</string>
     <string name="done">Done</string>
     <string name="settings_name">Settings</string>
+    <string name="enter_screen_info">Enter admin token for extension API. Specify the url of the server to send requests to: local or work.</string>
+    <string name="moodle_user">moodle_user</string>
 
     <!--  Labels  -->
     <string name="home_label">Home</string>

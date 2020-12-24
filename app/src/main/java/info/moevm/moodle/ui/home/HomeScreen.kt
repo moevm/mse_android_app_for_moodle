@@ -395,7 +395,7 @@ private fun PreviewDrawerOpen() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
+            postsRepository = BlockingFakePostsRepository(AmbientContext.current),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )

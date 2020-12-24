@@ -198,6 +198,12 @@ data class Courses(
     val warnings: Array<Warning>? = null
 )
 
+data class WrongToken(
+    val exception: String? = null,
+    val errorcode: String? = null,
+    val message: String? = null
+)
+
 data class CurrentCourse(
     val id: Int? = null,
     val fullname: String? = null,
@@ -228,11 +234,12 @@ enum class ParagraphType {
     Quote,
     Bullet,
 }
-
+// /data/user/0/info.moevm.moodle/files/datastore/user_data_store.preferences_pb
 enum class APIVariables(var value: String) {
     MOODLE_MOBILE_APP("moodle_mobile_app"),
     MOODLE_WS_REST_FORMAT("json"),
     MOODLE_URL("http://e.moevm.info"),
+    USER_PREFERENCES_NAME("user_data_store"),
 // const val MOODLE = "https://10.0.2.2:1010"   need for local server
     MOD_ASSIGN_GET_ASSIGMENTS("mod_assign_get_assignments"),
     CORE_COURSE_GET_COURSES_BY_FIELD("core_course_get_courses_by_field")

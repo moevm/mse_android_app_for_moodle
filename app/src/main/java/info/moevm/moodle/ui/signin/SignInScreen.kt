@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.widget.Toast
 import androidx.compose.animation.animate
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,21 +22,30 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import info.moevm.moodle.R
+import info.moevm.moodle.api.DataStoreMoodleUser
+import info.moevm.moodle.api.DataStoreUser
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.model.LoginSuccess
+import info.moevm.moodle.model.MoodleUser
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.signin.authorization.Email
-import info.moevm.moodle.ui.signin.authorization.EmailState
+import info.moevm.moodle.ui.signin.authorization.Login
+import info.moevm.moodle.ui.signin.authorization.LoginState
 import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
@@ -67,6 +78,7 @@ fun SignInScreen(
         topBar = {
             SignInSignUpTopAppBar(
                 topAppBarText = stringResource(id = R.string.sign_in),
+                onSetupTouch = navigateTo
             )
         },
         bodyContent = {
@@ -92,6 +104,7 @@ fun SignInScreen(
                 ) {
                     Column(modifier = Modifier.fillMaxWidth()) {
                         SignInContent(
+                            // TODO: check correction of login key
 //                            onSignInSubmitted = { email, password ->
 //                                SignInEvent.SignIn(email, password)
 //                            }
@@ -108,7 +121,11 @@ fun SignInScreen(
  * Just "Sign In" text on the top bar of the app
  */
 @Composable
-fun SignInSignUpTopAppBar(topAppBarText: String) {
+fun SignInSignUpTopAppBar(
+    topAppBarText: String,
+    onSetupTouch: (Screen) -> Unit
+) {
+    val image = vectorResource(id = R.drawable.settings)
     TopAppBar(
         title = {
             Text(
@@ -122,6 +139,20 @@ fun SignInSignUpTopAppBar(topAppBarText: String) {
         backgroundColor = MaterialTheme.colors.surface,
         elevation = 0.dp
     )
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.End
+    ) {
+        IconButton(
+            onClick = {
+                onSetupTouch(Screen.EnterSetup)
+            }
+        ) {
+            Row {
+                Image(imageVector = image)
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalFocus::class)
@@ -147,31 +178,107 @@ fun SignInContent(
     val apiclient = MoodleApi()
     val context = AmbientContext.current
     val lifeSO = context.lifecycleOwner()
+    val dataStore = DataStoreUser(context)
+    val moodleProfileDataStore = DataStoreMoodleUser(context)
+    lateinit var tokenState: String
+    lateinit var loginState: String
+
+    fun checkToken(token: String) {
+        val answ = apiclient.checkToken(token)
+        answ.observe(
+            lifeSO!!,
+            {
+                Timber.tag("Check_token").i("checkLogIn was called with answ: ${answ.value}")
+                if (answ.value?.errorcode != "invalidtoken") {
+                    showMessage(context, "already login")
+                    onSignInSubmitted(Screen.Home)
+                }
+                // else - остаемся
+            }
+        )
+    }
+
+    fun checkLogIn() {
+        Timber.tag("Check_token").i("checkLogIn was called")
+        dataStore.tokenFlow.asLiveData().observe(
+            lifeSO!!,
+            {
+                tokenState = it
+                if (tokenState != "") {
+                    checkToken(tokenState)
+                }
+            }
+        )
+    }
+
+    fun setLoginName(token: String, userName: String) {
+        val answ = apiclient.getMoodleUserInfo(token, userName)
+        answ.observe(
+            lifeSO!!,
+            {
+                Timber.tag("GET_user_info").i("GET value from Moodle: value: ${answ.value}")
+                val moodleProfile = answ.value?.get(0)
+                    ?: MoodleUser(
+                        0, context.resources.getString(R.string.user_name_placeholder),
+                        context.resources.getString(R.string.user_img_placeholder),
+                        context.resources.getString(R.string.user_city_placeholder),
+                        context.resources.getString(R.string.user_country_placeholder)
+                    )
+                GlobalScope.launch(Dispatchers.Main) {
+                    moodleProfileDataStore.addMoodleUser(
+                        moodleProfile.id,
+                        moodleProfile.fullname,
+                        moodleProfile.profileimageurl,
+                        moodleProfile.city,
+                        moodleProfile.country
+                    )
+                }
+            }
+        )
+    }
+
+    fun checkLoginName() {
+        Timber.tag("GET_user_info").i("checkLoginName was called")
+        dataStore.loginFlow.asLiveData().observe(
+            lifeSO!!,
+            { itLogin ->
+                loginState = itLogin
+                dataStore.tokenFlow.asLiveData().observe(
+                    lifeSO,
+                    {
+                        tokenState = it
+                        if (loginState != "" && tokenState != "") {
+                            setLoginName(tokenState, loginState)
+                        }
+                    }
+                )
+            }
+        )
+    }
+
+    checkLogIn()
 
     AmbientContext.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
         val focusRequester = remember { FocusRequester() }
-        val emailState = remember { EmailState() }
-        Email(emailState, onImeAction = { focusRequester.requestFocus() })
+        val loginState = remember { LoginState() }
+        Login(
+            loginState = loginState, onImeAction = { focusRequester.requestFocus() },
+            modifier = Modifier.focusRequester(focusRequester)
+        )
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
 
         val passwordState = remember { PasswordState() }
-        var tokenState: String?
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
-            modifier = Modifier.focusRequester(focusRequester),
-            onImeAction = {
-//                onSignInSubmitted(emailState.text, passwordState.text)
-                // TODO add check here to!!!!
-                onSignInSubmitted(Screen.Home)
-            }
+            modifier = Modifier.focusRequester(focusRequester)
         )
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
             onClick = {
-                val userName = emailState.text
+                val userName = loginState.text
                 val userPassword = passwordState.text
                 val data: LiveData<LoginSuccess>?
                 data = apiclient.checkLogIn(userName, userPassword)
@@ -180,7 +287,11 @@ fun SignInContent(
                     Observer {
                         when {
                             data.value?.token != null -> {
-                                tokenState = data.value?.token
+                                tokenState = data.value?.token!!
+                                GlobalScope.launch {
+                                    // TODO if
+                                    dataStore.addUser(userName, userPassword, tokenState)
+                                }
                                 onSignInSubmitted(Screen.Home)
                             }
                             data.value?.error != null -> {
@@ -192,10 +303,11 @@ fun SignInContent(
                         }
                     }
                 )
+                checkLoginName()
                 showMessage(context, "checking...", 5000)
             },
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-            enabled = emailState.isValid && passwordState.isValid
+            enabled = loginState.isValid && passwordState.isValid
         ) {
             Text(
                 text = stringResource(id = R.string.sign_in)
