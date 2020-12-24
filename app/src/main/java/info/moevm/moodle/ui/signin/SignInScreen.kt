@@ -3,22 +3,19 @@ package info.moevm.moodle.ui.signin
 import androidx.compose.animation.animate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.AmbientDensity
-import androidx.compose.ui.platform.DensityAmbient
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -116,19 +113,24 @@ fun SignInSignUpTopAppBar(
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center)
             )
-            Button(
-                onClick = {
-                    onSetupTouch(Screen.EnterSetup)
-                }
-            ) {
-                Row {
-                    Image(imageVector = image)
-                }
-            }
         },
         backgroundColor = MaterialTheme.colors.surface,
         elevation = 0.dp
     )
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.End
+    ) {
+        IconButton(
+            onClick = {
+                onSetupTouch(Screen.EnterSetup)
+            }
+        ) {
+            Row {
+                Image(imageVector = image)
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalFocus::class)

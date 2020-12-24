@@ -12,13 +12,13 @@ enum class ScreenName { ENTER_SETUP, SIGN_IN, HOME, USER, INTERESTS, ARTICLE, ST
 
 /**
  * Class defining the screens we have in the app:
+ * - enter setup;
  * - sign in;
  * - home;
  * - article details;
  * - interests
  */
 sealed class Screen(val id: ScreenName) {
-//    object TokenAuth : Screen(TOKEN_AUTH)
     object EnterSetup : Screen(ENTER_SETUP)
     object SignIn : Screen(SIGN_IN)
     object Home : Screen(HOME)

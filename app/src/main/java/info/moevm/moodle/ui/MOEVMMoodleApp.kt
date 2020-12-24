@@ -18,11 +18,11 @@ import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.ui.article.ArticleScreen
 import info.moevm.moodle.ui.components.StatisticsTopAppBar
+import info.moevm.moodle.ui.entersetup.EnterSetupScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
 import info.moevm.moodle.ui.settings.SettingsScreen
 import info.moevm.moodle.ui.signin.SignInScreen
-import info.moevm.moodle.ui.signin.TokenAuthScreen
 import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import info.moevm.moodle.ui.user.UserScreen
@@ -49,6 +49,11 @@ private fun AppContent(
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
             NavHost(navController, startDestination = ScreenName.SIGN_IN.name) {
+                composable(ScreenName.ENTER_SETUP.name) {
+                    EnterSetupScreen(
+                        navigateTo = actions.select
+                    )
+                }
                 composable(ScreenName.SIGN_IN.name) {
                     SignInScreen(
                         navigateTo = actions.select
