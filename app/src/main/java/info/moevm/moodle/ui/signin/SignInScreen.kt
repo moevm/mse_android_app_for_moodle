@@ -30,7 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import info.moevm.moodle.R
+import info.moevm.moodle.api.DataStoreUser
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.ui.Screen
@@ -39,6 +41,8 @@ import info.moevm.moodle.ui.signin.authorization.EmailState
 import info.moevm.moodle.ui.signin.authorization.Password
 import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
@@ -171,6 +175,36 @@ fun SignInContent(
     val apiclient = MoodleApi()
     val context = AmbientContext.current
     val lifeSO = context.lifecycleOwner()
+    val dataStore = DataStoreUser(context)
+    var tokenState: String
+
+    fun checkToken(token: String) {
+        val answ = apiclient.checkToken(token)
+        answ.observe(
+            lifeSO!!,
+            {
+                if (answ.value?.errorcode != "invalidtoken") {
+                    showMessage(context, "already login")
+                    onSignInSubmitted(Screen.Home)
+                }
+                // else - остаемся
+            }
+        )
+    }
+
+    fun checkLogIn() {
+        dataStore.tokenFlow.asLiveData().observe(
+            lifeSO!!,
+            {
+                tokenState = it
+                if (tokenState != "") {
+                    checkToken(tokenState)
+                }
+            }
+        )
+    }
+
+    checkLogIn()
 
     AmbientContext.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -181,7 +215,6 @@ fun SignInContent(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
 
         val passwordState = remember { PasswordState() }
-        var tokenState: String?
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
@@ -204,7 +237,11 @@ fun SignInContent(
                     Observer {
                         when {
                             data.value?.token != null -> {
-                                tokenState = data.value?.token
+                                tokenState = data.value?.token!!
+                                GlobalScope.launch {
+                                    // TODO if
+                                    dataStore.addUser(userName, userPassword, tokenState)
+                                }
                                 onSignInSubmitted(Screen.Home)
                             }
                             data.value?.error != null -> {

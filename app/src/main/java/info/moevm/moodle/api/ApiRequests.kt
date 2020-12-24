@@ -3,6 +3,7 @@ package info.moevm.moodle.api
 import info.moevm.moodle.model.Course
 import info.moevm.moodle.model.CurrentCourse
 import info.moevm.moodle.model.LoginSuccess
+import info.moevm.moodle.model.WrongToken
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -14,4 +15,6 @@ interface ApiRequests {
     fun getCourses(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<Course>
     @GET("/webservice/rest/server.php")
     fun getCurrentCourses(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<CurrentCourse>
+    @GET("/webservice/rest/server.php")
+    fun checkTokenLife(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<WrongToken>
 }
