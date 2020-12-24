@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui.entersetup
 
-import androidx.compose.animation.animate
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -8,13 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.boundsInParent
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,8 +16,6 @@ import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.entersetup.checksetup.FiledEnter
 import info.moevm.moodle.ui.entersetup.checksetup.TokenState
 import info.moevm.moodle.ui.entersetup.checksetup.UrlState
-import info.moevm.moodle.ui.signin.Branding
-import info.moevm.moodle.ui.signin.brandingPreferredHeight
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 
 @OptIn(ExperimentalMaterialApi::class)
