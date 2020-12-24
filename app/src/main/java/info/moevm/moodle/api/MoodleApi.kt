@@ -67,33 +67,13 @@ class MoodleApi {
                 }
             }
         }
-        // DANGEROUSE
+        // WORK IN PROGRESS
         val time = System.currentTimeMillis()
         while (data == null) {
             if (System.currentTimeMillis() - time > 1000)
                 break
         }
         Timber.d("answer is received")
-        /*api.getCurrentCourses(token, APIVariables.MOD_ASSIGN_GET_ASSIGMENTS.value, APIVariables.MOODLE_WS_REST_FORMAT.value)
-            .enqueue(object : Callback<CurrentCourses> { // асинхронный вызов.
-                override fun onResponse(
-                    call: Call<CurrentCourses>,
-                    response: Response<CurrentCourses>
-                ) {
-                    val res = response.body()
-                    if (response.code() == 200 && res != null) {
-                        data.value = res
-                        //System.out.println(data.value)
-                    } else {
-                        data.value = null
-                    }
-                }
-
-                override fun onFailure(call: Call<CurrentCourses>, t: Throwable) {
-                    data.value = null
-                }
-            })*/
-
         return data
     }
     fun getCourses(token: String): Courses? {
@@ -111,33 +91,13 @@ class MoodleApi {
                 }
             }
         }
-        // DANGEROUSE
+        // WORK IN PROGRESS
         val time = System.currentTimeMillis()
         while (data == null) {
             if (System.currentTimeMillis() - time > 1000)
                 break
         }
         Timber.d("answer is received")
-        /*val data = MutableLiveData<Courses>()
-        api.getCourses(token, APIVariables.CORE_COURSE_GET_COURSES_BY_FIELD.value, APIVariables.MOODLE_WS_REST_FORMAT.value)
-            .enqueue(object : Callback<Courses> { // асинхронный вызов.
-                override fun onResponse(
-                    call: Call<Courses>,
-                    response: Response<Courses>
-                ) {
-                    val res = response.body()
-                    if (response.code() == 200 && res != null) {
-                        data.value = res
-                        System.out.println(data.value)
-                    } else {
-                        data.value = null
-                    }
-                }
-
-                override fun onFailure(call: Call<Courses>, t: Throwable) {
-                    data.value = null
-                }
-            })*/
         return data
     }
 }
