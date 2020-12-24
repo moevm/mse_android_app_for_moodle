@@ -43,6 +43,7 @@ import info.moevm.moodle.ui.signin.authorization.PasswordState
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 sealed class SignInEvent {
     data class SignIn(val email: String, val password: String) : SignInEvent()
@@ -177,12 +178,14 @@ fun SignInContent(
     val lifeSO = context.lifecycleOwner()
     val dataStore = DataStoreUser(context)
     var tokenState: String
+    var loginState: String
 
     fun checkToken(token: String) {
         val answ = apiclient.checkToken(token)
         answ.observe(
             lifeSO!!,
             {
+                Timber.tag("Check_token").e("checkLogIn was called with answ: ${answ.value}");
                 if (answ.value?.errorcode != "invalidtoken") {
                     showMessage(context, "already login")
                     onSignInSubmitted(Screen.Home)
@@ -193,12 +196,36 @@ fun SignInContent(
     }
 
     fun checkLogIn() {
+        Timber.tag("Check_token").e("checkLogIn was called");
         dataStore.tokenFlow.asLiveData().observe(
             lifeSO!!,
             {
                 tokenState = it
                 if (tokenState != "") {
                     checkToken(tokenState)
+                }
+            }
+        )
+    }
+
+    fun setLoginName(userName: String) {
+        val answ = apiclient.getMoodleUserInfo(userName)
+        answ.observe(
+            lifeSO!!,
+            {
+                Timber.tag("GET_user_info").e("${answ.value}");
+            }
+        )
+    }
+
+    fun checkLoginName() {
+        Timber.tag("GET_user_info").e("checkLoginName was called");
+        dataStore.loginFlow.asLiveData().observe(
+            lifeSO!!,
+            {
+                loginState = it
+                if (loginState != "") {
+                    setLoginName(loginState)
                 }
             }
         )
@@ -253,6 +280,7 @@ fun SignInContent(
                         }
                     }
                 )
+                checkLoginName()
                 showMessage(context, "checking...", 5000)
             },
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
