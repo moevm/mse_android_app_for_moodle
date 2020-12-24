@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UserScreen(
+    fullNameMoodleProfile: String,
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
@@ -43,7 +44,7 @@ fun UserScreen(
                 modifier = Modifier.testTag("topAppBarHome"),
                 title = {
                     Text(
-                        text = "${stringResource(id = R.string.hello)}, ${stringResource(id = R.string.user_name_placeholder)}",
+                        text = "${stringResource(id = R.string.hello)}, $fullNameMoodleProfile",
                         textAlign = TextAlign.Justify,
                         modifier = Modifier
                             .fillMaxSize()
@@ -145,7 +146,7 @@ fun UserPreview() {
         val scaffoldState = rememberScaffoldState(
             drawerState = rememberDrawerState(DrawerValue.Closed)
         )
-        UserScreen(navigateTo = { }, scaffoldState = scaffoldState)
+        UserScreen(navigateTo = { }, scaffoldState = scaffoldState, fullNameMoodleProfile = "")
     }
 }
 
@@ -156,6 +157,6 @@ fun UserPreviewDark() {
         val scaffoldState = rememberScaffoldState(
             drawerState = rememberDrawerState(DrawerValue.Closed)
         )
-        UserScreen(navigateTo = { }, scaffoldState = scaffoldState)
+        UserScreen(navigateTo = { }, scaffoldState = scaffoldState, fullNameMoodleProfile = "")
     }
 }
