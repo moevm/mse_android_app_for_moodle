@@ -13,12 +13,12 @@ interface CoursesRepository {
     /**
      * Get relevant topics to the user.
      */
-    suspend fun getTopics(): Result<CoursesMap>
+    suspend fun getTopics(token: String): Result<CoursesMap>
 
     /**
      * Get list of people.
      */
-    suspend fun getPeople(): Result<List<String>>
+    suspend fun getPeople(token: String): Result<List<String>>
 
     /**
      * Get list of publications.
