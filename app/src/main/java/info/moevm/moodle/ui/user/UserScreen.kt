@@ -51,6 +51,7 @@ fun UserScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .wrapContentSize(Alignment.Center)
+                            .padding(end = 16.dp)
                     )
                 },
                 navigationIcon = {
@@ -115,7 +116,7 @@ fun UserContent(
     ) {
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         CircularImage(
-            image = imageResource(id = R.drawable.popov),
+            image = imageResource(id = R.drawable.avatar),
             modifier = Modifier.preferredSize(120.dp)
         )
         Spacer(modifier = Modifier.preferredHeight(16.dp))
