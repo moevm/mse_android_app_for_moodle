@@ -3,14 +3,14 @@ package info.moevm.moodle.api
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import info.moevm.moodle.model.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import info.moevm.moodle.model.APIVariables
 import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.model.MoodleUser
 import info.moevm.moodle.model.WrongToken
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -82,6 +82,7 @@ class MoodleApi {
         Timber.d("answer is received")
         return data
     }
+
     fun getCourses(token: String): Courses? {
         var data: Courses? = null
         GlobalScope.launch(Dispatchers.IO) {
@@ -104,7 +105,8 @@ class MoodleApi {
                 break
         }
         Timber.d("answer is received")
-      
+        return data
+    }
     fun getMoodleUserInfo(token: String, userLogin: String): LiveData<List<MoodleUser>> {
         Timber.tag("GET_user_info").i("getMoodleUserInfo was called with token: |$token|, userLogin: |$userLogin|")
         val data = MutableLiveData<List<MoodleUser>>()
