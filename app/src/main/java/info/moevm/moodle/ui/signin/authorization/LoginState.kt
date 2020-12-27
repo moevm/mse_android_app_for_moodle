@@ -3,7 +3,7 @@ package info.moevm.moodle.ui.signin.authorization
 import info.moevm.moodle.ui.signin.TextFieldState
 import java.util.regex.Pattern
 
-private const val LOGIN_VALIDATION_REGEX = "([A-Za-z0-9]{2,15})\$"
+private const val LOGIN_VALIDATION_REGEX = "([A-Za-z0-9\\.-_@]{2,15})\$"
 
 class LoginState :
     TextFieldState(validator = ::isLoginValid, errorFor = ::loginValidationError)
