@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import info.moevm.moodle.R
 import info.moevm.moodle.ui.signin.TextFieldState
+import timber.log.Timber
 
 @OptIn(ExperimentalFocus::class)
 @Composable
@@ -41,6 +42,7 @@ fun Login(
         },
         modifier = modifier.fillMaxWidth().focusObserver { focusState ->
             val focused = focusState == FocusState.Active
+            Timber.i("Focus on Login is $focused")
             loginState.onFocusChange(focused)
             if (!focused) {
                 loginState.enableShowErrors()
@@ -58,10 +60,13 @@ fun Login(
         isErrorValue = loginState.showErrors(),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
         onImeActionPerformed = { action, softKeyboardController ->
-            if (action == ImeAction.Done) {
+            if(action == ImeAction.Next){
+                Timber.i("Change focus on Password")
+                onImeAction()
+            } else if (action == ImeAction.Done) {
                 softKeyboardController?.hideSoftwareKeyboard()
             }
-            onImeAction()
+//            onImeAction()
         }
     )
 
@@ -71,9 +76,9 @@ fun Login(
 @OptIn(ExperimentalFocus::class)
 @Composable
 fun Password(
-    label: String,
-    passwordState: TextFieldState,
     modifier: Modifier = Modifier,
+    label: String,
+    passwordState: TextFieldState = remember{ PasswordState() },
     imeAction: ImeAction = ImeAction.Done,
     onImeAction: () -> Unit = {}
 ) {
@@ -86,6 +91,7 @@ fun Password(
         },
         modifier = modifier.fillMaxWidth().focusObserver { focusState ->
             val focused = focusState == FocusState.Active
+            Timber.i("Focus on Password is $focused")
             passwordState.onFocusChange(focused)
             if (!focused) {
                 passwordState.enableShowErrors()
@@ -121,6 +127,7 @@ fun Password(
         onImeActionPerformed = { action, softKeyboardController ->
             if (action == ImeAction.Done) {
                 softKeyboardController?.hideSoftwareKeyboard()
+                Timber.i("Password tap on Done")
             }
             onImeAction()
         }
