@@ -1,7 +1,7 @@
 #  Мобильное приложение для кафедральной платформы moodle
 
 <div>
-  <a href="https://id.atlassian.com/invite/p/jira-software?id=NZvq9D7rREaxtU86oWmxVA">
+  <a href="https://id.atlassian.com/invite/p/jira-software?id=2nvMNbXITJ2c__Elq_oT4g">
   <img
     style="margin-left: 10px"
     alt="Jira"
@@ -27,7 +27,7 @@
   <img
     style="margin-left: 10px"
     width="15px"
-    src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Google_Calendar_icon.svg/246px-Google_Calendar_icon.svg.png"
+    src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/1024px-Google_Calendar_icon_%282020%29.svg.png"
   />
   Google Calendar
   </a>
