@@ -104,7 +104,7 @@ fun SignInScreen(
             }
                 Branding(
                     modifier = Modifier.fillMaxWidth().weight(1f).onGloballyPositioned {
-                        if (brandingBottom == 0f) {
+                        if (brandingBottom == 1f) {
                             brandingBottom = it.boundsInParent.bottom
                         }
                     }
