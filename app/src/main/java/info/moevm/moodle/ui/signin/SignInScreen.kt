@@ -88,13 +88,7 @@ fun SignInScreen(
                         }
                     }
             ) {
-                Branding(
-                    modifier = Modifier.fillMaxWidth().weight(1f).onGloballyPositioned {
-                        if (brandingBottom == 0f) {
-                            brandingBottom = it.boundsInParent.bottom
-                        }
-                    }
-                )
+
                 SignInSignUpScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -108,6 +102,13 @@ fun SignInScreen(
                         )
                     }
                 }
+                Branding(
+                    modifier = Modifier.fillMaxWidth().weight(1f).onGloballyPositioned {
+                        if (brandingBottom == 0f) {
+                            brandingBottom = it.boundsInParent.bottom
+                        }
+                    }
+                )
             }
         }
     )
