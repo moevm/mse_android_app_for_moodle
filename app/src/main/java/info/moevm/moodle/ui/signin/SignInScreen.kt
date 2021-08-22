@@ -257,11 +257,12 @@ fun SignInContent(
 
     AmbientContext.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
-        val focusRequester = remember { FocusRequester() }
+        val loginFocusRequester = remember { FocusRequester() }
+        val passwordFocusRequester = remember { FocusRequester() }
         val loginState = remember { LoginState() }
         Login(
-            loginState = loginState, onImeAction = { focusRequester.requestFocus() },
-            modifier = Modifier.focusRequester(focusRequester)
+            loginState = loginState, onImeAction = { passwordFocusRequester.requestFocus() },
+            modifier = Modifier.focusRequester(loginFocusRequester)
         )
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
@@ -270,7 +271,7 @@ fun SignInContent(
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
-            modifier = Modifier.focusRequester(focusRequester)
+            modifier = Modifier.focusRequester(passwordFocusRequester)
         )
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         Button(
