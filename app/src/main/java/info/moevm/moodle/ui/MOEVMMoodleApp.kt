@@ -33,7 +33,6 @@ import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import info.moevm.moodle.ui.user.UserScreen
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
@@ -46,8 +45,6 @@ fun MOEVMMoodleApp(appContainer: AppContainer) {
         )
     }
 }
-
-
 
 @Composable
 private fun AppContent(
@@ -79,9 +76,9 @@ private fun AppContent(
     val fullNameMoodleUser = MutableLiveData<String>()
     val cityMoodleUser = MutableLiveData<String>()
     val countryMoodleUser = MutableLiveData<String>()
-    fullNameMoodleUser.observe(lifeCO!!){ }
-    cityMoodleUser.observe(lifeCO){ }
-    countryMoodleUser.observe(lifeCO){ }
+    fullNameMoodleUser.observe(lifeCO!!) { }
+    cityMoodleUser.observe(lifeCO) { }
+    countryMoodleUser.observe(lifeCO) { }
 
     runBlocking {
         val fullNameMoodleUserString: String
@@ -181,5 +178,3 @@ private fun AppContent(
         }
     }
 }
-
-

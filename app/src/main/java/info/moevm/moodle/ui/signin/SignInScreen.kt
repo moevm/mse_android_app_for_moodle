@@ -338,12 +338,11 @@ fun SignInSignUpScreen(
 @Composable
 fun SignInPreview() {
     MOEVMMoodleTheme {
-        SignInScreen(fullNameMoodleUser = MutableLiveData(""),
+        SignInScreen(
+            fullNameMoodleUser = MutableLiveData(""),
             cityMoodleUser = MutableLiveData(""),
             countryMoodleUser = MutableLiveData("")
-        ) {
-
-        }
+        ) { }
     }
 }
 
@@ -351,10 +350,10 @@ fun SignInPreview() {
 @Composable
 fun SignInPreviewDark() {
     MOEVMMoodleTheme(darkTheme = true) {
-        SignInScreen(fullNameMoodleUser = MutableLiveData(""),
+        SignInScreen(
+            fullNameMoodleUser = MutableLiveData(""),
             cityMoodleUser = MutableLiveData(""),
-            countryMoodleUser = MutableLiveData("")) {
-
-        }
+            countryMoodleUser = MutableLiveData("")
+        ) { }
     }
 }

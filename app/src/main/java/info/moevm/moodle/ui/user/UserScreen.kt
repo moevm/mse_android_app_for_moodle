@@ -70,8 +70,8 @@ fun UserScreen(
         bodyContent = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 UserContent(
-                    cityMoodleProfile.value?: "",
-                    countryMoodleProfile.value?: "",
+                    cityMoodleProfile.value ?: "",
+                    countryMoodleProfile.value ?: "",
                     onNavigate = navigateTo
                 )
             }
