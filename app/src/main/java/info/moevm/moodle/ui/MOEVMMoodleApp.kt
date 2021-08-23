@@ -1,5 +1,7 @@
 package info.moevm.moodle.ui
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -10,6 +12,8 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.AmbientContext
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -29,6 +33,7 @@ import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import info.moevm.moodle.ui.user.UserScreen
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
@@ -42,6 +47,8 @@ fun MOEVMMoodleApp(appContainer: AppContainer) {
     }
 }
 
+
+
 @Composable
 private fun AppContent(
     postsRepository: PostsRepository,
@@ -51,20 +58,43 @@ private fun AppContent(
     val actions = remember(navController) { Actions(navController) }
     val scaffoldState = rememberScaffoldState()
 
+    fun Context.lifecycleOwner(): LifecycleOwner? {
+        var curContext = this
+        var maxDepth = 20
+        while (maxDepth-- > 0 && curContext !is LifecycleOwner) {
+            curContext = (curContext as ContextWrapper).baseContext
+        }
+        return if (curContext is LifecycleOwner) {
+            curContext
+        } else {
+            null
+        }
+    }
+
     val context = AmbientContext.current
     val lifeSO = context.applicationContext
     val moodleProfileDataStore = DataStoreMoodleUser(lifeSO)
+    val lifeCO = context.lifecycleOwner()
 
-    val fullNameMoodleUser: String
-    val cityMoodleUser: String
-    val countryMoodleUser: String
+    val fullNameMoodleUser = MutableLiveData<String>()
+    val cityMoodleUser = MutableLiveData<String>()
+    val countryMoodleUser = MutableLiveData<String>()
+    fullNameMoodleUser.observe(lifeCO!!){ }
+    cityMoodleUser.observe(lifeCO){ }
+    countryMoodleUser.observe(lifeCO){ }
 
     runBlocking {
+        val fullNameMoodleUserString: String
+        val cityMoodleUserString: String
+        val countryMoodleUserString: String
         withContext(Dispatchers.IO) {
-            fullNameMoodleUser = moodleProfileDataStore.getFullNameCurrent()
-            cityMoodleUser = moodleProfileDataStore.getCityCurrent()
-            countryMoodleUser = moodleProfileDataStore.getCountryCurrent()
+            fullNameMoodleUserString = moodleProfileDataStore.getFullNameCurrent()
+            cityMoodleUserString = moodleProfileDataStore.getCityCurrent()
+            countryMoodleUserString = moodleProfileDataStore.getCountryCurrent()
         }
+        fullNameMoodleUser.value = fullNameMoodleUserString
+        cityMoodleUser.value = cityMoodleUserString
+        countryMoodleUser.value = countryMoodleUserString
     }
 
     Crossfade(navController.currentBackStackEntryAsState()) {
@@ -77,7 +107,10 @@ private fun AppContent(
                 }
                 composable(ScreenName.SIGN_IN.name) {
                     SignInScreen(
-                        navigateTo = actions.select
+                        navigateTo = actions.select,
+                        fullNameMoodleUser = fullNameMoodleUser,
+                        cityMoodleUser = cityMoodleUser,
+                        countryMoodleUser = countryMoodleUser
                     )
                 }
                 composable(ScreenName.HOME.name) {
@@ -148,3 +181,5 @@ private fun AppContent(
         }
     }
 }
+
+
