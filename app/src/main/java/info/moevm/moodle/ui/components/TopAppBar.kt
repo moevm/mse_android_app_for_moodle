@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui.components
 
-import info.moevm.moodle.R
 import androidx.compose.animation.animate
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
@@ -21,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import info.moevm.moodle.R
 import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import java.util.*
 
@@ -34,11 +34,15 @@ fun StatisticsTopAppBar(
     Surface(
         Modifier
             .preferredHeight(TabHeight)
-            .fillMaxWidth()) {
+            .fillMaxWidth()
+    ) {
         Row {
             IconButton(
                 modifier = Modifier.padding(start = 4.dp, top = 4.dp, end = 4.dp),
-                onClick = { scaffoldState.drawerState.open() }) {
+                onClick = {
+                    scaffoldState.drawerState.open()
+                }
+            ) {
                 Icon(vectorResource(R.drawable.ic_logo_light))
             }
             allScreens.forEach { screen ->
