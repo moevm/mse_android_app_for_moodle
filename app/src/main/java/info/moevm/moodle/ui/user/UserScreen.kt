@@ -5,8 +5,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.ExperimentalFocus
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
@@ -22,6 +23,7 @@ import info.moevm.moodle.ui.components.CircularImage
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -37,7 +39,11 @@ fun UserScreen(
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.User,
-                closeDrawer = { scaffoldState.drawerState.close() },
+                closeDrawer = {
+                    runBlocking {
+                        scaffoldState.drawerState.close()
+                    }
+                },
                 navigateTo = navigateTo
             )
         },
@@ -57,50 +63,51 @@ fun UserScreen(
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
-                        onClick = { scaffoldState.drawerState.open() },
+                        onClick = {
+                            runBlocking {
+                                scaffoldState.drawerState.open()
+                            }
+                        }
                     ) {
-                        Icon(vectorResource(R.drawable.ic_logo_light))
+                        Icon(ImageVector.vectorResource(R.drawable.ic_logo_light), null)
                     }
                 },
                 backgroundColor = MaterialTheme.colors.surface,
                 elevation = 0.dp
             )
-        },
-        bodyContent = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                UserContent(
-                    cityMoodleProfile,
-                    countryMoodleProfile,
-                    onNavigate = navigateTo
+        }){
+        Column(modifier = Modifier.fillMaxWidth()) {
+            UserContent(
+                cityMoodleProfile,
+                countryMoodleProfile,
+                onNavigate = navigateTo
+            )
+        }
+
+        val context = LocalContext.current
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button(
+                onClick = {
+                    GlobalScope.launch {
+                        DataStoreUser(context).addUser("", "", "")
+                    }
+                    navigateTo(Screen.SignIn)
+                },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 8.dp),
+            ) {
+                Text(
+                    text = stringResource(id = R.string.log_out)
                 )
             }
-
-            val context = AmbientContext.current
-
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Button(
-                    onClick = {
-                        GlobalScope.launch {
-                            DataStoreUser(context).addUser("", "", "")
-                        }
-                        navigateTo(Screen.SignIn)
-                    },
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 8.dp),
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.log_out)
-                    )
-                }
-            }
         }
-    )
+    }
 }
 
-@OptIn(ExperimentalFocus::class)
 @Composable
 fun UserContent(
     cityMoodleProfile: String,
@@ -114,18 +121,18 @@ fun UserContent(
         ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         CircularImage(
-            image = imageResource(id = R.drawable.avatar),
-            modifier = Modifier.preferredSize(120.dp)
+            image = ImageBitmap.imageResource(id = R.drawable.avatar),
+            modifier = Modifier.size(120.dp)
         )
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "$cityMoodleProfile, $countryMoodleProfile",
             textAlign = TextAlign.Justify,
             style = MaterialTheme.typography.h5
         )
-        Spacer(modifier = Modifier.preferredHeight(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         Button(
             onClick = {
                 onNavigate(Screen.Home)
@@ -136,7 +143,7 @@ fun UserContent(
                 text = stringResource(id = R.string.all_courses)
             )
         }
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
                 // TODO: Go to setup screen

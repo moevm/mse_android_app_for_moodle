@@ -1,22 +1,14 @@
 package info.moevm.moodle.ui.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.material.AmbientContentAlpha
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import info.moevm.moodle.data.posts.impl.getPostsWithImagesLoaded
@@ -35,12 +27,12 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
                 .heightIn(min = 180.dp)
                 .fillMaxWidth()
                 .clip(shape = MaterialTheme.shapes.medium)
-            Image(image, modifier = imageModifier, contentScale = ContentScale.Crop)
+            Image(image, modifier = imageModifier, contentDescription = null, contentScale = ContentScale.Crop)
         }
-        Spacer(Modifier.preferredHeight(16.dp))
+        Spacer(Modifier.height(16.dp))
 
-        val emphasisLevels = AmbientContentAlpha.current
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        val emphasisLevels = LocalContentAlpha.current
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = post.title,
                 style = typography.h6
@@ -50,7 +42,7 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
                 style = typography.body2
             )
         }
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Text(
                 text = "${post.metadata.date} - ${post.metadata.hoursToPass}h to pass",
                 style = typography.body2
@@ -84,7 +76,7 @@ fun TutorialPreviewFontscale() {
 fun TutorialPreviewTemplate(
     darkTheme: Boolean = false
 ) {
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val previewPosts = getPostsWithImagesLoaded(posts.subList(1, 2), context.resources)
     val post = previewPosts[0]
 

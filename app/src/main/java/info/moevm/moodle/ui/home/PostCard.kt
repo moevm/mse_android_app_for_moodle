@@ -11,10 +11,13 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,7 +33,7 @@ fun AuthorAndReadTime(
     modifier: Modifier = Modifier
 ) {
     Row(modifier) {
-        Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             val textStyle = MaterialTheme.typography.body2
             Text(
                 text = post.metadata.author.name,
@@ -46,18 +49,20 @@ fun AuthorAndReadTime(
 
 @Composable
 fun PostImage(post: Post, modifier: Modifier = Modifier) {
-    val image = post.imageThumb ?: imageResource(R.drawable.placeholder_1_1)
+    val image = post.imageThumb ?: ImageBitmap.imageResource(R.drawable.placeholder_1_1)
     Image(
         bitmap = image,
+        contentDescription = null,
         modifier = modifier
-            .preferredSize(40.dp, 40.dp)
+            .size(40.dp, 40.dp)
             .clip(MaterialTheme.shapes.small)
     )
+
 }
 
 @Composable
 fun PostTitle(post: Post) {
-    Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
         Text(post.title, style = MaterialTheme.typography.subtitle1)
     }
 }
@@ -70,7 +75,8 @@ fun PostCardSimple(
     onToggleFavorite: () -> Unit
 ) {
     Row(
-        modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+        modifier = Modifier
+            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
             .padding(16.dp)
     ) {
         PostImage(post, Modifier.padding(end = 16.dp))
@@ -88,7 +94,8 @@ fun PostCardSimple(
 @Composable
 fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
     Row(
-        Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+        Modifier
+            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
             .padding(16.dp)
     ) {
         PostImage(
@@ -96,7 +103,7 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
             modifier = Modifier.padding(end = 16.dp)
         )
         Column(Modifier.weight(1f)) {
-            Providers(AmbientContentAlpha provides ContentAlpha.high) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                 Text(
                     text = "Open course",
                     style = MaterialTheme.typography.overline
@@ -108,8 +115,10 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
-        Providers(AmbientContentAlpha provides ContentAlpha.high) {
-            Icon(imageVector = Icons.Filled.MoreVert)
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+            Icon(
+                imageVector = Icons.Filled.MoreVert,
+                contentDescription = null)
         }
     }
 }
@@ -128,11 +137,13 @@ fun BookmarkButton(
         if (isBookmarked) {
             Icon(
                 imageVector = Icons.Filled.Bookmark,
+                contentDescription = null,
                 modifier = modifier
             )
         } else {
             Icon(
                 imageVector = Icons.Filled.BookmarkBorder,
+                contentDescription = null,
                 modifier = modifier
             )
         }

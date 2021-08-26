@@ -1,12 +1,12 @@
 package info.moevm.moodle.ui.entersetup
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,24 +28,22 @@ fun EnterSetupScreen(
             EnterSetupScreenTopAppBar(
                 topAppBarText = stringResource(id = R.string.token_url_setup),
             )
-        },
-        bodyContent = {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+        }){
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            EnterSetupPartScreen(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                EnterSetupPartScreen(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        EnterSetupContent(
-                            onSettingsSubmitted = navigateTo
-                        )
-                    }
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    EnterSetupContent(
+                        onSettingsSubmitted = navigateTo
+                    )
                 }
             }
         }
-    )
+    }
 }
 
 @Composable
@@ -65,7 +63,6 @@ fun EnterSetupScreenTopAppBar(topAppBarText: String) {
     )
 }
 
-@OptIn(ExperimentalFocus::class)
 @Composable
 fun EnterSetupContent(
     onSettingsSubmitted: (Screen) -> Unit
@@ -82,7 +79,7 @@ fun EnterSetupContent(
             },
             labelVal = stringResource(id = R.string.token)
         )
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         FiledEnter(
             fieldState = urlState,
             onImeAction = {
@@ -90,17 +87,19 @@ fun EnterSetupContent(
             },
             labelVal = stringResource(id = R.string.url)
         )
-        Spacer(modifier = Modifier.preferredHeight(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         Text(
             text = stringResource(R.string.enter_screen_info),
             style = MaterialTheme.typography.body2
         )
-        Spacer(modifier = Modifier.preferredHeight(32.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         Button(
             onClick = {
                 onSettingsSubmitted(Screen.SignIn)
             },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.current_setup_use)
@@ -114,9 +113,12 @@ fun EnterSetupPartScreen(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    ScrollableColumn(modifier = modifier) {
-        Spacer(modifier = Modifier.preferredHeight(44.dp))
-        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+    val scrollState = rememberScrollState()
+    Column(Modifier.verticalScroll(scrollState)){
+        Spacer(modifier = Modifier.height(44.dp))
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)) {
             content()
         }
     }

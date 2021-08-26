@@ -45,7 +45,7 @@ class FakeCoursesRepository : CoursesRepository {
 
     private val publications by lazy {
         listOf(
-            "Kotlin Vibe",
+            "Курс молодого бойца",
             "Compose Mix",
             "Compose Breakdown",
             "Android Pursue",

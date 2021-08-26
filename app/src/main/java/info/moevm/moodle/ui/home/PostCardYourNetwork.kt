@@ -1,12 +1,15 @@
 package info.moevm.moodle.ui.home
 
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,20 +30,21 @@ fun PostCardPopular(
 ) {
     Card(
         shape = MaterialTheme.shapes.medium,
-        modifier = modifier.preferredSize(280.dp, 240.dp)
+        modifier = modifier.size(280.dp, 240.dp)
     ) {
         Column(modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })) {
-            val image = post.image ?: imageResource(R.drawable.placeholder_4_3)
+            val image = post.image ?: ImageBitmap.imageResource(R.drawable.placeholder_4_3)
             Image(
                 bitmap = image,
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .preferredHeight(100.dp)
+                    .height(100.dp)
                     .fillMaxWidth()
             )
             Column(modifier = Modifier.padding(16.dp)) {
-                val emphasisLevels = AmbientContentAlpha.current
-                Providers(AmbientContentAlpha provides ContentAlpha.high) {
+                val emphasisLevels = LocalContentAlpha.current
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                     Text(
                         text = post.title,
                         style = MaterialTheme.typography.h6,
@@ -54,8 +58,7 @@ fun PostCardPopular(
                         style = MaterialTheme.typography.body2
                     )
                 }
-                Providers(
-                    AmbientContentAlpha provides ContentAlpha.high
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high
                 ) {
                     Text(
                         text = "${post.metadata.date} - " +

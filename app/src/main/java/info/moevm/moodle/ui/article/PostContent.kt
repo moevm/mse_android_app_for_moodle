@@ -1,25 +1,22 @@
 package info.moevm.moodle.ui.article
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.AmbientContentColor
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
-import androidx.compose.ui.platform.AmbientDensity
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
@@ -43,28 +40,30 @@ private val defaultSpacerSize = 16.dp
 
 @Composable
 fun PostContent(post: Post, modifier: Modifier = Modifier) {
-    ScrollableColumn(
-        modifier = modifier.padding(horizontal = defaultSpacerSize)
-    ) {
-        Spacer(Modifier.preferredHeight(defaultSpacerSize))
+    val scrollState = rememberScrollState()
+    Column(Modifier
+        .padding(horizontal = defaultSpacerSize)
+        .verticalScroll(scrollState)) {
+        Spacer(Modifier.height(defaultSpacerSize))
         PostHeaderImage(post)
         Text(text = post.title, style = MaterialTheme.typography.h4)
-        Spacer(Modifier.preferredHeight(8.dp))
+        Spacer(Modifier.height(8.dp))
         post.subtitle?.let { subtitle ->
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.body2,
                     lineHeight = 20.sp
                 )
             }
-            Spacer(Modifier.preferredHeight(defaultSpacerSize))
+            Spacer(Modifier.height(defaultSpacerSize))
         }
         PostMetadata(post.metadata)
-        Spacer(Modifier.preferredHeight(24.dp))
+        Spacer(Modifier.height(24.dp))
         PostContents(post.paragraphs)
-        Spacer(Modifier.preferredHeight(48.dp))
+        Spacer(Modifier.height(48.dp))
     }
+
 }
 
 @Composable
@@ -74,8 +73,8 @@ private fun PostHeaderImage(post: Post) {
             .heightIn(min = 180.dp)
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
-        Image(image, imageModifier, contentScale = ContentScale.Crop)
-        Spacer(Modifier.preferredHeight(defaultSpacerSize))
+        Image(image, null, imageModifier, contentScale = ContentScale.Crop)
+        Spacer(Modifier.height(defaultSpacerSize))
     }
 }
 
@@ -85,18 +84,19 @@ private fun PostMetadata(metadata: Metadata) {
     Row {
         Image(
             imageVector = Icons.Filled.AccountCircle,
-            modifier = Modifier.preferredSize(40.dp),
-            colorFilter = ColorFilter.tint(AmbientContentColor.current),
+            contentDescription = null,
+            modifier = Modifier.size(40.dp),
+            colorFilter = ColorFilter.tint(LocalContentColor.current),
             contentScale = ContentScale.Fit
         )
-        Spacer(Modifier.preferredWidth(8.dp))
+        Spacer(Modifier.width(8.dp))
         Column {
             Text(
                 text = metadata.author.name,
                 style = typography.caption,
                 modifier = Modifier.padding(top = 4.dp)
             )
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = "${metadata.date} • ${metadata.hoursToPass} ${stringResource(R.string.hours_to_pass)}",
                     style = typography.caption
@@ -176,16 +176,16 @@ private fun BulletParagraph(
     paragraphStyle: ParagraphStyle
 ) {
     Row {
-        with(AmbientDensity.current) {
+        with(LocalDensity.current) {
             // this box is acting as a character, so it's sized with font scaling (sp)
             Box(
                 modifier = Modifier
-                    .preferredSize(8.sp.toDp(), 8.sp.toDp())
+                    .size(8.sp.toDp(), 8.sp.toDp())
                     .alignBy {
                         // Add an alignment "baseline" 1sp below the bottom of the circle
-                        9.sp.toIntPx()
+                        9.sp.roundToPx()
                     }
-                    .background(AmbientContentColor.current, CircleShape),
+                    .background(LocalContentColor.current, CircleShape),
             ) { /* no content */ }
         }
         Text(

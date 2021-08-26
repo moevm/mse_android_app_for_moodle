@@ -1,8 +1,6 @@
 package info.moevm.moodle.ui.home
 
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.ScrollableRow
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -11,11 +9,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AmbientContext
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -122,7 +120,11 @@ fun HomeScreen(
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Home,
-                closeDrawer = { scaffoldState.drawerState.close() },
+                closeDrawer = {
+                    runBlocking {
+                        scaffoldState.drawerState.close()
+                    }
+                },
                 navigateTo = navigateTo
             )
         },
@@ -134,35 +136,38 @@ fun HomeScreen(
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
-                        onClick = { scaffoldState.drawerState.open() },
+                        onClick = {
+                            runBlocking {
+                                scaffoldState.drawerState.close()
+                            }
+                        }
                     ) {
-                        Icon(vectorResource(R.drawable.ic_logo_light))
+                        Icon(ImageBitmap.imageResource(R.drawable.ic_logo_light), null)
                     }
                 }
             )
-        },
-        bodyContent = { innerPadding ->
-            val modifier = Modifier.padding(innerPadding)
-            LoadingContent(
-                empty = posts.initialLoad,
-                emptyContent = { FullScreenLoading() },
-                loading = posts.loading,
-                onRefresh = onRefreshPosts,
-                content = {
-                    HomeScreenErrorAndContent(
-                        posts = posts,
-                        onRefresh = {
-                            onRefreshPosts()
-                        },
-                        navigateTo = navigateTo,
-                        favorites = favorites,
-                        onToggleFavorite = onToggleFavorite,
-                        modifier = modifier
-                    )
-                }
-            )
-        }
-    )
+        }) { innerPadding ->
+        val modifier = Modifier.padding(innerPadding)
+        LoadingContent(
+            empty = posts.initialLoad,
+            emptyContent = { FullScreenLoading() },
+            loading = posts.loading,
+            onRefresh = onRefreshPosts,
+            content = {
+                HomeScreenErrorAndContent(
+                    posts = posts,
+                    onRefresh = {
+                        onRefreshPosts()
+                    },
+                    navigateTo = navigateTo,
+                    favorites = favorites,
+                    onToggleFavorite = onToggleFavorite,
+                    modifier = modifier
+                )
+            }
+        )
+
+    }
 }
 
 /**
@@ -192,7 +197,7 @@ private fun LoadingContent(
                 Surface(elevation = 10.dp, shape = CircleShape) {
                     CircularProgressIndicator(
                         modifier = Modifier
-                            .preferredSize(36.dp)
+                            .size(36.dp)
                             .padding(4.dp)
                     )
                 }
@@ -257,7 +262,8 @@ private fun PostList(
     val postsPopular = posts.subList(2, 7)
     val postsHistory = posts.subList(7, 10)
 
-    ScrollableColumn(modifier = modifier) {
+    val scrollState = rememberScrollState()
+    Column(Modifier.verticalScroll(scrollState)) {
         PostListTopSection(postTop, navigateTo)
         PostListSimpleSection(postsSimple, navigateTo, favorites, onToggleFavorite)
         PostListPopularSection(postsPopular, navigateTo)
@@ -270,7 +276,9 @@ private fun PostList(
  */
 @Composable
 private fun FullScreenLoading() {
-    Box(modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .wrapContentSize(Alignment.Center)) {
         CircularProgressIndicator()
     }
 }
@@ -339,7 +347,11 @@ private fun PostListPopularSection(
             style = MaterialTheme.typography.subtitle1
         )
 
-        ScrollableRow(modifier = Modifier.padding(end = 16.dp)) {
+        val scrollState = rememberScrollState()
+
+        Row(Modifier
+            .padding(end = 16.dp)
+            .horizontalScroll(scrollState)) {
             posts.forEach { post ->
                 PostCardPopular(post, navigateTo, Modifier.padding(start = 16.dp, bottom = 16.dp))
             }
@@ -395,7 +407,7 @@ private fun PreviewDrawerOpen() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(AmbientContext.current),
+            postsRepository = BlockingFakePostsRepository(LocalContext.current),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )
@@ -413,7 +425,7 @@ fun PreviewHomeScreenBodyDark() {
 
 @Composable
 private fun loadFakePosts(): List<Post> {
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val posts = runBlocking {
         BlockingFakePostsRepository(context).getPosts()
     }
@@ -428,7 +440,7 @@ private fun PreviewDrawerOpenDark() {
             drawerState = rememberDrawerState(DrawerValue.Open)
         )
         HomeScreen(
-            postsRepository = BlockingFakePostsRepository(ContextAmbient.current),
+            postsRepository = BlockingFakePostsRepository(LocalContext.current),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )

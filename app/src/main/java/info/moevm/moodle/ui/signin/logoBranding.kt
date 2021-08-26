@@ -2,14 +2,12 @@ package info.moevm.moodle.ui.signin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.AmbientContentAlpha
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -23,7 +21,7 @@ fun Modifier.brandingPreferredHeight(
 ): Modifier {
     return if (!showBranding) {
         this.wrapContentHeight(unbounded = true)
-            .preferredHeight(heightDp)
+            .height(heightDp)
     } else {
         this
     }
@@ -35,8 +33,7 @@ fun Branding(modifier: Modifier = Modifier) {
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
         Logo(modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 76.dp))
-        Providers(
-            AmbientContentAlpha provides ContentAlpha.high
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high
         ) {
             Text(
                 text = stringResource(id = R.string.app_tagline),
@@ -59,7 +56,8 @@ private fun Logo(
         R.drawable.ic_logo_dark
     }
     Image(
-        imageVector = vectorResource(id = assetId),
+        imageVector = ImageVector.vectorResource(id = assetId),
+        contentDescription = null,
         modifier = modifier
     )
 }

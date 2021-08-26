@@ -13,7 +13,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Kotlin {
-        private const val version = "1.4.20"
+        private const val version = "1.5.21"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -25,7 +25,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            private const val version = "1.0.0-alpha08"
+            private const val version = "1.1.0-alpha02"
 
             const val core = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -54,7 +54,7 @@ object Libs {
         }
 
         object Test {
-            private const val version = "1.3.0"
+            private const val version = "1.4.1-alpha01"
             const val core = "androidx.test:core:$version"
             const val rules = "androidx.test:rules:$version"
 

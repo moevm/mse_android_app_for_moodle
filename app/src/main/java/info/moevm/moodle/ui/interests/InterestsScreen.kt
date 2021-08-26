@@ -3,12 +3,12 @@ package info.moevm.moodle.ui.interests
 import android.content.Context
 import android.content.ContextWrapper
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,10 +18,10 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
@@ -84,7 +84,7 @@ fun InterestsScreen(
             null
         }
     }
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val lifeSO = context.lifecycleOwner()
     val dataStore = DataStoreUser(context)
     var tokenState: String = ""
@@ -175,7 +175,11 @@ fun InterestsScreen(
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Interests,
-                closeDrawer = { scaffoldState.drawerState.close() },
+                closeDrawer = {
+                    runBlocking {
+                        scaffoldState.drawerState.close()
+                    }
+                },
                 navigateTo = navigateTo
             )
         },
@@ -186,17 +190,19 @@ fun InterestsScreen(
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
-                        onClick = { scaffoldState.drawerState.open() },
+                        onClick = {
+                            runBlocking {
+                                scaffoldState.drawerState.open()
+                            }
+                        },
                     ) {
-                        androidx.compose.material.Icon(vectorResource(R.drawable.ic_logo_light))
+                        androidx.compose.material.Icon(ImageBitmap.imageResource(R.drawable.ic_logo_light), contentDescription = null)
                     }
                 }
             )
-        },
-        bodyContent = {
+        }) {
             TabContent(tab, onTabChange, tabContent)
         }
-    )
 }
 
 /**
@@ -294,7 +300,12 @@ private fun TabWithTopics(
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
 ) {
-    ScrollableColumn(modifier = Modifier.padding(top = 16.dp)) {
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier
+            .padding(top = 16.dp)
+            .verticalScroll(scrollState)
+    ) {
         topics.forEach { topic ->
             TopicItem(
                 topic,
@@ -318,7 +329,9 @@ private fun TabWithSections(
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    ScrollableColumn {
+    val scrollState = rememberScrollState()
+
+    Column(modifier = Modifier.verticalScroll(scrollState)) {
         sections.forEach { (section, topics) ->
             Text(
                 text = section,
@@ -346,7 +359,7 @@ private fun TabWithSections(
 
 @Composable
 private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit) {
-    val image = imageResource(R.drawable.placeholder_1_1)
+    val image = ImageBitmap.imageResource(R.drawable.placeholder_1_1)
     Row(
         modifier = Modifier
             .toggleable(
@@ -357,9 +370,10 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
     ) {
         Image(
             image,
+            null,
             Modifier
                 .align(Alignment.CenterVertically)
-                .preferredSize(56.dp, 56.dp)
+                .size(56.dp, 56.dp)
                 .clip(RoundedCornerShape(4.dp))
         )
         Text(

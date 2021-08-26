@@ -1,7 +1,8 @@
 package info.moevm.moodle.ui.components
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -20,15 +21,19 @@ fun <T> StatementBody(
     circleLabel: String,
     rows: @Composable (T) -> Unit
 ) {
-    ScrollableColumn {
+    val scrollableState = rememberScrollState()
+    Column(Modifier.verticalScroll(scrollableState)) {
         Box(Modifier.padding(16.dp)) {
             val accountsProportion = items.extractProportions { amounts(it) }
             val circleColors = items.map { colors(it) }
-            AnimatedCircle(
-                accountsProportion,
-                circleColors,
-                Modifier.preferredHeight(300.dp).align(Alignment.Center).fillMaxWidth()
-            )
+//            AnimatedCircle(
+//                accountsProportion,
+//                circleColors,
+//                Modifier
+//                    .height(300.dp)
+//                    .align(Alignment.Center)
+//                    .fillMaxWidth()
+//            )
             Column(modifier = Modifier.align(Alignment.Center)) {
                 Text(
                     text = circleLabel,
@@ -42,7 +47,7 @@ fun <T> StatementBody(
                 )
             }
         }
-        Spacer(Modifier.preferredHeight(10.dp))
+        Spacer(Modifier.height(10.dp))
         Card {
             Column(modifier = Modifier.padding(12.dp)) {
                 items.forEach { item ->

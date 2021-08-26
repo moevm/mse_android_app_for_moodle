@@ -1,5 +1,6 @@
 package info.moevm.moodle.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -9,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -42,6 +43,7 @@ fun MOEVMMoodleApp(appContainer: AppContainer) {
     }
 }
 
+@SuppressLint("UnusedCrossfadeTargetStateParameter")
 @Composable
 private fun AppContent(
     postsRepository: PostsRepository,
@@ -51,7 +53,7 @@ private fun AppContent(
     val actions = remember(navController) { Actions(navController) }
     val scaffoldState = rememberScaffoldState()
 
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val lifeSO = context.applicationContext
     val moodleProfileDataStore = DataStoreMoodleUser(lifeSO)
 

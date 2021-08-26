@@ -3,6 +3,7 @@ package com.example.compose.moodle
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.ExperimentalTesting
@@ -79,11 +80,11 @@ class AnimatingCircleTests {
     private fun showAnimatedCircle() {
         composeTestRule.setContent {
             MOEVMMoodleTheme {
-                AnimatedCircle(
-                    modifier = Modifier.background(Color.White).preferredSize(320.dp),
-                    proportions = listOf(0.25f, 0.5f, 0.25f),
-                    colors = listOf(Color.Red, Color.DarkGray, Color.Black)
-                )
+//                AnimatedCircle(
+//                    modifier = Modifier.background(Color.White).size(320.dp),
+//                    proportions = listOf(0.25f, 0.5f, 0.25f),
+//                    colors = listOf(Color.Red, Color.DarkGray, Color.Black)
+//                )
             }
         }
     }
