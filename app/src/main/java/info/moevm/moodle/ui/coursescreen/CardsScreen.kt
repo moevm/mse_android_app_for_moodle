@@ -14,27 +14,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import info.moevm.moodle.R
+import info.moevm.moodle.data.courses.CourseMapData
+import info.moevm.moodle.data.courses.LessonContentItem
 import info.moevm.moodle.model.CardsViewModel
-import info.moevm.moodle.model.MarkupType
 import info.moevm.moodle.ui.components.ExpandableCard
 import info.moevm.moodle.ui.Actions
+import timber.log.Timber
+import kotlin.IllegalArgumentException
 
 enum class TaskType { TOPIC, TEST }
 enum class TaskStatus { NONE, WORKING, DONE }
@@ -43,7 +42,7 @@ enum class TaskStatus { NONE, WORKING, DONE }
 @Composable
 fun CardsScreen(
     CourseName: String,
-    CourseData: Map<String, List<String>>,
+    CourseMapData: CourseMapData,
     CardsViewModel: CardsViewModel,
     onBack: () -> Unit
 ) {
@@ -82,10 +81,10 @@ fun CardsScreen(
                 val dividerColor = remember { mutableStateOf(primaryColor) }
                 ExpandableCard(
                     cardContent = {
-                        CardScreenItem(
-                            taskType = 1,
-                            taskTitle = "",
-                            taskStatus = 1
+                        CardScreenItems(
+                            tasksType = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskType }?.toList().orEmpty(),
+                            tasksTitles = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskTitle }?.toList().orEmpty(),
+                            tasksStatus = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskStatus }?.toList().orEmpty()
                         )
                     },
                     card = card,
@@ -103,23 +102,46 @@ fun CardsScreen(
 }
 
 @Composable
-fun CardScreenItem(taskType: Int, taskTitle: String, taskStatus: Int) {
+fun CardScreenItems(tasksType: List<TaskType>, tasksTitles: List<String>, tasksStatus: List<TaskStatus>) {
+    try {
+        if(tasksType.size != tasksTitles.size && tasksTitles.size != tasksStatus.size)
+            throw IllegalArgumentException()
+
+
+    } catch (e : IllegalArgumentException) {
+        Timber.e("Lists have different lengths")
+        return
+    }
+    Column {
+        for (i in tasksType.indices) {
+            CardScreenItem(taskType = tasksType[i], taskTitle = tasksTitles[i], taskStatus = tasksStatus[i])
+        }
+    }
+}
+
+@Composable
+fun CardScreenItem(taskType: TaskType, taskTitle: String, taskStatus: TaskStatus) {
     BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
         val boxScope = this
-        Column {
-            Row(Modifier.clickable {  }) {
+        Column(Modifier.clickable {  }) {
+//            Spacer(modifier = Modifier.height(8.dp))
+            Row(Modifier.padding(top = 8.dp, bottom = 15.dp)) {
                 Image(
-                    bitmap = ImageBitmap.imageResource(id = R.drawable.test_logo),
+                    bitmap = ImageBitmap.imageResource(
+                        id = when (taskType){
+                            TaskType.TOPIC -> R.drawable.topic_logo
+                            TaskType.TEST -> R.drawable.test_logo
+                        }),
                     contentDescription = "taskType",
                     modifier = Modifier
-                        .width(42.dp + 20.dp)
-                        .height(42.dp)
+                        .width(24.dp + 20.dp)
+                        .height(24.dp)
                         .padding(start = 15.dp, end = 5.dp)
                 )
                 Text(
-                    text = "Test Title",
+                    text = taskTitle,
                     modifier = Modifier
-                        .width(boxScope.maxWidth - 42.dp * 2 - 20.dp - 17.dp),
+                        .width(boxScope.maxWidth - 24.dp * 2 - 20.dp - 17.dp),
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
@@ -128,21 +150,29 @@ fun CardScreenItem(taskType: Int, taskTitle: String, taskStatus: Int) {
                     )
                 )
                 Image(
-                    bitmap = ImageBitmap.imageResource(id = R.drawable.test_working),
+                    bitmap = ImageBitmap.imageResource(
+                        id = when (taskStatus) {
+                            TaskStatus.WORKING -> R.drawable.test_working
+                            TaskStatus.DONE -> R.drawable.test_done
+                            TaskStatus.NONE -> R.drawable.empty_img
+                        }
+                    ),
                     contentDescription = "taskStatus",
                     modifier = Modifier
-                        .width(42.dp + 20.dp)
-                        .height(42.dp)
+                        .width(24.dp + 20.dp)
+                        .height(24.dp)
                         .padding(start = 12.dp, end = 5.dp)
 
                 )
+
             }
-//            Spacer(modifier = )
+//            Spacer(modifier = Modifier.height(15.dp))
             Divider(
                 modifier = Modifier.padding(start = 15.dp, end = 6.dp),
                 color = Color.LightGray,
                 thickness = 1.dp
             )
+
         }
     }
 }
@@ -150,11 +180,11 @@ fun CardScreenItem(taskType: Int, taskTitle: String, taskStatus: Int) {
 @Preview
 @Composable
 fun CardsScreenPreview() {
-    CardsScreen(CardsViewModel = CardsViewModel(listOf()), onBack = Actions(NavHostController(LocalContext.current)).upPress, CourseName = "Title", CourseData = mapOf())
+    CardsScreen(CardsViewModel = CardsViewModel(listOf()), onBack = Actions(NavHostController(LocalContext.current)).upPress, CourseName = "Title", CourseMapData = mapOf())
 }
 
 @Preview(backgroundColor = R.color.cardview_light_background.toLong())
 @Composable
 fun CardsScreenItemPreview() {
-    CardScreenItem(1,"test",2)
+    CardScreenItem(TaskType.TOPIC,"test",TaskStatus.WORKING)
 }

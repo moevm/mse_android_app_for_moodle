@@ -16,7 +16,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -109,7 +108,7 @@ fun ExpandableCard(
                 color = dividerColor.value,
                 thickness = 1.dp
             )
-            ExpandableContent(cardItem = cardContent, visible = expanded)
+            ExpandableBottomContent(cardItem = cardContent, visible = expanded)
         }
     }
 }
@@ -149,7 +148,7 @@ fun CardArrow(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ExpandableContent(
+fun ExpandableBottomContent(
     cardItem: @Composable () -> Unit,
     visible: Boolean = true
 ) {
@@ -181,6 +180,8 @@ fun ExpandableContent(
     ) {
         Column(modifier = Modifier.padding(4.dp)) {
             cardItem()
+//            cardItem()
+//            cardItem()
 //            Column {
 ////                for (str in courseContent){
 ////                    Text(

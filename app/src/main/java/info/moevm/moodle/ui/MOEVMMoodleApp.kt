@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import info.moevm.moodle.api.DataStoreMoodleUser
 import info.moevm.moodle.data.AppContainer
 import info.moevm.moodle.data.courses.CoursesRepository
+import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.coursescreen.CardsScreen
@@ -84,30 +85,7 @@ private fun AppContent(
         countryMoodleUser.value = countryMoodleUserString
     }
 
-    val courseData = mapOf(
-        "Общие правила работы с проектами" to listOf<String>(
-            "Test1",
-            "Test2"),
-        "Планирование календаря" to listOf<String>(
-            "Как планировать календарь работы",
-            "Планирование и оценка времени выполнения задач",
-            "Планирование календаря. Тест"),
-        "Планирование календаря2" to listOf<String>(
-            "Как планировать календарь работы",
-            "Планирование и оценка времени выполнения задач",
-            "Планирование календаря. Тест"),
-        "Планирование календаря3" to listOf<String>(
-            "Как планировать календарь работы",
-            "Планирование и оценка времени выполнения задач",
-            "Планирование календаря. Тест"),
-        "Планирование календаря4" to listOf<String>(
-            "Как планировать календарь работы",
-            "Планирование и оценка времени выполнения задач",
-            "Планирование календаря. Тест"),
-        "Коммуникация по проекту" to listOf<String>(
-            "Test1",
-            "Test2"),
-    )
+
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
@@ -115,8 +93,8 @@ private fun AppContent(
                 composable(ScreenName.COURSE_LIST.name) {
                     CardsScreen(
                         CourseName = "Курс молодого бойца",
-                        CourseData = courseData,
-                        CardsViewModel = CardsViewModel(courseData.keys.toList()),
+                        CourseMapData = exampleCourseContent(),
+                        CardsViewModel = CardsViewModel(exampleCourseContent().values.toList()[0].map { it.lessonTitle }),
                         onBack = actions.upPress
                     )
                 }
