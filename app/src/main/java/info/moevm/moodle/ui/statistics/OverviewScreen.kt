@@ -118,14 +118,13 @@ private fun LoadingContent(
 @Composable
 fun OverviewBody(onScreenChange: (SettingsScreenForStatistics) -> Unit = {}) {
     val scrollState = rememberScrollState()
-    Column(Modifier.verticalScroll(scrollState).padding(PaddingValues(16.dp))){
+    Column(Modifier.verticalScroll(scrollState).padding(PaddingValues(16.dp))) {
         AlertCard()
         Spacer(Modifier.height(StatisticsDefaultPadding))
         CoursesCard(onScreenChange)
         Spacer(Modifier.height(StatisticsDefaultPadding))
         StudentsCard(onScreenChange)
     }
-
 }
 
 @Composable
@@ -169,8 +168,7 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high
-        ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
                 text = stringResource(R.string.alert),
                 style = MaterialTheme.typography.subtitle2,
@@ -196,8 +194,7 @@ private fun AlertItem(message: String) {
         modifier = Modifier.padding(StatisticsDefaultPadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high
-        ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
                 style = MaterialTheme.typography.body2,
                 modifier = Modifier.weight(1f),

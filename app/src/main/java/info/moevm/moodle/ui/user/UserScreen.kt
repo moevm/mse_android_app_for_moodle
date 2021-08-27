@@ -23,7 +23,6 @@ import info.moevm.moodle.ui.components.CircularImage
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -76,7 +75,8 @@ fun UserScreen(
                 backgroundColor = MaterialTheme.colors.surface,
                 elevation = 0.dp
             )
-        }){
+        }
+    ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             UserContent(
                 cityMoodleProfile,

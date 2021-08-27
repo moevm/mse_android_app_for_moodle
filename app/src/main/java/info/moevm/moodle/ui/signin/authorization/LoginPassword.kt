@@ -94,10 +94,10 @@ fun Password(
         },
         textStyle = MaterialTheme.typography.body2,
         label = {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.body2
-                )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.body2
+            )
         },
         trailingIcon = {
             if (showPassword.value) {

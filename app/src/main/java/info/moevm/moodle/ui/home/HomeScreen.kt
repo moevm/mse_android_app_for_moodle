@@ -9,11 +9,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -30,8 +28,6 @@ import info.moevm.moodle.ui.SwipeToRefreshLayout
 import info.moevm.moodle.ui.ThemedPreview
 import info.moevm.moodle.ui.state.UiState
 import info.moevm.moodle.utils.produceUiState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -128,7 +124,7 @@ fun HomeScreen(
                     coroutineScope.launch {
                         scaffoldState.drawerState.close()
                     }
-                    },
+                },
                 navigateTo = navigateTo
             )
         },
@@ -150,7 +146,8 @@ fun HomeScreen(
                     }
                 }
             )
-        }) { innerPadding ->
+        }
+    ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
         LoadingContent(
             empty = posts.initialLoad,
@@ -170,7 +167,6 @@ fun HomeScreen(
                 )
             }
         )
-
     }
 }
 
@@ -280,9 +276,11 @@ private fun PostList(
  */
 @Composable
 private fun FullScreenLoading() {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .wrapContentSize(Alignment.Center)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center)
+    ) {
         CircularProgressIndicator()
     }
 }
@@ -352,10 +350,11 @@ private fun PostListPopularSection(
         )
 
         val scrollState = rememberScrollState()
-
-        Row(Modifier
-            .padding(end = 16.dp)
-            .horizontalScroll(scrollState)) {
+        Row(
+            Modifier
+                .padding(end = 16.dp)
+                .horizontalScroll(scrollState)
+        ) {
             posts.forEach { post ->
                 PostCardPopular(post, navigateTo, Modifier.padding(start = 16.dp, bottom = 16.dp))
             }

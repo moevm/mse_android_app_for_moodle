@@ -33,8 +33,7 @@ fun Branding(modifier: Modifier = Modifier) {
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
         Logo(modifier = Modifier.align(Alignment.CenterHorizontally).padding(horizontal = 76.dp))
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high
-        ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
                 text = stringResource(id = R.string.app_tagline),
                 style = MaterialTheme.typography.subtitle1,

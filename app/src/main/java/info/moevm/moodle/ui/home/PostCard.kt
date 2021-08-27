@@ -15,9 +15,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,7 +55,6 @@ fun PostImage(post: Post, modifier: Modifier = Modifier) {
             .size(40.dp, 40.dp)
             .clip(MaterialTheme.shapes.small)
     )
-
 }
 
 @Composable
@@ -118,7 +115,8 @@ fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Icon(
                 imageVector = Icons.Filled.MoreVert,
-                contentDescription = null)
+                contentDescription = null
+            )
         }
     }
 }

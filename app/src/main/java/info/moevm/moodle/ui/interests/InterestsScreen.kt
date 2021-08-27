@@ -199,9 +199,10 @@ fun InterestsScreen(
                     }
                 }
             )
-        }) {
-            TabContent(tab, onTabChange, tabContent)
         }
+    ) {
+        TabContent(tab, onTabChange, tabContent)
+    }
 }
 
 /**

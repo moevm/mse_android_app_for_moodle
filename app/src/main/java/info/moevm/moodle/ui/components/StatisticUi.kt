@@ -60,12 +60,10 @@ private fun BaseRow(
         )
         Spacer(Modifier.width(12.dp))
         Column(Modifier) {
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high
-            ) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                 Text(text = title, style = typography.body1)
             }
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high
-            ) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                 Text(text = subtitle, style = typography.subtitle1)
             }
         }
@@ -89,8 +87,7 @@ private fun BaseRow(
         }
         Spacer(Modifier.width(16.dp))
 
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high
-        ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Icon(
                 imageVector = Icons.Filled.ChevronRight,
                 contentDescription = null,

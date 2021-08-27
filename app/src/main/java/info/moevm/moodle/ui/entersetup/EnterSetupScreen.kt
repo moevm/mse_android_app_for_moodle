@@ -28,7 +28,8 @@ fun EnterSetupScreen(
             EnterSetupScreenTopAppBar(
                 topAppBarText = stringResource(id = R.string.token_url_setup),
             )
-        }){
+        }
+    ) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -114,11 +115,13 @@ fun EnterSetupPartScreen(
     content: @Composable () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    Column(Modifier.verticalScroll(scrollState)){
+    Column(Modifier.verticalScroll(scrollState)) {
         Spacer(modifier = Modifier.height(44.dp))
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
             content()
         }
     }

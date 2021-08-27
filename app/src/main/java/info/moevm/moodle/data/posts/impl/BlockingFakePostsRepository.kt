@@ -1,7 +1,6 @@
 package info.moevm.moodle.data.posts.impl
 
 import android.content.Context
-import android.content.res.Resources
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import info.moevm.moodle.data.Result

@@ -6,10 +6,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
@@ -19,7 +17,6 @@ import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 private fun Modifier.brandingPreferredHeight(
     showBranding: Boolean,
@@ -83,13 +80,14 @@ fun SettingsScreen(
                     }
                 }
             )
-        }) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                SettingsContent(
-                    onNavigate = navigateTo
-                )
-            }
         }
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            SettingsContent(
+                onNavigate = navigateTo
+            )
+        }
+    }
 }
 
 @Composable

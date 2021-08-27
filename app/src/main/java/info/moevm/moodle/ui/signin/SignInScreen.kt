@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.widget.Toast
-import androidx.compose.animation.core.AnimationSpec
-import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -78,13 +76,14 @@ fun SignInScreen(
                 topAppBarText = stringResource(id = R.string.sign_in),
                 onSetupTouch = navigateTo
             )
-        }){
+        }
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .brandingPreferredHeight(showBranding, heightDp)
                 .offset(
-                    remember { mutableStateOf(0f).value.dp },// remember?
+                    remember { mutableStateOf(0f).value.dp }, // remember?
                     currentOffsetHolder.value.dp
                 )
                 .onSizeChanged {
@@ -326,11 +325,13 @@ fun SignInSignUpScreen(
     content: @Composable () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    Column(Modifier.verticalScroll(scrollState)){
+    Column(Modifier.verticalScroll(scrollState)) {
         Spacer(modifier = Modifier.height(44.dp))
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
             content()
         }
     }

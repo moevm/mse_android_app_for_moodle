@@ -41,9 +41,11 @@ private val defaultSpacerSize = 16.dp
 @Composable
 fun PostContent(post: Post, modifier: Modifier = Modifier) {
     val scrollState = rememberScrollState()
-    Column(Modifier
-        .padding(horizontal = defaultSpacerSize)
-        .verticalScroll(scrollState)) {
+    Column(
+        Modifier
+            .padding(horizontal = defaultSpacerSize)
+            .verticalScroll(scrollState)
+    ) {
         Spacer(Modifier.height(defaultSpacerSize))
         PostHeaderImage(post)
         Text(text = post.title, style = MaterialTheme.typography.h4)
@@ -63,7 +65,6 @@ fun PostContent(post: Post, modifier: Modifier = Modifier) {
         PostContents(post.paragraphs)
         Spacer(Modifier.height(48.dp))
     }
-
 }
 
 @Composable

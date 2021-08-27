@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui.home
 
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,8 +56,7 @@ fun PostCardPopular(
                         style = MaterialTheme.typography.body2
                     )
                 }
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high
-                ) {
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                     Text(
                         text = "${post.metadata.date} - " +
                             "${post.metadata.hoursToPass}h to pass",

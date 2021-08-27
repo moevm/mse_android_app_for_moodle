@@ -1,20 +1,14 @@
 package info.moevm.moodle.ui.entersetup.checksetup
 
-import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusState
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -35,10 +29,10 @@ fun FiledEnter(
             fieldState.text = it
         },
         label = {
-                Text(
-                    text = labelVal,
-                    style = MaterialTheme.typography.body2
-                )
+            Text(
+                text = labelVal,
+                style = MaterialTheme.typography.body2
+            )
         },
         modifier = Modifier
             .fillMaxWidth()
