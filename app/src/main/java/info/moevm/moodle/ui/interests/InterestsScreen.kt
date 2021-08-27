@@ -10,18 +10,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
@@ -141,7 +140,7 @@ fun InterestsScreen(
     }
 
     val tabContent = listOf(topicsSection, peopleSection, publicationSection)
-    val (currentSection, updateSection) = savedInstanceState { tabContent.first().section }
+    val (currentSection, updateSection) = rememberSaveable { mutableStateOf(tabContent.first().section) }
     InterestsScreen(
         tabContent = tabContent,
         tab = currentSection,
@@ -169,14 +168,14 @@ fun InterestsScreen(
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState,
 ) {
-
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Interests,
                 closeDrawer = {
-                    runBlocking {
+                    coroutineScope.launch {
                         scaffoldState.drawerState.close()
                     }
                 },
@@ -191,12 +190,12 @@ fun InterestsScreen(
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
                         onClick = {
-                            runBlocking {
+                            coroutineScope.launch {
                                 scaffoldState.drawerState.open()
                             }
                         },
                     ) {
-                        androidx.compose.material.Icon(ImageBitmap.imageResource(R.drawable.ic_logo_light), contentDescription = null)
+                        Icon(ImageVector.vectorResource(R.drawable.ic_logo_light), contentDescription = null)
                     }
                 }
             )

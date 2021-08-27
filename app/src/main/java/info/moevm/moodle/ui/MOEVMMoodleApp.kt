@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
@@ -116,7 +113,7 @@ private fun AppContent(
                 }
                 composable(ScreenName.STATISTICS.name) {
                     val allScreens = SettingsScreenForStatistics.values().toList()
-                    var currentScreen by savedInstanceState { SettingsScreenForStatistics.Overview }
+                    var currentScreen by rememberSaveable { mutableStateOf(SettingsScreenForStatistics.Overview) }
                     Scaffold(
                         topBar = {
                             StatisticsTopAppBar(

@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
@@ -17,6 +18,7 @@ import info.moevm.moodle.R
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 private fun Modifier.brandingPreferredHeight(
@@ -49,14 +51,14 @@ fun SettingsScreen(
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState
 ) {
-
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Settings,
                 closeDrawer = {
-                    runBlocking {
+                    coroutineScope.launch {
                         scaffoldState.drawerState.close()
                     }
                 },
@@ -72,12 +74,12 @@ fun SettingsScreen(
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
                         onClick = {
-                            runBlocking {
+                            coroutineScope.launch {
                                 scaffoldState.drawerState.open()
                             }
                         }
                     ) {
-                        Icon(ImageBitmap.imageResource(id = R.drawable.ic_logo_light), null)
+                        Icon(ImageVector.vectorResource(id = R.drawable.ic_logo_light), null)
                     }
                 }
             )

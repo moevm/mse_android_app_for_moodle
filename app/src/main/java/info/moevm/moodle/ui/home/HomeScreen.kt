@@ -10,10 +10,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,6 +30,8 @@ import info.moevm.moodle.ui.SwipeToRefreshLayout
 import info.moevm.moodle.ui.ThemedPreview
 import info.moevm.moodle.ui.state.UiState
 import info.moevm.moodle.utils.produceUiState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -93,6 +97,7 @@ fun HomeScreen(
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState
 ) {
+    val coroutineScope = rememberCoroutineScope()
     if (posts.hasError) {
         val errorMessage = stringResource(id = R.string.load_error)
         val retryMessage = stringResource(id = R.string.retry)
@@ -111,7 +116,6 @@ fun HomeScreen(
             }
         }
     }
-
     /**
      * A Scaffold is a layout which implements the basic material design layout structure
      */
@@ -121,10 +125,10 @@ fun HomeScreen(
             AppDrawer(
                 currentScreen = Screen.Home,
                 closeDrawer = {
-                    runBlocking {
+                    coroutineScope.launch {
                         scaffoldState.drawerState.close()
                     }
-                },
+                    },
                 navigateTo = navigateTo
             )
         },
@@ -137,12 +141,12 @@ fun HomeScreen(
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
                         onClick = {
-                            runBlocking {
-                                scaffoldState.drawerState.close()
+                            coroutineScope.launch {
+                                scaffoldState.drawerState.open()
                             }
                         }
                     ) {
-                        Icon(ImageBitmap.imageResource(R.drawable.ic_logo_light), null)
+                        Icon(ImageVector.vectorResource(R.drawable.ic_logo_light), null)
                     }
                 }
             )

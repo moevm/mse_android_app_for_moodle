@@ -13,7 +13,7 @@ object Libs {
     const val material = "com.google.android.material:material:1.1.0"
 
     object Kotlin {
-        private const val version = "1.5.21"
+        private const val version = "1.5.10"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val extensions = "org.jetbrains.kotlin:kotlin-android-extensions:$version"
@@ -25,7 +25,7 @@ object Libs {
 
         object Compose {
             const val snapshot = ""
-            private const val version = "1.1.0-alpha02"
+            private const val version = "1.0.0"
 
             const val core = "androidx.compose.ui:ui:$version"
             const val foundation = "androidx.compose.foundation:foundation:$version"
@@ -41,8 +41,8 @@ object Libs {
         }
 
         object Navigation {
-            private const val version = "2.3.2"
-            private const val nav_compose_version = "1.0.0-alpha03"
+            private const val version = "2.3.5"
+            private const val nav_compose_version = "2.4.0-alpha05"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val uiKtx = "androidx.navigation:navigation-ui-ktx:$version"
             const val jetpackNavigation = "androidx.navigation:navigation-compose:$nav_compose_version"
@@ -54,7 +54,7 @@ object Libs {
         }
 
         object Test {
-            private const val version = "1.4.1-alpha01"
+            private const val version = "1.3.0"
             const val core = "androidx.test:core:$version"
             const val rules = "androidx.test:rules:$version"
 

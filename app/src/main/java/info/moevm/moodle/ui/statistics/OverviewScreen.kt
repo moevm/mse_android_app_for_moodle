@@ -12,7 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.*
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -71,7 +71,7 @@ fun OverviewScreen(
     }
 
     val allScreens = SettingsScreenForStatistics.values().toList()
-    var currentScreen by savedInstanceState { SettingsScreenForStatistics.Overview }
+    var currentScreen by rememberSaveable { mutableStateOf(SettingsScreenForStatistics.Overview) }
     Scaffold(
         topBar = {
             StatisticsTopAppBar(

@@ -1,7 +1,6 @@
 package info.moevm.moodle.ui
 
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.navigate
 import info.moevm.moodle.ui.Screen.*
 import info.moevm.moodle.ui.ScreenName.*
 
@@ -43,8 +42,8 @@ class Actions(navController: NavHostController) {
             }
             else -> {
                 navController.popBackStack(
-                    navController.graph.startDestination,
-                    navController.currentDestination?.id != navController.graph.startDestination
+                    navController.graph.startDestinationId,
+                    navController.currentDestination?.id != navController.graph.startDestinationId
                 )
                 navController.navigate(screen.id.name)
             }

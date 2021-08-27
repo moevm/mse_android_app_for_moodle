@@ -10,10 +10,11 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
@@ -88,7 +89,7 @@ fun ArticleScreen(
     onToggleFavorite: () -> Unit
 ) {
 
-    var showDialog by savedInstanceState { false }
+    var showDialog by rememberSaveable { mutableStateOf(false)}
     if (showDialog) {
         FunctionalityNotAvailablePopup { showDialog = false }
     }
@@ -158,7 +159,7 @@ private fun BottomBar(
             }
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = onUnimplementedAction) {
-                Icon(ImageBitmap.imageResource(R.drawable.ic_text_settings), null)
+                Icon(ImageVector.vectorResource(R.drawable.ic_text_settings), null)
             }
         }
     }

@@ -34,13 +34,14 @@ fun UserScreen(
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.User,
                 closeDrawer = {
-                    runBlocking {
+                    coroutineScope.launch {
                         scaffoldState.drawerState.close()
                     }
                 },
@@ -64,7 +65,7 @@ fun UserScreen(
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
                         onClick = {
-                            runBlocking {
+                            coroutineScope.launch {
                                 scaffoldState.drawerState.open()
                             }
                         }
@@ -98,7 +99,9 @@ fun UserScreen(
                     }
                     navigateTo(Screen.SignIn)
                 },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 8.dp),
             ) {
                 Text(
                     text = stringResource(id = R.string.log_out)
@@ -137,7 +140,9 @@ fun UserContent(
             onClick = {
                 onNavigate(Screen.Home)
             },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
         ) {
             Text(
                 text = stringResource(id = R.string.all_courses)
@@ -149,7 +154,9 @@ fun UserContent(
                 // TODO: Go to setup screen
                 onNavigate(Screen.Home)
             },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
         ) {
             Text(
                 text = stringResource(id = R.string.setups)
