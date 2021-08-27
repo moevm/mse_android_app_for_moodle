@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.ContextWrapper
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
@@ -20,16 +17,9 @@ import info.moevm.moodle.api.DataStoreMoodleUser
 import info.moevm.moodle.data.AppContainer
 import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.posts.PostsRepository
-import info.moevm.moodle.ui.article.ArticleScreen
-import info.moevm.moodle.ui.components.StatisticsTopAppBar
-import info.moevm.moodle.ui.entersetup.EnterSetupScreen
-import info.moevm.moodle.ui.home.HomeScreen
-import info.moevm.moodle.ui.interests.InterestsScreen
-import info.moevm.moodle.ui.settings.SettingsScreen
-import info.moevm.moodle.ui.signin.SignInScreen
-import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
+import info.moevm.moodle.model.CardsViewModel
+import info.moevm.moodle.ui.coursescreen.CardsScreen
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
-import info.moevm.moodle.ui.user.UserScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -94,91 +84,107 @@ private fun AppContent(
         countryMoodleUser.value = countryMoodleUserString
     }
 
+    val courseData = mapOf(
+        "Общие правила работы с проектами" to listOf<String>(
+            "Test1",
+            "Test2"),
+        "Планирование календаря" to listOf<String>(
+            "Как планировать календарь работы",
+            "Планирование и оценка времени выполнения задач",
+            "Планирование календаря. Тест"),
+        "Планирование календаря2" to listOf<String>(
+            "Как планировать календарь работы",
+            "Планирование и оценка времени выполнения задач",
+            "Планирование календаря. Тест"),
+        "Планирование календаря3" to listOf<String>(
+            "Как планировать календарь работы",
+            "Планирование и оценка времени выполнения задач",
+            "Планирование календаря. Тест"),
+        "Планирование календаря4" to listOf<String>(
+            "Как планировать календарь работы",
+            "Планирование и оценка времени выполнения задач",
+            "Планирование календаря. Тест"),
+        "Коммуникация по проекту" to listOf<String>(
+            "Test1",
+            "Test2"),
+    )
+
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
-            NavHost(navController, startDestination = ScreenName.SIGN_IN.name) {
-                composable(ScreenName.ENTER_SETUP.name) {
-                    EnterSetupScreen(
-                        navigateTo = actions.select
-                    )
-                }
-                composable(ScreenName.SIGN_IN.name) {
-                    SignInScreen(
-                        navigateTo = actions.select,
-                        fullNameMoodleUser = fullNameMoodleUser,
-                        cityMoodleUser = cityMoodleUser,
-                        countryMoodleUser = countryMoodleUser
-                    )
-                }
-                composable(ScreenName.HOME.name) {
-                    HomeScreen(
-                        navigateTo = actions.select,
-                        postsRepository = postsRepository,
-                        scaffoldState = scaffoldState
-                    )
-                }
-                composable(ScreenName.USER.name) {
-                    UserScreen(
-                        navigateTo = actions.select,
-                        scaffoldState = scaffoldState,
-                        fullNameMoodleProfile = fullNameMoodleUser,
-                        cityMoodleProfile = cityMoodleUser,
-                        countryMoodleProfile = countryMoodleUser
-                    )
-                }
-                composable(ScreenName.INTERESTS.name) {
-                    InterestsScreen(
-                        navigateTo = actions.select,
-                        coursesRepository = coursesRepository,
-                        scaffoldState = scaffoldState
-                    )
-                }
-                composable(ScreenName.ARTICLE.name + "/{${Screen.ArticleArgs.PostId}}") {
-                    val postId =
-                        requireNotNull(it.arguments?.getString(Screen.ArticleArgs.PostId))
-                    ArticleScreen(
-                        postId = postId,
-                        postsRepository = postsRepository,
+            NavHost(navController, startDestination = ScreenName.COURSE_LIST.name) {
+                composable(ScreenName.COURSE_LIST.name) {
+                    CardsScreen(
+                        CourseName = "Курс молодого бойца",
+                        CourseData = courseData,
+                        CardsViewModel = CardsViewModel(courseData.keys.toList()),
                         onBack = actions.upPress
                     )
                 }
-                composable(ScreenName.STATISTICS.name) {
-                    val allScreens = SettingsScreenForStatistics.values().toList()
-                    var currentScreen by rememberSaveable { mutableStateOf(SettingsScreenForStatistics.Overview) }
-                    val coroutineScope = rememberCoroutineScope()
-                    Scaffold(
-                        scaffoldState = scaffoldState,
-                        topBar = {
-                            StatisticsTopAppBar(
-                                scaffoldState = scaffoldState,
-                                allScreens = allScreens,
-                                onTabSelected = { screen -> currentScreen = screen },
-                                currentScreen = currentScreen
-                            )
-                        },
-                        drawerContent = {
-                            AppDrawer(
-                                currentScreen = Screen.Statistics,
-                                closeDrawer = {
-                                    coroutineScope.launch {
-                                        scaffoldState.drawerState.close()
-                                    }
-                                },
-                                navigateTo = actions.select
-                            )
-                        }
-                    ) { innerPadding ->
-                        Box(Modifier.padding(innerPadding)) {
-                            currentScreen.Content(onScreenChange = { screen -> currentScreen = screen })
-                        }
-                    }
-                }
-                composable(ScreenName.SETTINGS.name) {
-                    SettingsScreen(
-                        navigateTo = actions.select,
-                        scaffoldState = scaffoldState,
-                    )
-                }
+//                composable(ScreenName.ENTER_SETUP.name) {
+//                    EnterSetupScreen(
+//                        navigateTo = actions.select
+//                    )
+//                }
+//                composable(ScreenName.SIGN_IN.name) {
+//                    SignInScreen(
+//                        navigateTo = actions.select
+//                    )
+//                }
+//                composable(ScreenName.HOME.name) {
+//                    HomeScreen(
+//                        navigateTo = actions.select,
+//                        postsRepository = postsRepository,
+//                        scaffoldState = scaffoldState
+//                    )
+//                }
+//                composable(ScreenName.USER.name) {
+//                    UserScreen(
+//                        navigateTo = actions.select,
+//                        scaffoldState = scaffoldState,
+//                        fullNameMoodleProfile = fullNameMoodleUser,
+//                        cityMoodleProfile = cityMoodleUser,
+//                        countryMoodleProfile = countryMoodleUser
+//                    )
+//                }
+//                composable(ScreenName.INTERESTS.name) {
+//                    InterestsScreen(
+//                        navigateTo = actions.select,
+//                        coursesRepository = coursesRepository,
+//                        scaffoldState = scaffoldState
+//                    )
+//                }
+//                composable(ScreenName.ARTICLE.name + "/{${Screen.ArticleArgs.PostId}}") {
+//                    val postId =
+//                        requireNotNull(it.arguments?.getString(Screen.ArticleArgs.PostId))
+//                    ArticleScreen(
+//                        postId = postId,
+//                        postsRepository = postsRepository,
+//                        onBack = actions.upPress
+//                    )
+//                }
+//                composable(ScreenName.STATISTICS.name) {
+//                    val allScreens = SettingsScreenForStatistics.values().toList()
+//                    var currentScreen by rememberSaveable { mutableStateOf(SettingsScreenForStatistics.Overview) }
+//                    Scaffold(
+//                        topBar = {
+//                            StatisticsTopAppBar(
+//                                allScreens = allScreens,
+//                                onTabSelected = { screen -> currentScreen = screen },
+//                                currentScreen = currentScreen
+//                            )
+//                        }
+//                    ) { innerPadding ->
+//                        Box(Modifier.padding(innerPadding)) {
+//                            currentScreen.Content(onScreenChange = { screen -> currentScreen = screen })
+//                        }
+//                    }
+//                }
+//                composable(ScreenName.SETTINGS.name) {
+//                    SettingsScreen(
+//                        navigateTo = actions.select,
+//                        scaffoldState = scaffoldState,
+//                    )
+//                }
             }
         }
     }
