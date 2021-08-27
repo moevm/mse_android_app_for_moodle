@@ -11,28 +11,40 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.ripple.rememberRippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import info.moevm.moodle.R
 import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import java.util.*
 
 @Composable
 fun StatisticsTopAppBar(
+    scaffoldState: ScaffoldState,
     allScreens: List<SettingsScreenForStatistics>,
     onTabSelected: (SettingsScreenForStatistics) -> Unit,
     currentScreen: SettingsScreenForStatistics
 ) {
-    Surface(Modifier.preferredHeight(TabHeight).fillMaxWidth()) {
+    Surface(
+        Modifier
+            .preferredHeight(TabHeight)
+            .fillMaxWidth()
+    ) {
         Row {
+            IconButton(
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp, end = 4.dp),
+                onClick = {
+                    scaffoldState.drawerState.open()
+                }
+            ) {
+                Icon(vectorResource(R.drawable.ic_logo_light))
+            }
             allScreens.forEach { screen ->
                 SettingsTab(
                     text = screen.name.toUpperCase(Locale.ROOT),

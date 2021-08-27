@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import info.moevm.moodle.R
 import info.moevm.moodle.data.statistics.UserData
 import info.moevm.moodle.model.Post
+import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.SwipeToRefreshLayout
 import info.moevm.moodle.ui.components.*
@@ -72,11 +73,20 @@ fun OverviewScreen(
     val allScreens = SettingsScreenForStatistics.values().toList()
     var currentScreen by savedInstanceState { SettingsScreenForStatistics.Overview }
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
             StatisticsTopAppBar(
+                scaffoldState = scaffoldState,
                 allScreens = allScreens,
                 onTabSelected = { screen -> currentScreen = screen },
                 currentScreen = currentScreen
+            )
+        },
+        drawerContent = {
+            AppDrawer(
+                currentScreen = Screen.Statistics,
+                closeDrawer = { scaffoldState.drawerState.close() },
+                navigateTo = navigateTo
             )
         }
     ) { innerPadding ->

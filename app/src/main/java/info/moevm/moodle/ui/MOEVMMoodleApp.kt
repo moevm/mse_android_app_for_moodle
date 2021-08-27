@@ -116,11 +116,20 @@ private fun AppContent(
                     val allScreens = SettingsScreenForStatistics.values().toList()
                     var currentScreen by savedInstanceState { SettingsScreenForStatistics.Overview }
                     Scaffold(
+                        scaffoldState = scaffoldState,
                         topBar = {
                             StatisticsTopAppBar(
+                                scaffoldState = scaffoldState,
                                 allScreens = allScreens,
                                 onTabSelected = { screen -> currentScreen = screen },
                                 currentScreen = currentScreen
+                            )
+                        },
+                        drawerContent = {
+                            AppDrawer(
+                                currentScreen = Screen.Statistics,
+                                closeDrawer = { scaffoldState.drawerState.close() },
+                                navigateTo = actions.select
                             )
                         }
                     ) { innerPadding ->
