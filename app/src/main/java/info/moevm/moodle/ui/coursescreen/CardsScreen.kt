@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +31,7 @@ import androidx.navigation.NavHostController
 import info.moevm.moodle.R
 import info.moevm.moodle.data.courses.CourseMapData
 import info.moevm.moodle.data.courses.LessonContentItem
+import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.components.ExpandableCard
 import info.moevm.moodle.ui.Actions
@@ -54,16 +57,8 @@ fun CardsScreen(
                 modifier = Modifier.testTag("topAppBarInterests"),
                 title = { Text(CourseName) },
                 navigationIcon = {
-                    IconButton(
-                        modifier = Modifier.testTag("onBack"),
-                        onClick = {
-                            onBack()
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_left_32px),
-                            contentDescription = null
-                        )
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Filled.ArrowBack, null)
                     }
                 }
             )
@@ -95,7 +90,6 @@ fun CardsScreen(
                     expanded = expandedCardIds.value.contains(card.id),
                     dividerColor = dividerColor
                 )
-
             }
         }
     }
@@ -106,11 +100,10 @@ fun CardScreenItems(tasksType: List<TaskType>, tasksTitles: List<String>, tasksS
     try {
         if(tasksType.size != tasksTitles.size && tasksTitles.size != tasksStatus.size)
             throw IllegalArgumentException()
-
-
     } catch (e : IllegalArgumentException) {
         Timber.e("Lists have different lengths")
-        return
+        return Column {
+        }
     }
     Column {
         for (i in tasksType.indices) {
@@ -124,7 +117,6 @@ fun CardScreenItem(taskType: TaskType, taskTitle: String, taskStatus: TaskStatus
     BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
         val boxScope = this
         Column(Modifier.clickable {  }) {
-//            Spacer(modifier = Modifier.height(8.dp))
             Row(Modifier.padding(top = 8.dp, bottom = 15.dp)) {
                 Image(
                     bitmap = ImageBitmap.imageResource(
@@ -159,14 +151,11 @@ fun CardScreenItem(taskType: TaskType, taskTitle: String, taskStatus: TaskStatus
                     ),
                     contentDescription = "taskStatus",
                     modifier = Modifier
-                        .width(24.dp + 20.dp)
+                        .width(24.dp + 17.dp)
                         .height(24.dp)
                         .padding(start = 12.dp, end = 5.dp)
-
                 )
-
             }
-//            Spacer(modifier = Modifier.height(15.dp))
             Divider(
                 modifier = Modifier.padding(start = 15.dp, end = 6.dp),
                 color = Color.LightGray,
@@ -180,7 +169,7 @@ fun CardScreenItem(taskType: TaskType, taskTitle: String, taskStatus: TaskStatus
 @Preview
 @Composable
 fun CardsScreenPreview() {
-    CardsScreen(CardsViewModel = CardsViewModel(listOf()), onBack = Actions(NavHostController(LocalContext.current)).upPress, CourseName = "Title", CourseMapData = mapOf())
+    CardsScreen(CardsViewModel = CardsViewModel(exampleCourseContent().values.first().map { it.lessonTitle }), onBack = Actions(NavHostController(LocalContext.current)).upPress, CourseName = "Title", CourseMapData = exampleCourseContent())
 }
 
 @Preview(backgroundColor = R.color.cardview_light_background.toLong())

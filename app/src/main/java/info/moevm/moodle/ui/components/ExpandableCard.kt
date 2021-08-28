@@ -5,6 +5,8 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,8 +63,6 @@ fun ExpandableCard(
     }, label = "ArrowRotationDegree") {
         if (expanded) 180f else 0f
     }
-
-
     Card(
         backgroundColor = cardBgColor,
         contentColor = Color(
@@ -116,7 +116,7 @@ fun ExpandableCard(
 @Composable
 fun CardTitle(
     modifier: Modifier,
-    textStyle: androidx.compose.ui.text.TextStyle,
+    textStyle: TextStyle,
     title: String
 ) {
     Text(
@@ -138,7 +138,7 @@ fun CardArrow(
         onClick = onClick,
         content = {
             Icon(
-                painter = painterResource(id = R.drawable.expand_list_32px),
+                imageVector = Icons.Filled.ExpandMore,
                 contentDescription = "Expandable Arrow",
                 modifier = Modifier.rotate(degrees)
             )
@@ -180,18 +180,6 @@ fun ExpandableBottomContent(
     ) {
         Column(modifier = Modifier.padding(4.dp)) {
             cardItem()
-//            cardItem()
-//            cardItem()
-//            Column {
-////                for (str in courseContent){
-////                    Text(
-////                        text = str,
-////                        textAlign = TextAlign.Center
-////                    )
-////                }
-//
-//            }
-
         }
     }
 }
@@ -202,12 +190,11 @@ fun ExpandableBottomContent(
 @Preview(name = "Less")
 @Composable
 fun ExpandableCardPreviewLess() {
-    val CardsViewModel = CardsViewModel(listOf())
-    val cards = CardsViewModel.cards.collectAsState()
-    val expandedCardIds = CardsViewModel.expandedCardIdsList.collectAsState()
+    val cardsViewModel = CardsViewModel(listOf())
+    val expandedCardIds = cardsViewModel.expandedCardIdsList.collectAsState()
     ExpandableCard(
         card = ExpandableCardModel(0, "Title"),
-        onCardArrowClick = { CardsViewModel.onCardArrowClicked(0) },
+        onCardArrowClick = { cardsViewModel.onCardArrowClicked(0) },
         expanded = expandedCardIds.value.contains(0),
         dividerColor = remember { mutableStateOf(Color.Magenta) }
     )
@@ -215,12 +202,10 @@ fun ExpandableCardPreviewLess() {
 @Preview(name = "More")
 @Composable
 fun ExpandableCardPreviewMore() {
-    val CardsViewModel = CardsViewModel(listOf())
-    val cards = CardsViewModel.cards.collectAsState()
-    val expandedCardIds = CardsViewModel.expandedCardIdsList.collectAsState()
+    val cardsViewModel = CardsViewModel(listOf())
     ExpandableCard(
         card = ExpandableCardModel(0, "Title"),
-        onCardArrowClick = { CardsViewModel.onCardArrowClicked(0) },
+        onCardArrowClick = { cardsViewModel.onCardArrowClicked(0) },
         expanded = true,
         dividerColor = remember { mutableStateOf(Color.LightGray) }
     )

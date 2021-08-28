@@ -31,7 +31,6 @@ fun StatisticsTopAppBar(
     Surface(
         Modifier
             .height(TabHeight)
-
             .fillMaxWidth()
     ) {
         Row {
