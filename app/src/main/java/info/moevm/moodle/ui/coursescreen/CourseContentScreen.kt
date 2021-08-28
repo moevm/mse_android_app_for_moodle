@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -29,8 +28,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import info.moevm.moodle.R
-import info.moevm.moodle.data.courses.CourseMapData
-import info.moevm.moodle.data.courses.LessonContentItem
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.components.ExpandableCard
@@ -38,12 +35,9 @@ import info.moevm.moodle.ui.Actions
 import timber.log.Timber
 import kotlin.IllegalArgumentException
 
-enum class TaskType { TOPIC, TEST }
-enum class TaskStatus { NONE, WORKING, DONE }
-
 
 @Composable
-fun CardsScreen(
+fun CourseContentScreen(
     CourseName: String,
     CourseMapData: CourseMapData,
     CardsViewModel: CardsViewModel,
@@ -76,7 +70,7 @@ fun CardsScreen(
                 val dividerColor = remember { mutableStateOf(primaryColor) }
                 ExpandableCard(
                     cardContent = {
-                        CardScreenItems(
+                        CardItems(
                             tasksType = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskType }?.toList().orEmpty(),
                             tasksTitles = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskTitle }?.toList().orEmpty(),
                             tasksStatus = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskStatus }?.toList().orEmpty()
@@ -96,7 +90,7 @@ fun CardsScreen(
 }
 
 @Composable
-fun CardScreenItems(tasksType: List<TaskType>, tasksTitles: List<String>, tasksStatus: List<TaskStatus>) {
+fun CardItems(tasksType: List<TaskType>, tasksTitles: List<String>, tasksStatus: List<TaskStatus>) {
     try {
         if(tasksType.size != tasksTitles.size && tasksTitles.size != tasksStatus.size)
             throw IllegalArgumentException()
@@ -107,23 +101,19 @@ fun CardScreenItems(tasksType: List<TaskType>, tasksTitles: List<String>, tasksS
     }
     Column {
         for (i in tasksType.indices) {
-            CardScreenItem(taskType = tasksType[i], taskTitle = tasksTitles[i], taskStatus = tasksStatus[i])
+            CardItem(taskType = tasksType[i], taskTitle = tasksTitles[i], taskStatus = tasksStatus[i])
         }
     }
 }
 
 @Composable
-fun CardScreenItem(taskType: TaskType, taskTitle: String, taskStatus: TaskStatus) {
+fun CardItem(taskType: TaskType, taskTitle: String, taskStatus: TaskStatus) {
     BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
         val boxScope = this
         Column(Modifier.clickable {  }) {
             Row(Modifier.padding(top = 8.dp, bottom = 15.dp)) {
                 Image(
-                    bitmap = ImageBitmap.imageResource(
-                        id = when (taskType){
-                            TaskType.TOPIC -> R.drawable.topic_logo
-                            TaskType.TEST -> R.drawable.test_logo
-                        }),
+                    bitmap = ImageBitmap.imageResource(id = getTaskTypeIconId(taskType)),
                     contentDescription = "taskType",
                     modifier = Modifier
                         .width(24.dp + 20.dp)
@@ -142,13 +132,7 @@ fun CardScreenItem(taskType: TaskType, taskTitle: String, taskStatus: TaskStatus
                     )
                 )
                 Image(
-                    bitmap = ImageBitmap.imageResource(
-                        id = when (taskStatus) {
-                            TaskStatus.WORKING -> R.drawable.test_working
-                            TaskStatus.DONE -> R.drawable.test_done
-                            TaskStatus.NONE -> R.drawable.empty_img
-                        }
-                    ),
+                    bitmap = ImageBitmap.imageResource(id = getTaskStatusIconId(taskStatus)),
                     contentDescription = "taskStatus",
                     modifier = Modifier
                         .width(24.dp + 17.dp)
@@ -168,12 +152,12 @@ fun CardScreenItem(taskType: TaskType, taskTitle: String, taskStatus: TaskStatus
 
 @Preview
 @Composable
-fun CardsScreenPreview() {
-    CardsScreen(CardsViewModel = CardsViewModel(exampleCourseContent().values.first().map { it.lessonTitle }), onBack = Actions(NavHostController(LocalContext.current)).upPress, CourseName = "Title", CourseMapData = exampleCourseContent())
+fun CourseContentScreenPreview() {
+    CourseContentScreen(CardsViewModel = CardsViewModel(exampleCourseContent().values.first().map { it.lessonTitle }), onBack = Actions(NavHostController(LocalContext.current)).upPress, CourseName = "Title", CourseMapData = exampleCourseContent())
 }
 
 @Preview(backgroundColor = R.color.cardview_light_background.toLong())
 @Composable
 fun CardsScreenItemPreview() {
-    CardScreenItem(TaskType.TOPIC,"test",TaskStatus.WORKING)
+    CardItem(TaskType.TOPIC,"test",TaskStatus.WORKING)
 }

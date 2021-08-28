@@ -25,7 +25,7 @@ import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.article.ArticleScreen
 import info.moevm.moodle.ui.components.StatisticsTopAppBar
-import info.moevm.moodle.ui.coursescreen.CardsScreen
+import info.moevm.moodle.ui.coursescreen.CourseContentScreen
 import info.moevm.moodle.ui.entersetup.EnterSetupScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
@@ -102,12 +102,13 @@ private fun AppContent(
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
-            NavHost(navController, startDestination = ScreenName.COURSE_LIST.name) {
-                composable(ScreenName.COURSE_LIST.name) {
-                    CardsScreen(
-                        CourseName = "Курс молодого бойца",
-                        CourseMapData = exampleCourseContent(),
-                        CardsViewModel = CardsViewModel(exampleCourseContent().values.toList()[0].map { it.lessonTitle }),
+            NavHost(navController, startDestination = ScreenName.SIGN_IN.name) {
+                composable(ScreenName.COURSE_CONTENT.name) {
+                    val content = exampleCourseContent()
+                    CourseContentScreen(
+                        CourseName = content.keys.first(),
+                        CourseMapData = content,
+                        CardsViewModel = CardsViewModel(content.values.toList()[0].map { it.lessonTitle }),
                         onBack = actions.upPress
                     )
                 }
