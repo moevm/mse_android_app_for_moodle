@@ -11,8 +11,7 @@ import info.moevm.moodle.ui.coursescreen.*
 fun exampleCourseContent() : CourseMapData{
     return mapOf(
         "Курс молодого бойца ${System.currentTimeMillis() % 10000}" to listOf(
-            CourseContentItem("Общие правила работы проектами",
-                listOf(
+            CourseContentItem("Общие правила работы проектами", listOf(
                     LessonContentItem(TaskType.TOPIC, "Введение", TaskStatus.NONE, listOf(
                         TaskContentItem(
                             "Мы рады приветствовать вас в \"Курсе молодого бойца в IT\"!",

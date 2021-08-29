@@ -298,11 +298,11 @@ private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
         text = stringResource(R.string.dominant_home_course_caption),
         style = MaterialTheme.typography.subtitle1
     )
-    PostCardTop(
-        post = post,
-        modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
-    )
-    PostListDivider()
+//    PostCardTop(
+//        post = post,
+//        modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+//    )
+//    PostListDivider()
 }
 
 /**

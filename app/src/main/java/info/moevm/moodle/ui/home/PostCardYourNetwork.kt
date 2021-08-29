@@ -30,7 +30,7 @@ fun PostCardPopular(
         shape = MaterialTheme.shapes.medium,
         modifier = modifier.size(280.dp, 240.dp)
     ) {
-        Column(modifier = Modifier.clickable(onClick = { navigateTo(Screen.Article(post.id)) })) {
+        Column(modifier = Modifier/*.clickable(onClick = { navigateTo(Screen.Article(post.id)) })*/) {
             val image = post.image ?: ImageBitmap.imageResource(R.drawable.placeholder_4_3)
             Image(
                 bitmap = image,

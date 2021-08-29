@@ -99,12 +99,26 @@ private fun AppContent(
     }
 
 
+    val content = exampleCourseContent()
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
-            NavHost(navController, startDestination = ScreenName.SIGN_IN.name) {
+            NavHost(navController, startDestination = ScreenName.ARTICLE.name) {
+                composable(ScreenName.ARTICLE.name) {
+                    val courseContentItemIndex = remember { mutableStateOf(0) }
+                    val lessonContentItemIndex = remember { mutableStateOf(0) }
+                    val taskContentItemIndex = remember { mutableStateOf(0) }
+                    info.moevm.moodle.ui.coursecontent.ArticleScreen(
+                        courseName = content.keys.first(),
+                        courseData = content,
+                        courseContentItemIndex = courseContentItemIndex,
+                        lessonContentItemIndex = lessonContentItemIndex,
+                        taskContentItemIndex = taskContentItemIndex,
+                        navigateTo = actions.select
+                    )
+                }
+
                 composable(ScreenName.COURSE_CONTENT.name) {
-                    val content = exampleCourseContent()
                     CourseContentScreen(
                         CourseName = content.keys.first(),
                         CourseMapData = content,
@@ -148,15 +162,15 @@ private fun AppContent(
                         scaffoldState = scaffoldState
                     )
                 }
-                composable(ScreenName.ARTICLE.name + "/{${Screen.ArticleArgs.PostId}}") {
-                    val postId =
-                        requireNotNull(it.arguments?.getString(Screen.ArticleArgs.PostId))
-                    ArticleScreen(
-                        postId = postId,
-                        postsRepository = postsRepository,
-                        onBack = actions.upPress
-                    )
-                }
+//                composable(ScreenName.ARTICLE.name + "/{${Screen.ArticleArgs.PostId}}") {
+//                    val postId =
+//                        requireNotNull(it.arguments?.getString(Screen.ArticleArgs.PostId))
+//                    ArticleScreen(
+//                        postId = postId,
+//                        postsRepository = postsRepository,
+//                        onBack = actions.upPress
+//                    )
+//                }
                 composable(ScreenName.STATISTICS.name) {
                     val allScreens = SettingsScreenForStatistics.values().toList()
                     var currentScreen by rememberSaveable { mutableStateOf(SettingsScreenForStatistics.Overview) }
