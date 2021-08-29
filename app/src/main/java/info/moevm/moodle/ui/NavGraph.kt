@@ -26,6 +26,7 @@ sealed class Screen(val id: ScreenName) {
     object Statistics : Screen(STATISTICS)
     object Settings : Screen(SETTINGS)
     object CourseContent : Screen(COURSE_CONTENT)
+    object Article : Screen(ARTICLE)
 //    data class Article(val postId: String) : Screen(ARTICLE)
 
 //    object ArticleArgs {
@@ -41,10 +42,10 @@ class Actions(navController: NavHostController) {
 //                navController.navigate("${screen.id.name}/${screen.postId}")
 //            }
 //            else -> {
-//                navController.popBackStack(
-//                    navController.graph.startDestinationId,
-//                    navController.currentDestination?.id != navController.graph.startDestinationId
-//                )
+                navController.popBackStack(
+                    navController.graph.startDestinationId,
+                    navController.currentDestination?.id != navController.graph.startDestinationId
+                )
                 navController.navigate(screen.id.name)
 //            }
 //        }

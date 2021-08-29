@@ -100,14 +100,14 @@ private fun AppContent(
 
 
     val content = exampleCourseContent()
+    val courseContentItemIndex = remember { mutableStateOf(0) }
+    val lessonContentItemIndex = remember { mutableStateOf(0) }
+    val taskContentItemIndex = remember { mutableStateOf(0) }
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
-            NavHost(navController, startDestination = ScreenName.ARTICLE.name) {
+            NavHost(navController, startDestination = ScreenName.SIGN_IN.name) {
                 composable(ScreenName.ARTICLE.name) {
-                    val courseContentItemIndex = remember { mutableStateOf(0) }
-                    val lessonContentItemIndex = remember { mutableStateOf(0) }
-                    val taskContentItemIndex = remember { mutableStateOf(0) }
                     info.moevm.moodle.ui.coursecontent.ArticleScreen(
                         courseName = content.keys.first(),
                         courseData = content,
@@ -117,12 +117,15 @@ private fun AppContent(
                         navigateTo = actions.select
                     )
                 }
-
                 composable(ScreenName.COURSE_CONTENT.name) {
                     CourseContentScreen(
                         CourseName = content.keys.first(),
                         CourseMapData = content,
                         CardsViewModel = CardsViewModel(content.values.toList()[0].map { it.lessonTitle }),
+                        courseContentItemIndex = courseContentItemIndex,
+                        lessonContentItemIndex = lessonContentItemIndex,
+                        taskContentItemIndex = taskContentItemIndex,
+                        navigateTo = actions.select,
                         onBack = actions.upPress
                     )
                 }

@@ -8,10 +8,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +29,7 @@ import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.components.ExpandableCard
 import info.moevm.moodle.ui.Actions
+import info.moevm.moodle.ui.Screen
 import timber.log.Timber
 import kotlin.IllegalArgumentException
 
@@ -40,9 +38,14 @@ import kotlin.IllegalArgumentException
 fun CourseContentScreen(
     CourseName: String,
     CourseMapData: CourseMapData,
+    courseContentItemIndex: MutableState<Int>,
+    lessonContentItemIndex: MutableState<Int>,
+    taskContentItemIndex: MutableState<Int>,
     CardsViewModel: CardsViewModel,
+    navigateTo: (Screen) -> Unit,
     onBack: () -> Unit
 ) {
+    taskContentItemIndex.value = 0
     val cards = CardsViewModel.cards.collectAsState()
     val expandedCardIds = CardsViewModel.expandedCardIdsList.collectAsState()
     Scaffold(
@@ -65,7 +68,7 @@ fun CourseContentScreen(
         )
     ) {
         LazyColumn(Modifier.padding(bottom = 4.dp)) {
-            itemsIndexed(cards.value) { _, card ->
+            itemsIndexed(cards.value) { index, card ->
                 val primaryColor = MaterialTheme.colors.primary
                 val dividerColor = remember { mutableStateOf(primaryColor) }
                 ExpandableCard(
@@ -73,13 +76,16 @@ fun CourseContentScreen(
                         CardItems(
                             tasksType = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskType }?.toList().orEmpty(),
                             tasksTitles = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskTitle }?.toList().orEmpty(),
-                            tasksStatus = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskStatus }?.toList().orEmpty()
+                            tasksStatus = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskStatus }?.toList().orEmpty(),
+                            lessonContentItemIndex = lessonContentItemIndex,
+                            navigateTo = navigateTo
                         )
                     },
                     card = card,
                     onCardArrowClick = {
                         dividerColor.value = if(dividerColor.value == primaryColor) Color.LightGray else primaryColor
                         CardsViewModel.onCardArrowClicked(card.id)
+                        courseContentItemIndex.value = index
                     },
                     expanded = expandedCardIds.value.contains(card.id),
                     dividerColor = dividerColor
@@ -90,7 +96,13 @@ fun CourseContentScreen(
 }
 
 @Composable
-fun CardItems(tasksType: List<TaskType>, tasksTitles: List<String>, tasksStatus: List<TaskStatus>) {
+fun CardItems(
+    tasksType: List<TaskType>,
+    tasksTitles: List<String>,
+    tasksStatus: List<TaskStatus>,
+    lessonContentItemIndex: MutableState<Int>,
+    navigateTo: (Screen) -> Unit
+    ) {
     try {
         if(tasksType.size != tasksTitles.size && tasksTitles.size != tasksStatus.size)
             throw IllegalArgumentException()
@@ -101,16 +113,35 @@ fun CardItems(tasksType: List<TaskType>, tasksTitles: List<String>, tasksStatus:
     }
     Column {
         for (i in tasksType.indices) {
-            CardItem(taskType = tasksType[i], taskTitle = tasksTitles[i], taskStatus = tasksStatus[i])
+            CardItem(
+                taskType = tasksType[i],
+                taskTitle = tasksTitles[i],
+                taskStatus = tasksStatus[i],
+                lessonContentItemIndex = lessonContentItemIndex,
+                id = i,
+                navigateTo = navigateTo
+            )
         }
     }
 }
 
 @Composable
-fun CardItem(taskType: TaskType, taskTitle: String, taskStatus: TaskStatus) {
+fun CardItem(
+    taskType: TaskType,
+    taskTitle: String,
+    taskStatus: TaskStatus,
+    lessonContentItemIndex: MutableState<Int>,
+    id: Int,
+    navigateTo: (Screen) -> Unit
+) {
     BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
         val boxScope = this
-        Column(Modifier.clickable {  }) {
+        Column(Modifier.clickable {
+            lessonContentItemIndex.value = id
+
+            navigateTo(Screen.Article)
+        }
+        ) {
             Row(Modifier.padding(top = 8.dp, bottom = 15.dp)) {
                 Image(
                     bitmap = ImageBitmap.imageResource(id = getTaskTypeIconId(taskType)),
@@ -153,11 +184,11 @@ fun CardItem(taskType: TaskType, taskTitle: String, taskStatus: TaskStatus) {
 @Preview
 @Composable
 fun CourseContentScreenPreview() {
-    CourseContentScreen(CardsViewModel = CardsViewModel(exampleCourseContent().values.first().map { it.lessonTitle }), onBack = Actions(NavHostController(LocalContext.current)).upPress, CourseName = "Title", CourseMapData = exampleCourseContent())
+//    CourseContentScreen(CardsViewModel = CardsViewModel(exampleCourseContent().values.first().map { it.lessonTitle }), onBack = Actions(NavHostController(LocalContext.current)).upPress, CourseName = "Title", CourseMapData = exampleCourseContent())
 }
 
 @Preview(backgroundColor = R.color.cardview_light_background.toLong())
 @Composable
 fun CardsScreenItemPreview() {
-    CardItem(TaskType.TOPIC,"test",TaskStatus.WORKING)
+//    CardItem(TaskType.TOPIC,"test",TaskStatus.WORKING)
 }
