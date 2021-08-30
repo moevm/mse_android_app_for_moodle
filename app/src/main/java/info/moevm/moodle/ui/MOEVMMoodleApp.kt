@@ -125,8 +125,7 @@ private fun AppContent(
                         courseContentItemIndex = courseContentItemIndex,
                         lessonContentItemIndex = lessonContentItemIndex,
                         taskContentItemIndex = taskContentItemIndex,
-                        navigateTo = actions.select,
-                        onBack = actions.upPress
+                        navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.ENTER_SETUP.name) {

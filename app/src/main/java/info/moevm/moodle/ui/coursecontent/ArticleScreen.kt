@@ -1,14 +1,12 @@
 package info.moevm.moodle.ui.coursecontent
 
 import android.widget.Toast
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.FileDownloadDone
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +37,7 @@ fun ArticleScreen(
     get(taskContentItemIndex.value)
     val scrollState = rememberScrollState()
     //FIXME моргание старого экрана при возвращении через "верхний" назад
+    //FIXME исправить наложение bottomBar поверх элементов курса
     Scaffold(
         topBar = {
             ArticleScreenTopBar(
@@ -64,7 +63,8 @@ fun ArticleScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(scrollState)
-                .fillMaxHeight(),
+                .fillMaxHeight()
+                .padding(bottom = 70.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(

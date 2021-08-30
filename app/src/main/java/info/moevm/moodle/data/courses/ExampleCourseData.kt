@@ -1,7 +1,7 @@
 package info.moevm.moodle.data.courses
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -11,9 +11,9 @@ import info.moevm.moodle.R
 import info.moevm.moodle.ui.coursescreen.*
 
 
-fun exampleCourseContent() : CourseMapData{
+fun exampleCourseContent() : CourseMapData {
     return mapOf(
-        "Курс молодого бойца ${System.currentTimeMillis() % 10000}" to listOf(
+        "Курс молодого бойца" to listOf(
             CourseContentItem("Общие правила работы проектами", listOf(
                     LessonContentItem(TaskType.TOPIC, "Введение", TaskStatus.NONE, listOf(
                         TaskContentItem(
@@ -38,7 +38,30 @@ fun exampleCourseContent() : CourseMapData{
                             "К настоящему времени Вы заработали баллов: 0 из 0 возможных.",
                             TaskContentStatus.ACCEPTED
                         ) {
-                            Image(bitmap = ImageBitmap.imageResource(id = R.drawable.placeholder_4_3), contentDescription = null)
+//                            Увеличение картнки при нажатии
+//                            val scale = remember {mutableStateOf(2f)}
+//                            val image = ImageBitmap.imageResource(id = R.drawable.placeholder_4_3)
+//                            val imageHeight = image.height * 2f
+//                            val imageWidth = image.width * 2f
+//                            Box(modifier = Modifier.height(imageHeight.dp).width(imageWidth.dp), contentAlignment = Alignment.TopCenter){
+                                Image(
+                                    bitmap = ImageBitmap.imageResource(id = R.drawable.placeholder_4_3),
+                                    contentDescription = null
+                                )
+//                                    modifier = Modifier
+//                                        .scale(scale.value)
+//                                        .pointerInput(Unit) {
+//                                            detectTapGestures(
+//                                                onDoubleTap = {
+//                                                    if(scale.value == 1f)
+//                                                        scale.value = 2f
+//                                                    else
+//                                                        scale.value = 1f
+//                                                }
+//                                            )
+//                                        }
+//                                )
+//                            }
                         },
                         TaskContentItem(
                             "Проект",

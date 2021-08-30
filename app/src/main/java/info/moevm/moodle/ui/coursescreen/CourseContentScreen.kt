@@ -23,12 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavHostController
 import info.moevm.moodle.R
-import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.components.ExpandableCard
-import info.moevm.moodle.ui.Actions
 import info.moevm.moodle.ui.Screen
 import timber.log.Timber
 import kotlin.IllegalArgumentException
@@ -42,8 +39,7 @@ fun CourseContentScreen(
     lessonContentItemIndex: MutableState<Int>,
     taskContentItemIndex: MutableState<Int>,
     CardsViewModel: CardsViewModel,
-    navigateTo: (Screen) -> Unit,
-    onBack: () -> Unit
+    navigateTo: (Screen) -> Unit
 ) {
     taskContentItemIndex.value = 0
     val cards = CardsViewModel.cards.collectAsState()
@@ -54,7 +50,7 @@ fun CourseContentScreen(
                 modifier = Modifier.testTag("topAppBarInterests"),
                 title = { Text(CourseName) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = { navigateTo(Screen.Interests) }) {
                         Icon(Icons.Filled.ArrowBack, null)
                     }
                 }
@@ -77,6 +73,8 @@ fun CourseContentScreen(
                             tasksType = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskType }?.toList().orEmpty(),
                             tasksTitles = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskTitle }?.toList().orEmpty(),
                             tasksStatus = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskStatus }?.toList().orEmpty(),
+                            courseId = index,
+                            courseContentItemIndex = courseContentItemIndex,
                             lessonContentItemIndex = lessonContentItemIndex,
                             navigateTo = navigateTo
                         )
@@ -85,7 +83,6 @@ fun CourseContentScreen(
                     onCardArrowClick = {
                         dividerColor.value = if(dividerColor.value == primaryColor) Color.LightGray else primaryColor
                         CardsViewModel.onCardArrowClicked(card.id)
-                        courseContentItemIndex.value = index
                     },
                     expanded = expandedCardIds.value.contains(card.id),
                     dividerColor = dividerColor
@@ -100,7 +97,9 @@ fun CardItems(
     tasksType: List<TaskType>,
     tasksTitles: List<String>,
     tasksStatus: List<TaskStatus>,
+    courseContentItemIndex: MutableState<Int>,
     lessonContentItemIndex: MutableState<Int>,
+    courseId: Int,
     navigateTo: (Screen) -> Unit
     ) {
     try {
@@ -117,8 +116,10 @@ fun CardItems(
                 taskType = tasksType[i],
                 taskTitle = tasksTitles[i],
                 taskStatus = tasksStatus[i],
+                courseContentItemIndex = courseContentItemIndex,
                 lessonContentItemIndex = lessonContentItemIndex,
-                id = i,
+                courseId = courseId,
+                lessonId = i,
                 navigateTo = navigateTo
             )
         }
@@ -130,16 +131,20 @@ fun CardItem(
     taskType: TaskType,
     taskTitle: String,
     taskStatus: TaskStatus,
+    courseContentItemIndex: MutableState<Int>,
     lessonContentItemIndex: MutableState<Int>,
-    id: Int,
+    courseId: Int,
+    lessonId: Int,
     navigateTo: (Screen) -> Unit
 ) {
     BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
         val boxScope = this
         Column(Modifier.clickable {
-            lessonContentItemIndex.value = id
-
-            navigateTo(Screen.Article)
+            if(taskType == TaskType.TOPIC) {
+                courseContentItemIndex.value = courseId
+                lessonContentItemIndex.value = lessonId
+                navigateTo(Screen.Article)
+            }
         }
         ) {
             Row(Modifier.padding(top = 8.dp, bottom = 15.dp)) {
