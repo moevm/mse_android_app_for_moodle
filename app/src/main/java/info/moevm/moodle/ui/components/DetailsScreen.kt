@@ -26,14 +26,14 @@ fun <T> StatementBody(
         Box(Modifier.padding(16.dp)) {
             val accountsProportion = items.extractProportions { amounts(it) }
             val circleColors = items.map { colors(it) }
-//            AnimatedCircle(
-//                accountsProportion,
-//                circleColors,
-//                Modifier
-//                    .height(300.dp)
-//                    .align(Alignment.Center)
-//                    .fillMaxWidth()
-//            )
+            AnimatedCircle(
+                accountsProportion,
+                circleColors,
+                Modifier
+                    .height(300.dp)
+                    .align(Alignment.Center)
+                    .fillMaxWidth()
+            )
             Column(modifier = Modifier.align(Alignment.Center)) {
                 Text(
                     text = circleLabel,
