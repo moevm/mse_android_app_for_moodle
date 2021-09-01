@@ -6,27 +6,44 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import info.moevm.moodle.R
 import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
+import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
 fun StatisticsTopAppBar(
+    scaffoldState: ScaffoldState,
     allScreens: List<SettingsScreenForStatistics>,
     onTabSelected: (SettingsScreenForStatistics) -> Unit,
     currentScreen: SettingsScreenForStatistics
 ) {
-    Surface(Modifier.height(TabHeight).fillMaxWidth()) {
+    val coroutineScope = rememberCoroutineScope()
+    Surface(
+        Modifier
+            .height(TabHeight)
+            .fillMaxWidth()
+    ) {
         Row {
+            IconButton(
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp, end = 4.dp),
+                onClick = {
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.open()
+                    }
+                }
+            ) {
+                Icon(ImageVector.vectorResource(R.drawable.ic_logo_light), null)
+            }
             allScreens.forEach { screen ->
                 SettingsTab(
                     text = screen.name.uppercase(Locale.ROOT),

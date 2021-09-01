@@ -21,10 +21,12 @@ import androidx.compose.ui.unit.dp
 import info.moevm.moodle.R
 import info.moevm.moodle.data.statistics.UserData
 import info.moevm.moodle.model.Post
+import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.SwipeToRefreshLayout
 import info.moevm.moodle.ui.components.*
 import info.moevm.moodle.ui.state.UiState
+import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
@@ -72,12 +74,26 @@ fun OverviewScreen(
 
     val allScreens = SettingsScreenForStatistics.values().toList()
     var currentScreen by rememberSaveable { mutableStateOf(SettingsScreenForStatistics.Overview) }
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
             StatisticsTopAppBar(
+                scaffoldState = scaffoldState,
                 allScreens = allScreens,
                 onTabSelected = { screen -> currentScreen = screen },
                 currentScreen = currentScreen
+            )
+        },
+        drawerContent = {
+            AppDrawer(
+                currentScreen = Screen.Statistics,
+                closeDrawer = {
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                },
+                navigateTo = navigateTo
             )
         }
     ) { innerPadding ->
@@ -118,7 +134,11 @@ private fun LoadingContent(
 @Composable
 fun OverviewBody(onScreenChange: (SettingsScreenForStatistics) -> Unit = {}) {
     val scrollState = rememberScrollState()
-    Column(Modifier.verticalScroll(scrollState).padding(PaddingValues(16.dp))) {
+    Column(
+        Modifier
+            .verticalScroll(scrollState)
+            .padding(PaddingValues(16.dp))
+    ) {
         AlertCard()
         Spacer(Modifier.height(StatisticsDefaultPadding))
         CoursesCard(onScreenChange)
@@ -313,7 +333,9 @@ private fun StudentsCard(onScreenChange: (SettingsScreenForStatistics) -> Unit) 
 private fun SeeAllButton(onClick: () -> Unit) {
     TextButton(
         onClick = onClick,
-        modifier = Modifier.height(44.dp).fillMaxWidth()
+        modifier = Modifier
+            .height(44.dp)
+            .fillMaxWidth()
     ) {
         Text(stringResource(R.string.see_all))
     }

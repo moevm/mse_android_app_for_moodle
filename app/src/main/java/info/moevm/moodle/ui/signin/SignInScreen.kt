@@ -92,16 +92,6 @@ fun SignInScreen(
                     }
                 }
         ) {
-            Branding(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .onGloballyPositioned {
-                        if (brandingBottom == 0f) {
-                            brandingBottom = it.boundsInParent().bottom
-                        }
-                    }
-            )
             SignInSignUpScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -115,6 +105,16 @@ fun SignInScreen(
                     )
                 }
             }
+            Branding(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .onGloballyPositioned {
+                        if (brandingBottom == 0f) {
+                            brandingBottom = it.boundsInParent().bottom
+                        }
+                    }
+            )
         }
     }
 }
@@ -261,11 +261,13 @@ fun SignInContent(
 
     LocalContext.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
-        val focusRequester = remember { FocusRequester() }
+        val loginRequester = remember { FocusRequester() }
+        val passwordRequester = remember { FocusRequester() }
         val loginState = remember { LoginState() }
         Login(
-            loginState = loginState, onImeAction = { focusRequester.requestFocus() },
-            modifier = Modifier.focusRequester(focusRequester)
+            loginState = loginState,
+            onImeAction = { passwordRequester.requestFocus() },
+            modifier = Modifier.focusRequester(loginRequester)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -274,7 +276,7 @@ fun SignInContent(
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
-            modifier = Modifier.focusRequester(focusRequester)
+            modifier = Modifier.focusRequester(passwordRequester)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(

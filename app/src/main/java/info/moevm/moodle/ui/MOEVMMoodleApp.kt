@@ -27,6 +27,7 @@ import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import info.moevm.moodle.ui.user.UserScreen
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
@@ -114,12 +115,26 @@ private fun AppContent(
                 composable(ScreenName.STATISTICS.name) {
                     val allScreens = SettingsScreenForStatistics.values().toList()
                     var currentScreen by rememberSaveable { mutableStateOf(SettingsScreenForStatistics.Overview) }
+                    val coroutineScope = rememberCoroutineScope()
                     Scaffold(
+                        scaffoldState = scaffoldState,
                         topBar = {
                             StatisticsTopAppBar(
+                                scaffoldState = scaffoldState,
                                 allScreens = allScreens,
                                 onTabSelected = { screen -> currentScreen = screen },
                                 currentScreen = currentScreen
+                            )
+                        },
+                        drawerContent = {
+                            AppDrawer(
+                                currentScreen = Screen.Statistics,
+                                closeDrawer = {
+                                    coroutineScope.launch {
+                                        scaffoldState.drawerState.close()
+                                    }
+                                },
+                                navigateTo = actions.select
                             )
                         }
                     ) { innerPadding ->

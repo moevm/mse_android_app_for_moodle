@@ -62,6 +62,7 @@ fun AppDrawer(
             isSelected = currentScreen == Screen.User,
             action = {
                 navigateTo(Screen.User)
+                closeDrawer()
             }
         )
 
