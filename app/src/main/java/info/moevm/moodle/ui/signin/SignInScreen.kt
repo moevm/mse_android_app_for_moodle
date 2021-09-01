@@ -27,10 +27,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import info.moevm.moodle.R
 import info.moevm.moodle.api.DataStoreMoodleUser
 import info.moevm.moodle.api.DataStoreUser
@@ -59,6 +56,9 @@ fun showMessage(context: Context, message: String, duration: Int = Toast.LENGTH_
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SignInScreen(
+    fullNameMoodleUser: MutableLiveData<String>,
+    cityMoodleUser: MutableLiveData<String>,
+    countryMoodleUser: MutableLiveData<String>,
     navigateTo: (Screen) -> Unit
 ) {
     var brandingBottom by remember { mutableStateOf(0f) }
@@ -102,16 +102,12 @@ fun SignInScreen(
 //                            onSignInSubmitted = { email, password ->
 //                                SignInEvent.SignIn(email, password)
 //                            }
-                        onSignInSubmitted = navigateTo
+                        onSignInSubmitted = navigateTo,
+                        fullNameMoodleUser = fullNameMoodleUser,
+                        cityMoodleUser = cityMoodleUser,
+                        countryMoodleUser = countryMoodleUser
                     )
                 }
-                Branding(
-                    modifier = Modifier.fillMaxWidth().weight(1f).onGloballyPositioned {
-                        if (brandingBottom == 0f) {
-                            brandingBottom = it.boundsInParent().bottom
-                        }
-                    }
-                )
             }
             Branding(
                 modifier = Modifier
@@ -168,7 +164,10 @@ fun SignInSignUpTopAppBar(
 
 @Composable
 fun SignInContent(
-    onSignInSubmitted: (Screen) -> Unit
+    onSignInSubmitted: (Screen) -> Unit,
+    fullNameMoodleUser: MutableLiveData<String>,
+    cityMoodleUser: MutableLiveData<String>,
+    countryMoodleUser: MutableLiveData<String>
 ) {
 
     fun Context.lifecycleOwner(): LifecycleOwner? {
@@ -241,6 +240,9 @@ fun SignInContent(
                         moodleProfile.city,
                         moodleProfile.country
                     )
+                    fullNameMoodleUser.value = moodleProfile.fullname
+                    cityMoodleUser.value = moodleProfile.city
+                    countryMoodleUser.value = moodleProfile.country
                 }
             }
         )
@@ -351,7 +353,11 @@ fun SignInSignUpScreen(
 @Composable
 fun SignInPreview() {
     MOEVMMoodleTheme {
-        SignInScreen {}
+        SignInScreen(
+            fullNameMoodleUser = MutableLiveData(""),
+            cityMoodleUser = MutableLiveData(""),
+            countryMoodleUser = MutableLiveData("")
+        ) { }
     }
 }
 
@@ -359,6 +365,10 @@ fun SignInPreview() {
 @Composable
 fun SignInPreviewDark() {
     MOEVMMoodleTheme(darkTheme = true) {
-        SignInScreen {}
+        SignInScreen(
+            fullNameMoodleUser = MutableLiveData(""),
+            cityMoodleUser = MutableLiveData(""),
+            countryMoodleUser = MutableLiveData("")
+        ) { }
     }
 }

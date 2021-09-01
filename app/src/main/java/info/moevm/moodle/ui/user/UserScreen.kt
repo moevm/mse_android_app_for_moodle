@@ -15,6 +15,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.MutableLiveData
 import info.moevm.moodle.R
 import info.moevm.moodle.api.DataStoreUser
 import info.moevm.moodle.ui.AppDrawer
@@ -27,9 +28,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun UserScreen(
-    fullNameMoodleProfile: String,
-    cityMoodleProfile: String,
-    countryMoodleProfile: String,
+    fullNameMoodleProfile: MutableLiveData<String>,
+    cityMoodleProfile: MutableLiveData<String>,
+    countryMoodleProfile: MutableLiveData<String>,
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
@@ -52,7 +53,7 @@ fun UserScreen(
                 modifier = Modifier.testTag("topAppBarHome"),
                 title = {
                     Text(
-                        text = "${stringResource(id = R.string.hello)}, $fullNameMoodleProfile",
+                        text = "${stringResource(id = R.string.hello)}, ${fullNameMoodleProfile.value ?: ""}",
                         textAlign = TextAlign.Justify,
                         modifier = Modifier
                             .fillMaxSize()
@@ -79,8 +80,8 @@ fun UserScreen(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             UserContent(
-                cityMoodleProfile,
-                countryMoodleProfile,
+                cityMoodleProfile.value ?: "",
+                countryMoodleProfile.value ?: "",
                 onNavigate = navigateTo
             )
         }
@@ -172,7 +173,7 @@ fun UserPreview() {
         val scaffoldState = rememberScaffoldState(
             drawerState = rememberDrawerState(DrawerValue.Closed)
         )
-        UserScreen(navigateTo = { }, scaffoldState = scaffoldState, fullNameMoodleProfile = "", cityMoodleProfile = "", countryMoodleProfile = "")
+        UserScreen(navigateTo = { }, scaffoldState = scaffoldState, fullNameMoodleProfile = MutableLiveData(""), cityMoodleProfile = MutableLiveData(""), countryMoodleProfile = MutableLiveData(""))
     }
 }
 
@@ -183,6 +184,6 @@ fun UserPreviewDark() {
         val scaffoldState = rememberScaffoldState(
             drawerState = rememberDrawerState(DrawerValue.Closed)
         )
-        UserScreen(navigateTo = { }, scaffoldState = scaffoldState, fullNameMoodleProfile = "", cityMoodleProfile = "", countryMoodleProfile = "")
+        UserScreen(navigateTo = { }, scaffoldState = scaffoldState, fullNameMoodleProfile = MutableLiveData(""), cityMoodleProfile = MutableLiveData(""), countryMoodleProfile = MutableLiveData(""))
     }
 }
