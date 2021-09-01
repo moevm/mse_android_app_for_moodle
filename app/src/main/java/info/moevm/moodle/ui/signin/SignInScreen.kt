@@ -98,12 +98,20 @@ fun SignInScreen(
                 Column(modifier = Modifier.fillMaxWidth()) {
                     SignInContent(
                         // TODO: check correction of login key
+
 //                            onSignInSubmitted = { email, password ->
 //                                SignInEvent.SignIn(email, password)
 //                            }
                         onSignInSubmitted = navigateTo
                     )
                 }
+                Branding(
+                    modifier = Modifier.fillMaxWidth().weight(1f).onGloballyPositioned {
+                        if (brandingBottom == 0f) {
+                            brandingBottom = it.boundsInParent.bottom
+                        }
+                    }
+                )
             }
             Branding(
                 modifier = Modifier
