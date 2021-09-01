@@ -375,7 +375,7 @@ private fun TopicItem(navigateTo: (Screen) -> Unit, itemTitle: String, selected:
                 value = selected,
                 onValueChange = { onToggle() }
             )
-            .clickable { //TODO Исправить на нормально
+            .clickable { // TODO Исправить на нормально
                 if (itemTitle == "Курс молодого бойца" || itemTitle == "КМБ") {
                     navigateTo(Screen.CourseContent)
                 }

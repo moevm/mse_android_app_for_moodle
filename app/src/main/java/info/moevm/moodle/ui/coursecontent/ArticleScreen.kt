@@ -31,13 +31,13 @@ fun ArticleScreen(
     taskContentItemIndex: MutableState<Int>,
     navigateTo: (Screen) -> Unit
 ) {
-    val taskContent = courseData[courseName]?.
-    get(courseContentItemIndex.value)?.lessonContent?.
-    get(lessonContentItemIndex.value)?.taskContent?.
-    get(taskContentItemIndex.value)
+    val taskContent =
+        courseData[courseName]?.get(courseContentItemIndex.value)?.lessonContent?.get(
+            lessonContentItemIndex.value
+        )?.taskContent?.get(taskContentItemIndex.value)
     val scrollState = rememberScrollState()
-    //FIXME моргание старого экрана при возвращении через "верхний" назад
-    //FIXME исправить наложение bottomBar поверх элементов курса
+    // FIXME моргание старого экрана при возвращении через "верхний" назад
+    // FIXME исправить наложение bottomBar поверх элементов курса
     Scaffold(
         topBar = {
             ArticleScreenTopBar(
@@ -54,10 +54,14 @@ fun ArticleScreen(
             )
         }
     ) {
-        if(taskContent == null) {
-            Toast.makeText(LocalContext.current, "Произошла ошибка при загрузке данных", Toast.LENGTH_SHORT).show()
+        if (taskContent == null) {
+            Toast.makeText(
+                LocalContext.current,
+                "Произошла ошибка при загрузке данных",
+                Toast.LENGTH_SHORT
+            ).show()
             navigateTo(Screen.CourseContent)
-            return@Scaffold //чтобы не использовать '?'
+            return@Scaffold // чтобы не использовать '?'
         }
         Column(
             modifier = Modifier
@@ -85,7 +89,7 @@ fun ArticleScreen(
                     text = taskContent.taskMark,
                     style = TextStyle(
                         fontSize = 12.sp,
-                        color = Color(0f,0f,0f, 0.4f),
+                        color = Color(0f, 0f, 0f, 0.4f),
                         textAlign = TextAlign.Center
                     )
                 )
@@ -103,8 +107,11 @@ fun ArticleScreenTopBar(
     TopAppBar(
         title = { Text("Элемент курса") },
         navigationIcon = {
-            IconButton(onClick = onBack ) {
-                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = null
+                )
             }
         }
     )
@@ -118,11 +125,11 @@ fun ArticleScreenBottomNavigator(
     taskContentItemIndex: MutableState<Int>,
     taskContentItemSize: Int
 ) {
-    val (iconBack, textBack) = when(taskContentItemIndex.value) {
+    val (iconBack, textBack) = when (taskContentItemIndex.value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
     }
-    val (iconForward, textForward) = when(taskContentItemIndex.value) {
+    val (iconForward, textForward) = when (taskContentItemIndex.value) {
         taskContentItemSize - 1 -> Pair(Icons.Filled.Task, "Завершить")
         else -> Pair(Icons.Filled.ChevronRight, "Далее")
     }
@@ -130,19 +137,31 @@ fun ArticleScreenBottomNavigator(
     BottomNavigation {
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
-            onClick = { if(taskContentItemIndex.value - 1 >= 0) { taskContentItemIndex.value-- } },//FIXME исправить на нормально
-            icon = { Icon(imageVector = iconBack, contentDescription = null)},
+            onClick = {
+                if (taskContentItemIndex.value - 1 >= 0) {
+                    taskContentItemIndex.value--
+                }
+            }, // FIXME исправить на нормально
+            icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
         )
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 0,
-            onClick = { if(taskContentItemIndex.value + 1 < taskContentItemSize) { taskContentItemIndex.value++ } },//FIXME исправить на нормально
-            icon = { Icon(imageVector = iconForward, contentDescription = null)},
+            onClick = {
+                if (taskContentItemIndex.value + 1 < taskContentItemSize) {
+                    taskContentItemIndex.value++
+                }
+            }, // FIXME исправить на нормально
+            icon = {
+                Icon(
+                    imageVector = iconForward,
+                    contentDescription = null
+                )
+            },
             label = { Text(textForward) }
         )
     }
 }
-
 
 @Preview
 @Composable

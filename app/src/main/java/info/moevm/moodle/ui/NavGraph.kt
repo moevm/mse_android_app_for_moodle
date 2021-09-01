@@ -42,11 +42,11 @@ class Actions(navController: NavHostController) {
 //                navController.navigate("${screen.id.name}/${screen.postId}")
 //            }
 //            else -> {
-                navController.popBackStack(
-                    navController.graph.startDestinationId,
-                    navController.currentDestination?.id != navController.graph.startDestinationId
-                )
-                navController.navigate(screen.id.name)
+        navController.popBackStack(
+            navController.graph.startDestinationId,
+            navController.currentDestination?.id != navController.graph.startDestinationId
+        )
+        navController.navigate(screen.id.name)
 //            }
 //        }
     }

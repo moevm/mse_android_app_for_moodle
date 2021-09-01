@@ -10,12 +10,20 @@ enum class TaskStatus { NONE, WORKING, DONE }
 enum class TaskContentStatus { FAILED, ACCEPTED }
 enum class TaskContentType { VIDEO, ARTICLE, TEST_ONE_CHOICE, TEST_MULTI_CHOICE, TEST_ANSWER, TEST_MATCH, UNSUPPORTED }
 
+data class CourseContentItem(
+    val lessonTitle: String,
+    val lessonContent: List<LessonContentItem>
+)
 
-data class CourseContentItem(val lessonTitle: String, val lessonContent: List<LessonContentItem>)
-data class LessonContentItem(val taskType: TaskType, val taskTitle: String, val taskStatus: TaskStatus, val taskContent: List<TaskContentItem> = listOf())//taskContent можно использовать для окон с темами и тестами курса
+data class LessonContentItem(
+    val taskType: TaskType,
+    val taskTitle: String,
+    val taskStatus: TaskStatus,
+    val taskContent: List<TaskContentItem> = listOf()
+) // taskContent можно использовать для окон с темами и тестами курса
 
 data class TaskContentItem(
-    val taskTitle: String, //Может использоваться как нумерация вопроса
+    val taskTitle: String, // Может использоваться как нумерация вопроса
     val taskContentType: TaskContentType,
     val taskMark: String,
     val taskContentStatus: TaskContentStatus,
@@ -29,6 +37,7 @@ fun getTaskStatusIconId(taskStatus: TaskStatus): Int {
         TaskStatus.NONE -> R.drawable.empty_img
     }
 }
+
 fun getTaskTypeIconId(taskType: TaskType): Int {
     return when (taskType) {
         TaskType.TOPIC -> R.drawable.topic_logo

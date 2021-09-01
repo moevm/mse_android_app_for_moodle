@@ -1,24 +1,20 @@
 package info.moevm.moodle.model
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import info.moevm.moodle.ui.components.ExpandableCard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-@Immutable //Optimization for Compose
+@Immutable // Optimization for Compose
 data class ExpandableCardModel(val id: Int, val title: String)
 
 const val EXPAND_ANIMATION_DURATION = 500
 const val FADE_IN_ANIMATION_DURATION = 500
 const val FADE_OUT_ANIMATION_DURATION = 500
 const val COLLAPSE_ANIMATION_DURATION = 500
-
 
 class CardsViewModel(titles: List<String>) : ViewModel() {
 
@@ -32,7 +28,7 @@ class CardsViewModel(titles: List<String>) : ViewModel() {
         viewModelScope.launch(Dispatchers.Default) {
             val testList = arrayListOf<ExpandableCardModel>()
             var cnt = 0
-            for (title in titles){
+            for (title in titles) {
                 testList += ExpandableCardModel(id = cnt++, title = title)
             }
             _cards.emit(testList)
@@ -41,7 +37,7 @@ class CardsViewModel(titles: List<String>) : ViewModel() {
 
     fun onCardArrowClicked(cardId: Int) {
         _expandedCardIdsList.value = _expandedCardIdsList.value.toMutableList().also { list ->
-            if(list.contains(cardId)) list.remove(cardId) else list.add(cardId)
+            if (list.contains(cardId)) list.remove(cardId) else list.add(cardId)
         }
     }
 }

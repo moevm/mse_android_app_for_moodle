@@ -23,7 +23,6 @@ import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.model.CardsViewModel
-import info.moevm.moodle.ui.article.ArticleScreen
 import info.moevm.moodle.ui.components.StatisticsTopAppBar
 import info.moevm.moodle.ui.coursescreen.CourseContentScreen
 import info.moevm.moodle.ui.entersetup.EnterSetupScreen
@@ -35,7 +34,6 @@ import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import info.moevm.moodle.ui.user.UserScreen
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
@@ -97,7 +95,6 @@ private fun AppContent(
         cityMoodleUser.value = cityMoodleUserString
         countryMoodleUser.value = countryMoodleUserString
     }
-
 
     val content = exampleCourseContent()
     val courseContentItemIndex = remember { mutableStateOf(0) }

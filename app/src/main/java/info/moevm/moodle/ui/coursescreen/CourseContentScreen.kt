@@ -25,11 +25,10 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import info.moevm.moodle.R
 import info.moevm.moodle.model.CardsViewModel
-import info.moevm.moodle.ui.components.ExpandableCard
 import info.moevm.moodle.ui.Screen
+import info.moevm.moodle.ui.components.ExpandableCard
 import timber.log.Timber
 import kotlin.IllegalArgumentException
-
 
 @Composable
 fun CourseContentScreen(
@@ -70,9 +69,12 @@ fun CourseContentScreen(
                 ExpandableCard(
                     cardContent = {
                         CardItems(
-                            tasksType = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskType }?.toList().orEmpty(),
-                            tasksTitles = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskTitle }?.toList().orEmpty(),
-                            tasksStatus = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map{ it.taskStatus }?.toList().orEmpty(),
+                            tasksType = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map { it.taskType }
+                                ?.toList().orEmpty(),
+                            tasksTitles = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map { it.taskTitle }
+                                ?.toList().orEmpty(),
+                            tasksStatus = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map { it.taskStatus }
+                                ?.toList().orEmpty(),
                             courseId = index,
                             courseContentItemIndex = courseContentItemIndex,
                             lessonContentItemIndex = lessonContentItemIndex,
@@ -81,7 +83,8 @@ fun CourseContentScreen(
                     },
                     card = card,
                     onCardArrowClick = {
-                        dividerColor.value = if(dividerColor.value == primaryColor) Color.LightGray else primaryColor
+                        dividerColor.value =
+                            if (dividerColor.value == primaryColor) Color.LightGray else primaryColor
                         CardsViewModel.onCardArrowClicked(card.id)
                     },
                     expanded = expandedCardIds.value.contains(card.id),
@@ -101,11 +104,11 @@ fun CardItems(
     lessonContentItemIndex: MutableState<Int>,
     courseId: Int,
     navigateTo: (Screen) -> Unit
-    ) {
+) {
     try {
-        if(tasksType.size != tasksTitles.size && tasksTitles.size != tasksStatus.size)
+        if (tasksType.size != tasksTitles.size && tasksTitles.size != tasksStatus.size)
             throw IllegalArgumentException()
-    } catch (e : IllegalArgumentException) {
+    } catch (e: IllegalArgumentException) {
         Timber.e("Lists have different lengths")
         return Column {
         }
@@ -137,19 +140,27 @@ fun CardItem(
     lessonId: Int,
     navigateTo: (Screen) -> Unit
 ) {
-    BoxWithConstraints(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopStart) {
+    BoxWithConstraints(
+        Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.TopStart
+    ) {
         val boxScope = this
-        Column(Modifier.clickable {
-            if(taskType == TaskType.TOPIC) {
-                courseContentItemIndex.value = courseId
-                lessonContentItemIndex.value = lessonId
-                navigateTo(Screen.Article)
+        Column(
+            Modifier.clickable {
+                if (taskType == TaskType.TOPIC) {
+                    courseContentItemIndex.value = courseId
+                    lessonContentItemIndex.value = lessonId
+                    navigateTo(Screen.Article)
+                }
             }
-        }
         ) {
             Row(Modifier.padding(top = 8.dp, bottom = 15.dp)) {
                 Image(
-                    bitmap = ImageBitmap.imageResource(id = getTaskTypeIconId(taskType)),
+                    bitmap = ImageBitmap.imageResource(
+                        id = getTaskTypeIconId(
+                            taskType
+                        )
+                    ),
                     contentDescription = "taskType",
                     modifier = Modifier
                         .width(24.dp + 20.dp)
@@ -168,7 +179,11 @@ fun CardItem(
                     )
                 )
                 Image(
-                    bitmap = ImageBitmap.imageResource(id = getTaskStatusIconId(taskStatus)),
+                    bitmap = ImageBitmap.imageResource(
+                        id = getTaskStatusIconId(
+                            taskStatus
+                        )
+                    ),
                     contentDescription = "taskStatus",
                     modifier = Modifier
                         .width(24.dp + 17.dp)
@@ -181,7 +196,6 @@ fun CardItem(
                 color = Color.LightGray,
                 thickness = 1.dp
             )
-
         }
     }
 }

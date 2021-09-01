@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -39,15 +38,24 @@ fun ExpandableCard(
             targetState = !expanded
         }
     }
-    val transition = updateTransition(transitionState = transitionState, label = "ExpandableCard")
-    val cardBgColor by transition.animateColor({
-        tween(durationMillis = EXPAND_ANIMATION_DURATION)
-    }, label = "CardBackgroundColor") {
+    val transition = updateTransition(
+        transitionState = transitionState,
+        label = "ExpandableCard"
+    )
+    val cardBgColor by transition.animateColor(
+        {
+            tween(durationMillis = EXPAND_ANIMATION_DURATION)
+        },
+        label = "CardBackgroundColor"
+    ) {
         Color.White
     }
-    val cardPaddingHorizontal by transition.animateDp({
-        tween(durationMillis = EXPAND_ANIMATION_DURATION)
-    }, label = "CardPaddingHorizontal") {
+    val cardPaddingHorizontal by transition.animateDp(
+        {
+            tween(durationMillis = EXPAND_ANIMATION_DURATION)
+        },
+        label = "CardPaddingHorizontal"
+    ) {
         16.dp
     }
 //    val cardRoundedCorners by transition.animateDp({
@@ -58,9 +66,12 @@ fun ExpandableCard(
 //    }, label = "CardRoundedCorners") {
 //        if(expanded) 4.dp else 16.dp
 //    }
-    val arrowRotationDegree by transition.animateFloat({
-        tween(durationMillis = EXPAND_ANIMATION_DURATION)
-    }, label = "ArrowRotationDegree") {
+    val arrowRotationDegree by transition.animateFloat(
+        {
+            tween(durationMillis = EXPAND_ANIMATION_DURATION)
+        },
+        label = "ArrowRotationDegree"
+    ) {
         if (expanded) 180f else 0f
     }
     Card(
@@ -184,9 +195,6 @@ fun ExpandableBottomContent(
     }
 }
 
-
-
-
 @Preview(name = "Less")
 @Composable
 fun ExpandableCardPreviewLess() {
@@ -199,6 +207,7 @@ fun ExpandableCardPreviewLess() {
         dividerColor = remember { mutableStateOf(Color.Magenta) }
     )
 }
+
 @Preview(name = "More")
 @Composable
 fun ExpandableCardPreviewMore() {
