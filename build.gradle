@@ -3,6 +3,9 @@
 import info.moevm.moodle.buildsrc.Libs
 
 buildscript {
+    ext {
+        compose_version = '1.0.0-beta09'
+    }
     repositories {
         google()
         jcenter()
@@ -11,6 +14,7 @@ buildscript {
         classpath Libs.androidGradlePlugin
         classpath Libs.Kotlin.gradlePlugin
         classpath 'com.android.tools.build:gradle:7.1.0-alpha03'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10'
     }
 }
 

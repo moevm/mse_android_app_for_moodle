@@ -3,6 +3,7 @@ package info.moevm.moodle.ui.interests
 import android.content.Context
 import android.content.ContextWrapper
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
@@ -111,7 +112,7 @@ fun InterestsScreen(
             coroutineScope.launch { coursesRepository.toggleTopicSelection(it) }
         }
         val data = topics.value.data ?: return@TabContent
-        TopicList(data, selectedTopics, onTopicSelect)
+        TopicList(navigateTo, data, selectedTopics, onTopicSelect)
     }
 
     val peopleSection = TabContent(Sections.People) {
@@ -123,7 +124,7 @@ fun InterestsScreen(
             coroutineScope.launch { coursesRepository.togglePersonSelected(it) }
         }
         val data = people.value.data ?: return@TabContent
-        PeopleList(data, selectedPeople, onPeopleSelect)
+        PeopleList(navigateTo, data, selectedPeople, onPeopleSelect)
     }
 
     val publicationSection = TabContent(Sections.Publications) {
@@ -136,7 +137,7 @@ fun InterestsScreen(
             coroutineScope.launch { coursesRepository.togglePublicationSelected(it) }
         }
         val data = publications.value.data ?: return@TabContent
-        PublicationList(data, selectedPublications, onPublicationSelect)
+        PublicationList(navigateTo, data, selectedPublications, onPublicationSelect)
     }
 
     val tabContent = listOf(topicsSection, peopleSection, publicationSection)
@@ -201,7 +202,7 @@ fun InterestsScreen(
             )
         }
     ) {
-        TabContent(tab, onTabChange, tabContent)
+        TabContent(tab, navigateTo, onTabChange, tabContent)
     }
 }
 
@@ -216,6 +217,7 @@ fun InterestsScreen(
 @Composable
 private fun TabContent(
     currentSection: Sections,
+    navigateTo: (Screen) -> Unit,
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>
 ) {
@@ -248,11 +250,12 @@ private fun TabContent(
  */
 @Composable
 private fun TopicList(
+    navigateTo: (Screen) -> Unit,
     courses: CoursesMap,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
 ) {
-    TabWithSections(courses, selectedTopics, onTopicSelect)
+    TabWithSections(navigateTo, courses, selectedTopics, onTopicSelect)
 }
 
 /**
@@ -264,11 +267,12 @@ private fun TopicList(
  */
 @Composable
 private fun PeopleList(
+    navigateTo: (Screen) -> Unit,
     people: List<String>,
     selectedPeople: Set<String>,
     onPersonSelect: (String) -> Unit
 ) {
-    TabWithTopics(people, selectedPeople, onPersonSelect)
+    TabWithTopics(navigateTo, people, selectedPeople, onPersonSelect)
 }
 
 /**
@@ -280,11 +284,12 @@ private fun PeopleList(
  */
 @Composable
 private fun PublicationList(
+    navigateTo: (Screen) -> Unit,
     publications: List<String>,
     selectedPublications: Set<String>,
     onPublicationSelect: (String) -> Unit
 ) {
-    TabWithTopics(publications, selectedPublications, onPublicationSelect)
+    TabWithTopics(navigateTo, publications, selectedPublications, onPublicationSelect)
 }
 
 /**
@@ -296,6 +301,7 @@ private fun PublicationList(
  */
 @Composable
 private fun TabWithTopics(
+    navigateTo: (Screen) -> Unit,
     topics: List<String>,
     selectedTopics: Set<String>,
     onTopicSelect: (String) -> Unit
@@ -308,7 +314,8 @@ private fun TabWithTopics(
     ) {
         topics.forEach { topic ->
             TopicItem(
-                topic,
+                navigateTo = navigateTo,
+                itemTitle = topic,
                 selected = selectedTopics.contains(topic)
             ) { onTopicSelect(topic) }
             TopicDivider()
@@ -325,6 +332,7 @@ private fun TabWithTopics(
  */
 @Composable
 private fun TabWithSections(
+    navigateTo: (Screen) -> Unit,
     sections: CoursesMap,
     selectedTopics: Set<TopicSelection>,
     onTopicSelect: (TopicSelection) -> Unit
@@ -340,6 +348,7 @@ private fun TabWithSections(
             )
             topics.forEach { topic ->
                 TopicItem(
+                    navigateTo = navigateTo,
                     itemTitle = topic,
                     selected = selectedTopics.contains(TopicSelection(section, topic))
                 ) { onTopicSelect(TopicSelection(section, topic)) }
@@ -358,7 +367,7 @@ private fun TabWithSections(
  */
 
 @Composable
-private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit) {
+private fun TopicItem(navigateTo: (Screen) -> Unit, itemTitle: String, selected: Boolean, onToggle: () -> Unit) {
     val image = ImageBitmap.imageResource(R.drawable.placeholder_1_1)
     Row(
         modifier = Modifier
@@ -366,6 +375,11 @@ private fun TopicItem(itemTitle: String, selected: Boolean, onToggle: () -> Unit
                 value = selected,
                 onValueChange = { onToggle() }
             )
+            .clickable { // TODO Исправить на нормально
+                if (itemTitle == "Курс молодого бойца" || itemTitle == "КМБ") {
+                    navigateTo(Screen.CourseContent)
+                }
+            }
             .padding(horizontal = 16.dp)
     ) {
         Image(
@@ -458,7 +472,7 @@ private fun PreviewDrawerOpenDark() {
 @Composable
 fun PreviewTopicsTab(tokenState: String) {
     ThemedPreview {
-        TopicList(loadFakeTopics(tokenState), setOf(), {})
+//        TopicList(loadFakeTopics(tokenState), setOf(), {})
     }
 }
 
@@ -466,7 +480,7 @@ fun PreviewTopicsTab(tokenState: String) {
 @Composable
 fun PreviewTopicsTabDark(tokenState: String) {
     ThemedPreview(darkTheme = true) {
-        TopicList(loadFakeTopics(tokenState), setOf(), {})
+//        TopicList(loadFakeTopics(tokenState), setOf(), {})
     }
 }
 
@@ -482,7 +496,7 @@ private fun loadFakeTopics(tokenState: String): CoursesMap {
 @Composable
 fun PreviewPeopleTab(tokenState: String) {
     ThemedPreview {
-        PeopleList(loadFakePeople(tokenState), setOf(), { })
+//        PeopleList(loadFakePeople(tokenState), setOf(), { })
     }
 }
 
@@ -490,7 +504,7 @@ fun PreviewPeopleTab(tokenState: String) {
 @Composable
 fun PreviewPeopleTabDark(tokenState: String) {
     ThemedPreview(darkTheme = true) {
-        PeopleList(loadFakePeople(tokenState), setOf(), { })
+//        PeopleList(loadFakePeople(tokenState), setOf(), { })
     }
 }
 
@@ -507,7 +521,7 @@ private fun loadFakePeople(tokenState: String): List<String> {
 @Composable
 fun PreviewPublicationsTab() {
     ThemedPreview {
-        PublicationList(loadFakePublications(), setOf(), { })
+//        PublicationList(loadFakePublications(), setOf(), { })
     }
 }
 
@@ -515,7 +529,7 @@ fun PreviewPublicationsTab() {
 @Composable
 fun PreviewPublicationsTabDark() {
     ThemedPreview(darkTheme = true) {
-        PublicationList(loadFakePublications(), setOf(), { })
+//        PublicationList(loadFakePublications(), setOf(), { })
     }
 }
 
@@ -531,7 +545,7 @@ private fun loadFakePublications(): List<String> {
 @Composable
 fun PreviewTabWithTopics() {
     ThemedPreview {
-        TabWithTopics(topics = listOf("Hello", "Compose"), selectedTopics = setOf()) {}
+//        TabWithTopics(topics = listOf("Hello", "Compose"), selectedTopics = setOf()) {}
     }
 }
 
@@ -539,6 +553,6 @@ fun PreviewTabWithTopics() {
 @Composable
 fun PreviewTabWithTopicsDark() {
     ThemedPreview(darkTheme = true) {
-        TabWithTopics(topics = listOf("Hello", "Compose"), selectedTopics = setOf()) {}
+//        TabWithTopics(topics = listOf("Hello", "Compose"), selectedTopics = setOf()) {}
     }
 }

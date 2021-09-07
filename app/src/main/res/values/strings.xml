@@ -71,4 +71,5 @@
     <!-- Log In -->
     <string name="wrong_login">Wrong login or password</string>
     <string name="network_problems">Network problems, check internet connection</string>
+    <string name="title_activity_article_screen">ArticleScreen</string>
 </resources>

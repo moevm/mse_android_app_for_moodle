@@ -1,7 +1,6 @@
 package info.moevm.moodle.ui.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.Icon
@@ -73,7 +72,7 @@ fun PostCardSimple(
 ) {
     Row(
         modifier = Modifier
-            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+//            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
             .padding(16.dp)
     ) {
         PostImage(post, Modifier.padding(end = 16.dp))
@@ -92,7 +91,7 @@ fun PostCardSimple(
 fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
     Row(
         Modifier
-            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+//            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
             .padding(16.dp)
     ) {
         PostImage(
