@@ -6,7 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.ExperimentalFocus
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -16,14 +16,16 @@ import info.moevm.moodle.R
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
+import kotlinx.coroutines.launch
 
 private fun Modifier.brandingPreferredHeight(
     showBranding: Boolean,
     heightDp: Dp
 ): Modifier {
     return if (!showBranding) {
-        this.wrapContentHeight(unbounded = true)
-            .preferredHeight(heightDp)
+        this
+            .wrapContentHeight(unbounded = true)
+            .height(heightDp)
     } else {
         this
     }
@@ -46,13 +48,17 @@ fun SettingsScreen(
     navigateTo: (Screen) -> Unit,
     scaffoldState: ScaffoldState
 ) {
-
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Settings,
-                closeDrawer = { scaffoldState.drawerState.close() },
+                closeDrawer = {
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                },
                 navigateTo = navigateTo
             )
         },
@@ -64,43 +70,48 @@ fun SettingsScreen(
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
-                        onClick = { scaffoldState.drawerState.open() },
+                        onClick = {
+                            coroutineScope.launch {
+                                scaffoldState.drawerState.open()
+                            }
+                        }
                     ) {
-                        Icon(vectorResource(R.drawable.ic_logo_light))
+                        Icon(ImageVector.vectorResource(id = R.drawable.ic_logo_light), null)
                     }
                 }
             )
-        },
-        bodyContent = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                SettingsContent(
-                    onNavigate = navigateTo
-                )
-            }
         }
-    )
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            SettingsContent(
+                onNavigate = navigateTo
+            )
+        }
+    }
 }
 
-@OptIn(ExperimentalFocus::class)
 @Composable
 fun SettingsContent(
     onNavigate: (Screen) -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(
-            top = 10.dp,
-            start = 10.dp,
-            end = 10.dp
-        ).fillMaxWidth().wrapContentHeight(),
+        modifier = Modifier
+            .padding(
+                top = 10.dp,
+                start = 10.dp,
+                end = 10.dp
+            )
+            .fillMaxWidth()
+            .wrapContentHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Switch(
             checked = false,
             onCheckedChange = { },
             // colors = defaultColors{Color.Black, Color.Black, 0.54f, Color.LTGRAY, Color.LTGRAY, 0.38f, }
 
         )
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }

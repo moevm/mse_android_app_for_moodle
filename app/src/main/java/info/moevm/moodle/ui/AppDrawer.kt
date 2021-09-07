@@ -1,15 +1,7 @@
 package info.moevm.moodle.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -40,7 +32,7 @@ fun AppDrawer(
     closeDrawer: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(Modifier.preferredHeight(24.dp))
+        Spacer(Modifier.height(24.dp))
         MOEVMMoodleLogo(Modifier.padding(16.dp))
         Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
 
@@ -100,7 +92,8 @@ fun AppDrawer(
 private fun MOEVMMoodleLogo(modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
         Image(
-            imageVector = vectorResource(R.drawable.ic_logo_light),
+            imageVector = ImageVector.vectorResource(R.drawable.ic_logo_light),
+            contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
         )
         // TODO: Add MOEVM text
@@ -151,10 +144,11 @@ private fun DrawerButton(
             ) {
                 Image(
                     imageVector = icon,
+                    contentDescription = null,
                     colorFilter = ColorFilter.tint(textIconColor),
                     alpha = imageAlpha
                 )
-                Spacer(Modifier.preferredWidth(16.dp))
+                Spacer(Modifier.width(16.dp))
                 Text(
                     text = label,
                     style = MaterialTheme.typography.body2,

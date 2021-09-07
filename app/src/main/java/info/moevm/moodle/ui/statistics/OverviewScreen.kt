@@ -1,17 +1,18 @@
 package info.moevm.moodle.ui.statistics
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.*
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +26,7 @@ import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.SwipeToRefreshLayout
 import info.moevm.moodle.ui.components.*
 import info.moevm.moodle.ui.state.UiState
+import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
@@ -71,7 +73,8 @@ fun OverviewScreen(
     }
 
     val allScreens = SettingsScreenForStatistics.values().toList()
-    var currentScreen by savedInstanceState { SettingsScreenForStatistics.Overview }
+    var currentScreen by rememberSaveable { mutableStateOf(SettingsScreenForStatistics.Overview) }
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -85,7 +88,11 @@ fun OverviewScreen(
         drawerContent = {
             AppDrawer(
                 currentScreen = Screen.Statistics,
-                closeDrawer = { scaffoldState.drawerState.close() },
+                closeDrawer = {
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                },
                 navigateTo = navigateTo
             )
         }
@@ -114,7 +121,7 @@ private fun LoadingContent(
                 Surface(elevation = 10.dp, shape = CircleShape) {
                     CircularProgressIndicator(
                         modifier = Modifier
-                            .preferredSize(36.dp)
+                            .size(36.dp)
                             .padding(4.dp)
                     )
                 }
@@ -126,11 +133,16 @@ private fun LoadingContent(
 
 @Composable
 fun OverviewBody(onScreenChange: (SettingsScreenForStatistics) -> Unit = {}) {
-    ScrollableColumn(contentPadding = PaddingValues(16.dp)) {
+    val scrollState = rememberScrollState()
+    Column(
+        Modifier
+            .verticalScroll(scrollState)
+            .padding(PaddingValues(16.dp))
+    ) {
         AlertCard()
-        Spacer(Modifier.preferredHeight(StatisticsDefaultPadding))
+        Spacer(Modifier.height(StatisticsDefaultPadding))
         CoursesCard(onScreenChange)
-        Spacer(Modifier.preferredHeight(StatisticsDefaultPadding))
+        Spacer(Modifier.height(StatisticsDefaultPadding))
         StudentsCard(onScreenChange)
     }
 }
@@ -171,12 +183,12 @@ private fun AlertCard() {
 @Composable
 private fun AlertHeader(onClickSeeAll: () -> Unit) {
     Row(
-        modifier = Modifier.padding(StatisticsDefaultPadding).fillMaxWidth(),
+        modifier = Modifier
+            .padding(StatisticsDefaultPadding)
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Providers(
-            AmbientContentAlpha provides ContentAlpha.high
-        ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
                 text = stringResource(R.string.alert),
                 style = MaterialTheme.typography.subtitle2,
@@ -202,9 +214,7 @@ private fun AlertItem(message: String) {
         modifier = Modifier.padding(StatisticsDefaultPadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Providers(
-            AmbientContentAlpha provides ContentAlpha.high
-        ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
                 style = MaterialTheme.typography.body2,
                 modifier = Modifier.weight(1f),
@@ -214,7 +224,7 @@ private fun AlertItem(message: String) {
                 onClick = {},
                 modifier = Modifier.align(Alignment.Top)
             ) {
-                Icon(Icons.Filled.Sort)
+                Icon(Icons.Filled.Sort, null)
             }
         }
     }
@@ -263,7 +273,7 @@ private fun <T> OverViewDivider(
             Spacer(
                 modifier = Modifier
                     .weight(values(item))
-                    .preferredHeight(1.dp)
+                    .height(1.dp)
                     .background(colors(item))
             )
         }
@@ -323,7 +333,9 @@ private fun StudentsCard(onScreenChange: (SettingsScreenForStatistics) -> Unit) 
 private fun SeeAllButton(onClick: () -> Unit) {
     TextButton(
         onClick = onClick,
-        modifier = Modifier.preferredHeight(44.dp).fillMaxWidth()
+        modifier = Modifier
+            .height(44.dp)
+            .fillMaxWidth()
     ) {
         Text(stringResource(R.string.see_all))
     }

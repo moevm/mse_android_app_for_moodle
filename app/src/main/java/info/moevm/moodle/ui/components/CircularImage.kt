@@ -12,6 +12,7 @@ import androidx.compose.ui.layout.ContentScale
 fun CircularImage(modifier: Modifier, image: ImageBitmap) {
     Image(
         bitmap = image,
+        contentDescription = null,
         modifier = modifier.clip(CircleShape),
         contentScale = ContentScale.Crop
     )

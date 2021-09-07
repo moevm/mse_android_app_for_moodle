@@ -8,17 +8,15 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.font
-import androidx.compose.ui.text.font.fontFamily
+import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import info.moevm.moodle.R
 
-private val RobotoCondensed = fontFamily(
-    font(R.font.robotocondensed_regular),
-    font(R.font.robotocondensed_light, FontWeight.Light),
-    font(R.font.robotocondensed_bold, FontWeight.Bold)
+private val RobotoCondensed = FontFamily(
+    Font(R.font.robotocondensed_regular),
+    Font(R.font.robotocondensed_light, FontWeight.Light),
+    Font(R.font.robotocondensed_bold, FontWeight.Bold)
 )
 
 val LightThemeColors = lightColors(
@@ -49,7 +47,6 @@ val DarkThemeColors = darkColors(
     onError = Color.Black
 )
 
-@Composable
 val Colors.snackbarAction: Color
     get() = if (isLight) Purple300 else Purple700
 

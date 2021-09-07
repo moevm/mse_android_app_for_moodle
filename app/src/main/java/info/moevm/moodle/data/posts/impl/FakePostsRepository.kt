@@ -1,7 +1,8 @@
 package info.moevm.moodle.data.posts.impl
 
 import android.content.res.Resources
-import androidx.compose.ui.graphics.imageFromResource
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.imageResource
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.model.Post
@@ -33,8 +34,8 @@ class FakePostsRepository(
     private val postsWithResources: List<Post> by lazy {
         posts.map {
             it.copy(
-                image = imageFromResource(resources, it.imageId),
-                imageThumb = imageFromResource(resources, it.imageThumbId)
+                image = ImageBitmap.imageResource(resources, it.imageId),
+                imageThumb = ImageBitmap.imageResource(resources, it.imageThumbId)
             )
         }
     }

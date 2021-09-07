@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath Libs.androidGradlePlugin
         classpath Libs.Kotlin.gradlePlugin
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha03'
+        classpath 'com.android.tools.build:gradle:7.1.0-alpha03'
     }
 }
 
@@ -30,14 +30,14 @@ subprojects {
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-            freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
+//            freeCompilerArgs += '-Xallow-jvm-ir-dependencies'
 
             // Enable experimental coroutines APIs, including Flow
             freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi'
             freeCompilerArgs += '-Xopt-in=kotlinx.coroutines.FlowPreview'
             freeCompilerArgs += '-Xopt-in=kotlin.Experimental'
             freeCompilerArgs += '-Xopt-in=kotlin.RequiresOptIn'
-            freeCompilerArgs += "-Xallow-jvm-ir-dependencies"
+//            freeCompilerArgs += "-Xallow-jvm-ir-dependencies"
 
             // Set JVM target to 1.8
             jvmTarget = "1.8"

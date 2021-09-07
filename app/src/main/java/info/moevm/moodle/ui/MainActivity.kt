@@ -1,8 +1,8 @@
 package info.moevm.moodle.ui
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.platform.setContent
 import info.moevm.moodle.MOEVMMoodleApplication
 import timber.log.Timber
 

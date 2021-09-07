@@ -4,32 +4,30 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.widget.Toast
-import androidx.compose.animation.animate
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.AmbientContext
-import androidx.compose.ui.platform.AmbientDensity
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import info.moevm.moodle.R
 import info.moevm.moodle.api.DataStoreMoodleUser
 import info.moevm.moodle.api.DataStoreUser
@@ -58,6 +56,9 @@ fun showMessage(context: Context, message: String, duration: Int = Toast.LENGTH_
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SignInScreen(
+    fullNameMoodleUser: MutableLiveData<String>,
+    cityMoodleUser: MutableLiveData<String>,
+    countryMoodleUser: MutableLiveData<String>,
     navigateTo: (Screen) -> Unit
 ) {
     var brandingBottom by remember { mutableStateOf(0f) }
@@ -65,10 +66,9 @@ fun SignInScreen(
     var heightWithBranding by remember { mutableStateOf(0) }
 
     val currentOffsetHolder = remember { mutableStateOf(0f) }
-    currentOffsetHolder.value = animate(
-        if (showBranding) 0f else -brandingBottom
-    )
-    val heightDp = with(AmbientDensity.current) { heightWithBranding.toDp() }
+
+    currentOffsetHolder.value = animateFloatAsState(targetValue = if (showBranding) 0f else -brandingBottom).value
+    val heightDp = with(LocalDensity.current) { heightWithBranding.toDp() }
 
     Scaffold(
         topBar = {
@@ -76,42 +76,51 @@ fun SignInScreen(
                 topAppBarText = stringResource(id = R.string.sign_in),
                 onSetupTouch = navigateTo
             )
-        },
-        bodyContent = {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-                    .brandingPreferredHeight(showBranding, heightDp)
-                    .offset({ mutableStateOf(0f).value }, { currentOffsetHolder.value })
-                    .onSizeChanged {
-                        if (showBranding) {
-                            heightWithBranding = it.height
-                        }
+        }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .brandingPreferredHeight(showBranding, heightDp)
+                .offset(
+                    remember { mutableStateOf(0f).value.dp }, // remember?
+                    currentOffsetHolder.value.dp
+                )
+                .onSizeChanged {
+                    if (showBranding) {
+                        heightWithBranding = it.height
                     }
+                }
+        ) {
+            SignInSignUpScreen(
+                modifier = Modifier.fillMaxWidth()
             ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    SignInContent(
+                        // TODO: check correction of login key
 
-                SignInSignUpScreen(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        SignInContent(
-                            // TODO: check correction of login key
 //                            onSignInSubmitted = { email, password ->
 //                                SignInEvent.SignIn(email, password)
 //                            }
-                            onSignInSubmitted = navigateTo
-                        )
-                    }
+                        onSignInSubmitted = navigateTo,
+                        fullNameMoodleUser = fullNameMoodleUser,
+                        cityMoodleUser = cityMoodleUser,
+                        countryMoodleUser = countryMoodleUser
+                    )
                 }
-                Branding(
-                    modifier = Modifier.fillMaxWidth().weight(1f).onGloballyPositioned {
+            }
+            Branding(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .onGloballyPositioned {
                         if (brandingBottom == 0f) {
-                            brandingBottom = it.boundsInParent.bottom
+                            brandingBottom = it.boundsInParent().bottom
                         }
                     }
-                )
-            }
+            )
         }
-    )
+    }
 }
 
 /**
@@ -122,7 +131,7 @@ fun SignInSignUpTopAppBar(
     topAppBarText: String,
     onSetupTouch: (Screen) -> Unit
 ) {
-    val image = vectorResource(id = R.drawable.settings)
+    val image = ImageVector.vectorResource(id = R.drawable.settings)
     TopAppBar(
         title = {
             Text(
@@ -147,16 +156,18 @@ fun SignInSignUpTopAppBar(
             }
         ) {
             Row {
-                Image(imageVector = image)
+                Image(imageVector = image, contentDescription = null)
             }
         }
     }
 }
 
-@OptIn(ExperimentalFocus::class)
 @Composable
 fun SignInContent(
-    onSignInSubmitted: (Screen) -> Unit
+    onSignInSubmitted: (Screen) -> Unit,
+    fullNameMoodleUser: MutableLiveData<String>,
+    cityMoodleUser: MutableLiveData<String>,
+    countryMoodleUser: MutableLiveData<String>
 ) {
 
     fun Context.lifecycleOwner(): LifecycleOwner? {
@@ -173,7 +184,7 @@ fun SignInContent(
     }
 
     val apiclient = MoodleApi()
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val lifeSO = context.lifecycleOwner()
     val dataStore = DataStoreUser(context)
     val moodleProfileDataStore = DataStoreMoodleUser(context)
@@ -229,6 +240,9 @@ fun SignInContent(
                         moodleProfile.city,
                         moodleProfile.country
                     )
+                    fullNameMoodleUser.value = moodleProfile.fullname
+                    cityMoodleUser.value = moodleProfile.city
+                    countryMoodleUser.value = moodleProfile.country
                 }
             }
         )
@@ -255,25 +269,26 @@ fun SignInContent(
 
     checkLogIn()
 
-    AmbientContext.current as Activity
+    LocalContext.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
-        val loginFocusRequester = remember { FocusRequester() }
-        val passwordFocusRequester = remember { FocusRequester() }
+        val loginRequester = remember { FocusRequester() }
+        val passwordRequester = remember { FocusRequester() }
         val loginState = remember { LoginState() }
         Login(
-            loginState = loginState, onImeAction = { passwordFocusRequester.requestFocus() },
-            modifier = Modifier.focusRequester(loginFocusRequester)
+            loginState = loginState,
+            onImeAction = { passwordRequester.requestFocus() },
+            modifier = Modifier.focusRequester(loginRequester)
         )
 
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         val passwordState = remember { PasswordState() }
         Password(
             label = stringResource(id = R.string.password),
             passwordState = passwordState,
-            modifier = Modifier.focusRequester(passwordFocusRequester)
+            modifier = Modifier.focusRequester(passwordRequester)
         )
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
                 val userName = loginState.text
@@ -304,7 +319,9 @@ fun SignInContent(
                 checkLoginName()
                 showMessage(context, "checking...", 5000)
             },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
             enabled = loginState.isValid && passwordState.isValid
         ) {
             Text(
@@ -319,9 +336,14 @@ fun SignInSignUpScreen(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    ScrollableColumn(modifier = modifier) {
-        Spacer(modifier = Modifier.preferredHeight(44.dp))
-        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+    val scrollState = rememberScrollState()
+    Column(Modifier.verticalScroll(scrollState)) {
+        Spacer(modifier = Modifier.height(44.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
             content()
         }
     }
@@ -331,7 +353,11 @@ fun SignInSignUpScreen(
 @Composable
 fun SignInPreview() {
     MOEVMMoodleTheme {
-        SignInScreen {}
+        SignInScreen(
+            fullNameMoodleUser = MutableLiveData(""),
+            cityMoodleUser = MutableLiveData(""),
+            countryMoodleUser = MutableLiveData("")
+        ) { }
     }
 }
 
@@ -339,6 +365,10 @@ fun SignInPreview() {
 @Composable
 fun SignInPreviewDark() {
     MOEVMMoodleTheme(darkTheme = true) {
-        SignInScreen {}
+        SignInScreen(
+            fullNameMoodleUser = MutableLiveData(""),
+            cityMoodleUser = MutableLiveData(""),
+            countryMoodleUser = MutableLiveData("")
+        ) { }
     }
 }

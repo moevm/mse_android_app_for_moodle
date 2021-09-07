@@ -10,10 +10,11 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,7 +87,7 @@ fun ArticleScreen(
     onToggleFavorite: () -> Unit
 ) {
 
-    var showDialog by savedInstanceState { false }
+    var showDialog by rememberSaveable { mutableStateOf(false) }
     if (showDialog) {
         FunctionalityNotAvailablePopup { showDialog = false }
     }
@@ -98,19 +99,15 @@ fun ArticleScreen(
                     Text(
                         text = "Published in: ${post.publication?.name}",
                         style = MaterialTheme.typography.subtitle2,
-                        color = AmbientContentColor.current
+                        color = LocalContentColor.current
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack)
+                        Icon(Icons.Filled.ArrowBack, null)
                     }
                 }
             )
-        },
-        bodyContent = { innerPadding ->
-            val modifier = Modifier.padding(innerPadding)
-            PostContent(post, modifier)
         },
         bottomBar = {
             BottomBar(
@@ -120,7 +117,10 @@ fun ArticleScreen(
                 onToggleFavorite = onToggleFavorite
             )
         }
-    )
+    ) { innerPadding ->
+        val modifier = Modifier.padding(innerPadding)
+        PostContent(post, modifier)
+    }
 }
 
 /**
@@ -142,23 +142,23 @@ private fun BottomBar(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .preferredHeight(56.dp)
+                .height(56.dp)
                 .fillMaxWidth()
         ) {
             IconButton(onClick = onUnimplementedAction) {
-                Icon(Icons.Filled.FavoriteBorder)
+                Icon(Icons.Filled.FavoriteBorder, null)
             }
             BookmarkButton(
                 isBookmarked = isFavorite,
                 onClick = onToggleFavorite
             )
-            val context = AmbientContext.current
+            val context = LocalContext.current
             IconButton(onClick = { sharePost(post, context) }) {
-                Icon(Icons.Filled.Share)
+                Icon(Icons.Filled.Share, null)
             }
             Spacer(modifier = Modifier.weight(1f))
             IconButton(onClick = onUnimplementedAction) {
-                Icon(vectorResource(R.drawable.ic_text_settings))
+                Icon(ImageVector.vectorResource(R.drawable.ic_text_settings), null)
             }
         }
     }
@@ -222,7 +222,7 @@ fun PreviewArticleDark() {
 
 @Composable
 private fun loadFakePost(postId: String): Post {
-    val context = AmbientContext.current
+    val context = LocalContext.current
     val post = runBlocking {
         (BlockingFakePostsRepository(context).getPost(postId) as Result.Success).data
     }

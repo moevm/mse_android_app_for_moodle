@@ -1,14 +1,13 @@
 package info.moevm.moodle.ui
 
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.navigate
 import info.moevm.moodle.ui.Screen.*
 import info.moevm.moodle.ui.ScreenName.*
 
 /**
  * Screen names (used for serialization)
  */
-enum class ScreenName { ENTER_SETUP, SIGN_IN, HOME, USER, INTERESTS, ARTICLE, STATISTICS, SETTINGS }
+enum class ScreenName { ENTER_SETUP, SIGN_IN, HOME, USER, INTERESTS, ARTICLE, STATISTICS, SETTINGS, COURSE_LIST }
 
 /**
  * Class defining the screens we have in the app:
@@ -26,6 +25,7 @@ sealed class Screen(val id: ScreenName) {
     object User : Screen(USER)
     object Statistics : Screen(STATISTICS)
     object Settings : Screen(SETTINGS)
+    object CourseList : Screen(COURSE_LIST)
     data class Article(val postId: String) : Screen(ARTICLE)
 
     object ArticleArgs {
@@ -42,8 +42,8 @@ class Actions(navController: NavHostController) {
             }
             else -> {
                 navController.popBackStack(
-                    navController.graph.startDestination,
-                    navController.currentDestination?.id != navController.graph.startDestination
+                    navController.graph.startDestinationId,
+                    navController.currentDestination?.id != navController.graph.startDestinationId
                 )
                 navController.navigate(screen.id.name)
             }

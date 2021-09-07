@@ -1,7 +1,8 @@
 package info.moevm.moodle.data.posts.impl
 
 import android.content.Context
-import androidx.compose.ui.graphics.imageFromResource
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.imageResource
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.model.Post
@@ -22,9 +23,9 @@ class BlockingFakePostsRepository(private val context: Context) : PostsRepositor
     private val postsWithResources: List<Post> by lazy {
         posts.map {
             it.copy(
-                image = imageFromResource(context.resources, it.imageId),
+                image = ImageBitmap.imageResource(context.resources, it.imageId),
                 // FIXME: is it necessary?
-                imageThumb = imageFromResource(context.resources, it.imageThumbId)
+                imageThumb = ImageBitmap.imageResource(context.resources, it.imageThumbId)
             )
         }
     }

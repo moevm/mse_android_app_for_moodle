@@ -3,7 +3,8 @@
 package info.moevm.moodle.data.posts.impl
 
 import android.content.res.Resources
-import androidx.compose.ui.graphics.imageFromResource
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.imageResource
 import info.moevm.moodle.R
 import info.moevm.moodle.model.*
 
@@ -886,8 +887,8 @@ val posts: List<Post> =
 fun getPostsWithImagesLoaded(posts: List<Post>, resources: Resources): List<Post> {
     return posts.map {
         it.copy(
-            image = imageFromResource(resources, it.imageId),
-            imageThumb = imageFromResource(resources, it.imageThumbId)
+            image = ImageBitmap.imageResource(resources, it.imageId),
+            imageThumb = ImageBitmap.imageResource(resources, it.imageThumbId)
         )
     }
 }

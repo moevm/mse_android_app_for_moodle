@@ -1,23 +1,20 @@
 package info.moevm.moodle.ui.entersetup.checksetup
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.ExperimentalFocus
-import androidx.compose.ui.focus.FocusState
-import androidx.compose.ui.focusObserver
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import info.moevm.moodle.ui.signin.TextFieldState
 
-@OptIn(ExperimentalFocus::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun FiledEnter(
     fieldState: TextFieldState = remember { TokenState() },
@@ -25,35 +22,37 @@ fun FiledEnter(
     labelVal: String,
     onImeAction: () -> Unit = {}
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     OutlinedTextField(
         value = fieldState.text,
         onValueChange = {
             fieldState.text = it
         },
         label = {
-            Providers(AmbientContentAlpha provides ContentAlpha.medium) {
-                Text(
-                    text = labelVal,
-                    style = MaterialTheme.typography.body2
-                )
-            }
+            Text(
+                text = labelVal,
+                style = MaterialTheme.typography.body2
+            )
         },
-        modifier = Modifier.fillMaxWidth().focusObserver { focusState ->
-            val focused = focusState == FocusState.Active
-            fieldState.onFocusChange(focused)
-            if (!focused) {
-                fieldState.enableShowErrors()
-            }
-        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .onFocusChanged { focusState ->
+                val focused = focusState.isFocused
+                fieldState.onFocusChange(focused)
+                if (!focused) {
+                    fieldState.enableShowErrors()
+                }
+            },
         textStyle = MaterialTheme.typography.body2,
-        isErrorValue = fieldState.showErrors(),
+        isError = fieldState.showErrors(),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
-        onImeActionPerformed = { action, softKeyboardController ->
-            if (action == ImeAction.Done) {
-                softKeyboardController?.hideSoftwareKeyboard()
-            }
-            onImeAction()
-        }
+        keyboardActions = KeyboardActions(
+            onDone = {
+                keyboardController?.hide()
+                onImeAction()
+            },
+            onNext = { onImeAction() }
+        )
     )
 
     fieldState.getError()?.let { error -> TextFieldError(textError = error) }
@@ -65,11 +64,11 @@ fun FiledEnter(
 @Composable
 fun TextFieldError(textError: String) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        Spacer(modifier = Modifier.preferredWidth(16.dp))
+        Spacer(modifier = Modifier.width(16.dp))
         Text(
             text = textError,
             modifier = Modifier.fillMaxWidth(),
-            style = AmbientTextStyle.current.copy(color = MaterialTheme.colors.error)
+            style = LocalTextStyle.current.copy(color = MaterialTheme.colors.error)
         )
     }
 }
