@@ -11,6 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -18,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
@@ -84,6 +87,7 @@ fun InterestsScreen(
             null
         }
     }
+
     val context = LocalContext.current
     val lifeSO = context.lifecycleOwner()
     val dataStore = DataStoreUser(context)
@@ -107,7 +111,8 @@ fun InterestsScreen(
             getTopics(tokenState)
         }
         // collectAsState will read a [Flow] in Compose
-        val selectedTopics by coursesRepository.observeTopicsSelected().collectAsState(setOf())
+        val selectedTopics by coursesRepository.observeTopicsSelected()
+            .collectAsState(setOf())
         val onTopicSelect: (TopicSelection) -> Unit = {
             coroutineScope.launch { coursesRepository.toggleTopicSelection(it) }
         }
@@ -119,7 +124,8 @@ fun InterestsScreen(
         val (people) = produceUiState(coursesRepository) {
             getPeople(tokenState)
         }
-        val selectedPeople by coursesRepository.observePeopleSelected().collectAsState(setOf())
+        val selectedPeople by coursesRepository.observePeopleSelected()
+            .collectAsState(setOf())
         val onPeopleSelect: (String) -> Unit = {
             coroutineScope.launch { coursesRepository.togglePersonSelected(it) }
         }
@@ -134,14 +140,27 @@ fun InterestsScreen(
         val selectedPublications by coursesRepository.observePublicationSelected()
             .collectAsState(setOf())
         val onPublicationSelect: (String) -> Unit = {
-            coroutineScope.launch { coursesRepository.togglePublicationSelected(it) }
+            coroutineScope.launch {
+                coursesRepository.togglePublicationSelected(
+                    it
+                )
+            }
         }
         val data = publications.value.data ?: return@TabContent
-        PublicationList(navigateTo, data, selectedPublications, onPublicationSelect)
+        PublicationList(
+            navigateTo,
+            data,
+            selectedPublications,
+            onPublicationSelect
+        )
     }
 
     val tabContent = listOf(topicsSection, peopleSection, publicationSection)
-    val (currentSection, updateSection) = rememberSaveable { mutableStateOf(tabContent.first().section) }
+    val (currentSection, updateSection) = rememberSaveable {
+        mutableStateOf(
+            tabContent.first().section
+        )
+    }
     InterestsScreen(
         tabContent = tabContent,
         tab = currentSection,
@@ -196,7 +215,10 @@ fun InterestsScreen(
                             }
                         },
                     ) {
-                        Icon(ImageVector.vectorResource(R.drawable.ic_logo_light), contentDescription = null)
+                        Icon(
+                            ImageVector.vectorResource(R.drawable.ic_logo_light),
+                            contentDescription = null
+                        )
                     }
                 }
             )
@@ -221,7 +243,8 @@ private fun TabContent(
     updateSection: (Sections) -> Unit,
     tabContent: List<TabContent>
 ) {
-    val selectedTabIndex = tabContent.indexOfFirst { it.section == currentSection }
+    val selectedTabIndex =
+        tabContent.indexOfFirst { it.section == currentSection }
     Column {
         TabRow(
             selectedTabIndex = selectedTabIndex
@@ -289,7 +312,12 @@ private fun PublicationList(
     selectedPublications: Set<String>,
     onPublicationSelect: (String) -> Unit
 ) {
-    TabWithTopics(navigateTo, publications, selectedPublications, onPublicationSelect)
+    TabWithTopics(
+        navigateTo,
+        publications,
+        selectedPublications,
+        onPublicationSelect
+    )
 }
 
 /**
@@ -350,7 +378,12 @@ private fun TabWithSections(
                 TopicItem(
                     navigateTo = navigateTo,
                     itemTitle = topic,
-                    selected = selectedTopics.contains(TopicSelection(section, topic))
+                    selected = selectedTopics.contains(
+                        TopicSelection(
+                            section,
+                            topic
+                        )
+                    )
                 ) { onTopicSelect(TopicSelection(section, topic)) }
                 TopicDivider()
             }
@@ -367,37 +400,66 @@ private fun TabWithSections(
  */
 
 @Composable
-private fun TopicItem(navigateTo: (Screen) -> Unit, itemTitle: String, selected: Boolean, onToggle: () -> Unit) {
+private fun TopicItem(
+    navigateTo: (Screen) -> Unit,
+    itemTitle: String,
+    selected: Boolean,
+    onToggle: () -> Unit
+) {
     val image = ImageBitmap.imageResource(R.drawable.placeholder_1_1)
-    Row(
-        modifier = Modifier
-            .toggleable(
-                value = selected,
-                onValueChange = { onToggle() }
-            )
-            .clickable { // TODO Исправить на нормально
-                if (itemTitle == "Курс молодого бойца" || itemTitle == "КМБ") {
-                    navigateTo(Screen.CourseContent)
-                }
-            }
-            .padding(horizontal = 16.dp)
-    ) {
-        Image(
-            image,
-            null,
-            Modifier
-                .align(Alignment.CenterVertically)
-                .size(56.dp, 56.dp)
-                .clip(RoundedCornerShape(4.dp))
-        )
-        Text(
-            text = itemTitle,
+    BoxWithConstraints {
+        val boxScope = this
+        Row(
             modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(16.dp),
-            style = MaterialTheme.typography.subtitle1
-        )
-        Spacer(Modifier.weight(1f))
+                .toggleable(
+                    value = selected,
+                    onValueChange = { onToggle() }
+                )
+                .clickable { // TODO Исправить на нормально
+                    if (itemTitle == "Курс молодого бойца" || itemTitle == "КМБ") {
+                        navigateTo(Screen.CourseContent)
+                    }
+                }
+                .padding(horizontal = 16.dp)
+        ) {
+            Image(
+                image,
+                null,
+                Modifier
+                    .padding(
+                        start = 8.dp,
+                        top = 4.dp,
+                        bottom = 4.dp
+                    )
+                    .align(Alignment.CenterVertically)
+                    .size(56.dp, 56.dp)
+                    .clip(RoundedCornerShape(4.dp))
+            )
+            Text(
+                text = itemTitle,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .width(boxScope.maxWidth - 16.dp * 2 - 8.dp - 16.dp - 56.dp - 35.dp - 8.dp)
+                    .padding(start = 16.dp, end = 8.dp),
+                style = MaterialTheme.typography.subtitle1
+            )
+            Box(
+                modifier = Modifier
+                    .clickable {
+                        // TODO: сделать переход на экран информации о курсе
+                    }
+                    .size(42.dp)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Icon(
+                    modifier = Modifier.align(Alignment.Center),
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = null
+                )
+            }
+
+        }
+
     }
 }
 

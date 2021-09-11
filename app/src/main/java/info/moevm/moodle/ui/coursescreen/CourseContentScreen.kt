@@ -68,13 +68,17 @@ fun CourseContentScreen(
                 val dividerColor = remember { mutableStateOf(primaryColor) }
                 ExpandableCard(
                     cardContent = {
+                        val lessonContent = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent
+//                        var foundNullItem = lessonContent == null
+//                        for (item in lessonContent.orEmpty())
+//                            foundNullItem = foundNullItem || item == null
+//                        if (foundNullItem) {
+//                           return@ExpandableCard
+//                        }
                         CardItems(
-                            tasksType = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map { it.taskType }
-                                ?.toList().orEmpty(),
-                            tasksTitles = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map { it.taskTitle }
-                                ?.toList().orEmpty(),
-                            tasksStatus = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent?.map { it.taskStatus }
-                                ?.toList().orEmpty(),
+                            tasksType = lessonContent?.map { it?.taskType ?: TaskType.NONE }?.toList().orEmpty(),
+                            tasksTitles = lessonContent?.map { it?.taskTitle ?: "<Ошибка загрузки данных>" }?.toList().orEmpty(),
+                            tasksStatus = lessonContent?.map { it?.taskStatus ?: TaskStatus.RELOAD }?.toList().orEmpty(),
                             courseId = index,
                             courseContentItemIndex = courseContentItemIndex,
                             lessonContentItemIndex = lessonContentItemIndex,
@@ -147,10 +151,11 @@ fun CardItem(
         val boxScope = this
         Column(
             Modifier.clickable {
-                if (taskType == TaskType.TOPIC) {
-                    courseContentItemIndex.value = courseId
-                    lessonContentItemIndex.value = lessonId
-                    navigateTo(Screen.Article)
+                courseContentItemIndex.value = courseId
+                lessonContentItemIndex.value = lessonId
+                when(taskType) {
+                    TaskType.TOPIC -> navigateTo(Screen.Article)
+                    TaskType.TEST -> navigateTo(Screen.PreviewTest)
                 }
             }
         ) {
@@ -170,7 +175,7 @@ fun CardItem(
                 Text(
                     text = taskTitle,
                     modifier = Modifier
-                        .width(boxScope.maxWidth - 24.dp * 2 - 20.dp - 17.dp),
+                        .width(boxScope.maxWidth - 24.dp * 2 - 20.dp - 25.dp),
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
@@ -178,18 +183,27 @@ fun CardItem(
                         fontFamily = FontFamily.Default
                     )
                 )
-                Image(
-                    bitmap = ImageBitmap.imageResource(
-                        id = getTaskStatusIconId(
-                            taskStatus
-                        )
-                    ),
-                    contentDescription = "taskStatus",
+                IconButton(
                     modifier = Modifier
                         .width(24.dp + 17.dp)
                         .height(24.dp)
-                        .padding(start = 12.dp, end = 5.dp)
-                )
+                        .padding(start = 12.dp, end = 5.dp),
+                    enabled = taskStatus == TaskStatus.RELOAD,
+                    onClick = { /*TODO*/ }) {
+                    Image(
+                        modifier = Modifier
+                            .width(24.dp + 17.dp)
+                            .height(24.dp),
+                        bitmap = ImageBitmap.imageResource(
+                            id = getTaskStatusIconId(
+                                taskStatus
+                            )
+                        ),
+                        contentDescription = "taskStatus",
+
+                    )
+                }
+
             }
             Divider(
                 modifier = Modifier.padding(start = 15.dp, end = 6.dp),

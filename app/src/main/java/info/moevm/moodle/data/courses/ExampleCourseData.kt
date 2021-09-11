@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
 import info.moevm.moodle.R
+import info.moevm.moodle.ui.coursecontent.TestTaskTitle
 import info.moevm.moodle.ui.coursescreen.*
 
 fun exampleCourseContent(): CourseMapData {
@@ -16,16 +17,17 @@ fun exampleCourseContent(): CourseMapData {
             CourseContentItem(
                 "Общие правила работы проектами",
                 listOf(
-                    LessonContentItem(
+                    null,
+                    ArticleContentItems(
                         TaskType.TOPIC,
                         "Введение",
                         TaskStatus.NONE,
                         listOf(
-                            TaskContentItem(
+                            ArticleTaskContentItem(
                                 "Мы рады приветствовать вас в \"Курсе молодого бойца в IT\"!",
                                 TaskContentType.ARTICLE,
                                 "К настоящему времени Вы заработали баллов: 0 из 0 возможных.",
-                                TaskContentStatus.ACCEPTED
+                                TaskStatus.DONE
                             ) {
                                 Text(
                                     modifier = Modifier.padding(10.dp),
@@ -38,11 +40,11 @@ fun exampleCourseContent(): CourseMapData {
                                         "Основным учебным материалом данного курса служит свод правил https://osllblog.wordpress.com/students/rules/"
                                 )
                             },
-                            TaskContentItem(
+                            ArticleTaskContentItem(
                                 "Приветствие",
                                 TaskContentType.VIDEO,
                                 "К настоящему времени Вы заработали баллов: 0 из 0 возможных.",
-                                TaskContentStatus.ACCEPTED
+                                TaskStatus.DONE
                             ) {
 //                            Увеличение картнки при нажатии
 //                            val scale = remember {mutableStateOf(2f)}
@@ -69,44 +71,44 @@ fun exampleCourseContent(): CourseMapData {
 //                                )
 //                            }
                             },
-                            TaskContentItem(
+                            ArticleTaskContentItem(
                                 "Проект",
                                 TaskContentType.VIDEO,
                                 "К настоящему времени Вы заработали баллов: 0 из 0 возможных.",
-                                TaskContentStatus.ACCEPTED,
+                                TaskStatus.DONE,
                             ) {
                                 Image(
                                     bitmap = ImageBitmap.imageResource(id = R.drawable.placeholder_4_3),
                                     contentDescription = null
                                 )
                             },
-                            TaskContentItem(
+                            ArticleTaskContentItem(
                                 "Заказчик и требования",
                                 TaskContentType.VIDEO,
                                 "К настоящему времени Вы заработали баллов: 0 из 0 возможных.",
-                                TaskContentStatus.ACCEPTED,
+                                TaskStatus.DONE,
                             ) {
                                 Image(
                                     bitmap = ImageBitmap.imageResource(id = R.drawable.placeholder_4_3),
                                     contentDescription = null
                                 )
                             },
-                            TaskContentItem(
+                            ArticleTaskContentItem(
                                 "Итерации",
                                 TaskContentType.VIDEO,
                                 "К настоящему времени Вы заработали баллов: 0 из 0 возможных.",
-                                TaskContentStatus.ACCEPTED,
+                                TaskStatus.DONE,
                             ) {
                                 Image(
                                     bitmap = ImageBitmap.imageResource(id = R.drawable.placeholder_4_3),
                                     contentDescription = null
                                 )
                             },
-                            TaskContentItem(
+                            ArticleTaskContentItem(
                                 "Основные термины и определения",
                                 TaskContentType.ARTICLE,
                                 "К настоящему времени Вы заработали баллов: 0 из 0 возможных.",
-                                TaskContentStatus.ACCEPTED,
+                                TaskStatus.DONE,
                             ) {
                                 Text(
                                     modifier = Modifier.padding(10.dp),
@@ -128,22 +130,22 @@ fun exampleCourseContent(): CourseMapData {
                                         "Итерация проекта — отдельный временной промежуток работы над проектом. Как правило, варьируется от одного дня до недели. "
                                 )
                             },
-                            TaskContentItem(
+                            ArticleTaskContentItem(
                                 "Атомарность задач",
                                 TaskContentType.VIDEO,
                                 "К настоящему времени Вы заработали баллов: 0 из 0 возможных.",
-                                TaskContentStatus.ACCEPTED,
+                                TaskStatus.DONE,
                             ) {
                                 Image(
                                     bitmap = ImageBitmap.imageResource(id = R.drawable.placeholder_4_3),
                                     contentDescription = null
                                 )
                             },
-                            TaskContentItem(
+                            ArticleTaskContentItem(
                                 "Процесс проектной работы",
                                 TaskContentType.ARTICLE,
                                 "К настоящему времени Вы заработали баллов: 0 из 0 возможных.",
-                                TaskContentStatus.ACCEPTED,
+                                TaskStatus.DONE,
                             ) {
                                 Text(
                                     modifier = Modifier.padding(10.dp),
@@ -158,27 +160,28 @@ fun exampleCourseContent(): CourseMapData {
                             }
                         )
                     ),
-                    LessonContentItem(
+                    ArticleContentItems(
                         TaskType.TOPIC,
                         "Автобусный фактор (bus factor)",
                         TaskStatus.NONE,
                         listOf(
-                            TaskContentItem(
+                            ArticleTaskContentItem(
                                 "Busfactor",
                                 TaskContentType.VIDEO,
                                 "К настоящему времени Вы заработали баллов: 0 из 0 возможных.",
-                                TaskContentStatus.ACCEPTED,
+                                TaskStatus.DONE,
                             ) {
                                 Image(
                                     bitmap = ImageBitmap.imageResource(id = R.drawable.placeholder_4_3),
                                     contentDescription = null
                                 )
                             },
-                            TaskContentItem(
+                            null,
+                            ArticleTaskContentItem(
                                 "Автобусный фактор",
                                 TaskContentType.ARTICLE,
                                 "К настоящему времени Вы заработали баллов: 0 из 0 возможных.",
-                                TaskContentStatus.ACCEPTED,
+                                TaskStatus.DONE,
                             ) {
                                 Text(
                                     modifier = Modifier.padding(10.dp),
@@ -223,11 +226,118 @@ fun exampleCourseContent(): CourseMapData {
                             }
                         )
                     ),
-                    LessonContentItem(
+                    TestContentItems(
                         TaskType.TEST,
                         "Общие правила работы проектами. Тест",
                         TaskStatus.WORKING,
-                        listOf()
+                        "Метод оценивания: Высшая оценка",
+                        hashMapOf(
+                            "0" to Pair(AttemptData(0,"Отправлено 19.07.2021, 10:45", TaskStatus.DONE), listOf(
+                                TestTaskContentItem(
+                                    "Вопрос 1",
+                                    TaskContentType.TEST_ONE_CHOICE,
+                                    "Баллов: 0 из 1",
+                                    TaskStatus.NONE,
+                                    taskAnswers = listOf(
+                                        "Тайный кот",
+                                        "Ненавидимый стажер",
+                                        "Обмен информацией",
+                                        "Информационный обмен",
+                                        "Тайные знания",
+                                        "Тайный код"
+                                    ),
+                                    taskRightAnswers = listOf("Тайный код")
+                                ) {
+                                    TestTaskTitle(
+                                        taskTitle = "Стажер в компании \"Crutches and bicycles\" весь день работал над фиксом к задаче AAA-234565. По завершению рабочего дня было написано примерно 50% от необходимого кода. Свои наработки стажер не загружал в основной репозиторий.\n" +
+                                            "\n" +
+                                            "Какое явление из предыдущего степа воспроизвел стажер?",
+                                    )
+                                },
+                                TestTaskContentItem(
+                                    "Вопрос 2",
+                                    TaskContentType.TEST_MULTI_CHOICE,
+                                    "Баллов: 1 из 1",
+                                    TaskStatus.NONE,
+                                    taskAnswers = listOf(
+                                        "Требование определяет исполнитель",
+                                        "Успешность проекта определяется соответствием требованиям",
+                                        "Требования определяет заказчик",
+                                        "Требования не могут измениться в ходе работы",
+                                        "Требования изменятся в ходе работы",
+                                        "Успешность проекта не определяется соответствием требованиям"
+                                    ),
+                                    taskRightAnswers = listOf(
+                                        "Успешность проекта определяется соответствием требованиям",
+                                        "Требования определяет заказчик",
+                                        "Требования изменятся в ходе работы"
+                                    ),
+                                    taskContent = {
+                                        TestTaskTitle(
+                                            taskTitle = "Выберите один или несколько ответов:"
+                                        )
+                                    }
+                                ),
+                                TestTaskContentItem(
+                                    "Вопрос 3",
+                                    TaskContentType.TEST_ANSWER,
+                                    "Баллов: 0 из 1",
+                                    TaskStatus.NONE,
+                                    taskAnswers = listOf(),
+                                    taskRightAnswers = listOf("1"),
+                                    taskContent = {
+                                        TestTaskTitle(
+                                            taskTitle = "В компании \"Crutches and bicycles\" разрабатывается веб-приложение для оценки эффективности программистов. \n" +
+                                                "\n" +
+                                                "Команда разработчиков продукта состоит из следующих людей:\n" +
+                                                "\n" +
+                                                "Иван, frontend developer.\n" +
+                                                "Сергей, frontend developer.\n" +
+                                                "Екатерина, fullstack developer.\n" +
+                                                "\n" +
+                                                "Для успешной работы проекта необходимо решать как frontend, так и backend задачи. \n" +
+                                                "\n" +
+                                                "Чему равен bus factor данной команды? "
+                                        )
+                                    }
+                                ),
+                                TestTaskContentItem(
+                                    "Вопрос 4",
+                                    TaskContentType.TEST_MATCH,
+                                    "Баллов: 0 из 1",
+                                    TaskStatus.NONE,
+                                    taskAnswers = listOf(
+                                        "|3.842|",
+                                        "|3.842e+00|asdkldgnalkg;ljamjknMGALJNlsdGALSKGN",
+                                        "|3.84|",
+                                        "|3.841500|",
+                                        "|3.8415|"
+                                    ),
+                                    taskAdditionInfo = listOf(
+                                        "printf(\"|%g|\\n\", f);",
+                                        "printf(\"|%1.2f|\\n\", f);\n",
+                                        "printf(\"|%.3e|\\n\", f);",
+                                        "printf(\"|%3.3f|\\n\", f);",
+                                        "printf(\"|%f|\\n\", f);"
+                                    ),
+                                    taskRightAnswers = listOf(
+                                        "|3.8415|",
+                                        "|3.84|",
+                                        "|3.842e+00|",
+                                        "|3.842|",
+                                        "|3.841500|"
+                                    ),
+                                    taskContent = {
+                                        TestTaskTitle(
+                                            taskTitle = "Сопоставьте инструкцию и результат, который будет выведен на экран, при условии, что\n" +
+                                                "\n" +
+                                                "float f = 3.8415;"
+                                        )
+                                    }
+                                ),
+                            )),
+                            "1" to Pair(AttemptData(1,"",TaskStatus.DONE), listOf())
+                        )
                     )
                 )
             ),
