@@ -102,7 +102,7 @@ fun SignInScreen(
 //                            onSignInSubmitted = { email, password ->
 //                                SignInEvent.SignIn(email, password)
 //                            }
-                        onSignInSubmitted = navigateTo,
+                        navigateTo = navigateTo,
                         fullNameMoodleUser = fullNameMoodleUser,
                         cityMoodleUser = cityMoodleUser,
                         countryMoodleUser = countryMoodleUser
@@ -164,7 +164,7 @@ fun SignInSignUpTopAppBar(
 
 @Composable
 fun SignInContent(
-    onSignInSubmitted: (Screen) -> Unit,
+    navigateTo: (Screen) -> Unit,
     fullNameMoodleUser: MutableLiveData<String>,
     cityMoodleUser: MutableLiveData<String>,
     countryMoodleUser: MutableLiveData<String>
@@ -274,7 +274,7 @@ fun SignInContent(
                                     // TODO if
                                     dataStore.addUser(userName, userPassword, tokenState)
                                 }
-                                onSignInSubmitted(Screen.Home)
+                                navigateTo(Screen.Home)
                             }
                             data.value?.error != null -> {
                                 showMessage(context, message = context.resources.getString(R.string.wrong_login))
