@@ -33,6 +33,7 @@ import info.moevm.moodle.ui.entersetup.EnterSetupScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
 import info.moevm.moodle.ui.settings.SettingsScreen
+import info.moevm.moodle.ui.signin.PreviewScreen
 import info.moevm.moodle.ui.signin.SignInScreen
 import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
@@ -114,7 +115,12 @@ private fun AppContent(
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
-            NavHost(navController, startDestination = ScreenName.SIGN_IN.name) {
+            NavHost(navController, startDestination = ScreenName.PREVIEW.name) {
+                composable(ScreenName.PREVIEW.name) {
+                    PreviewScreen(
+                        navigateTo = actions.select
+                    )
+                }
                 composable(ScreenName.TEST.name) {
                     TestScreen(
                         courseData = content.values.first(),
@@ -236,6 +242,9 @@ private fun AppContent(
                         navigateTo = actions.select,
                         scaffoldState = scaffoldState,
                     )
+                }
+                composable(ScreenName.ADD.name) {
+                    Text("Unused")
                 }
             }
         }
