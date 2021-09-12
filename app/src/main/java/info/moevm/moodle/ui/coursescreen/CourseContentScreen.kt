@@ -86,10 +86,10 @@ fun CourseContentScreen(
                         )
                     },
                     card = card,
-                    onCardArrowClick = {
+                    onExpandableClick = {
                         dividerColor.value =
                             if (dividerColor.value == primaryColor) Color.LightGray else primaryColor
-                        CardsViewModel.onCardArrowClicked(card.id)
+                        CardsViewModel.onCardClicked(card.id)
                     },
                     expanded = expandedCardIds.value.contains(card.id),
                     dividerColor = dividerColor
@@ -153,7 +153,7 @@ fun CardItem(
             Modifier.clickable {
                 courseContentItemIndex.value = courseId
                 lessonContentItemIndex.value = lessonId
-                when(taskType) {
+                when (taskType) {
                     TaskType.TOPIC -> navigateTo(Screen.Article)
                     TaskType.TEST -> navigateTo(Screen.PreviewTest)
                 }
@@ -189,7 +189,8 @@ fun CardItem(
                         .height(24.dp)
                         .padding(start = 12.dp, end = 5.dp),
                     enabled = taskStatus == TaskStatus.RELOAD,
-                    onClick = { /*TODO*/ }) {
+                    onClick = { /*TODO*/ }
+                ) {
                     Image(
                         modifier = Modifier
                             .width(24.dp + 17.dp)
@@ -203,7 +204,6 @@ fun CardItem(
 
                     )
                 }
-
             }
             Divider(
                 modifier = Modifier.padding(start = 15.dp, end = 6.dp),

@@ -1,11 +1,12 @@
 package info.moevm.moodle.ui.coursecontent
 
-import android.graphics.Paint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -19,10 +20,10 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.PopupProperties
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescreen.*
@@ -69,20 +70,22 @@ fun TestScreen(
             )
         }
     ) {
-        //TODO Заблокировать отправку задания на проверку
+        // TODO Заблокировать отправку задания на проверку
         if (lessonContent == null || taskContent == null) {
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 Text(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(20.dp), text = "Ошибка загрузки данных"
+                        .padding(20.dp),
+                    text = "Ошибка загрузки данных"
                 )
                 IconButton(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(bottom = 80.dp)
                         .size(60.dp),
-                    onClick = { /*TODO*/ }) {
+                    onClick = { /*TODO*/ }
+                ) {
                     Icon(
                         modifier = Modifier.size(42.dp),
                         imageVector = Icons.Filled.Refresh,
@@ -158,12 +161,13 @@ fun TestScreen(
             when (taskContent.taskContentType) {
                 TaskContentType.TEST_ONE_CHOICE -> TestOneChoice(taskAnswers = taskContent.taskAnswers)
                 TaskContentType.TEST_MULTI_CHOICE -> TestMultiChoice(taskAnswers = taskContent.taskAnswers)
-                TaskContentType.TEST_ANSWER -> TestAnswer()
+                TaskContentType.TEST_ANSWER -> TestAnswer(taskAnswerType = taskContent.taskAnswerType)
                 TaskContentType.TEST_MATCH -> TestMatch(
                     taskAnswers = taskContent.taskAnswers,
                     taskAdditionInfo = taskContent.taskAdditionInfo
                 )
-                else -> { }
+                else -> {
+                }
             }
         }
     }
@@ -275,7 +279,6 @@ fun TestScreenBottomNavigator(
     }
 }
 
-
 @Composable
 fun TestTaskTitle(
     taskTitle: String
@@ -366,31 +369,35 @@ fun TestDropdownMenuItem(
                 textState.value = it
             },
             trailingIcon = {
-                IconButton(onClick = {
-                    expandableItemState.value = id
-                    textFieldFocus.value.requestFocus()
-                }) {
-                    Icon(
-                        if (expandableItemState.value == id)
-                            Icons.Filled.ArrowDropUp
-                        else
-                            Icons.Filled.ArrowDropDown,
-                        null
-                    )
-                }
+                Icon(
+                    if (expandableItemState.value == id)
+                        Icons.Filled.ArrowDropUp
+                    else
+                        Icons.Filled.ArrowDropDown,
+                    null
+                )
             },
             colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.surface),
             readOnly = true
+        )
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .clickable {
+                    expandableItemState.value = id
+                    textFieldFocus.value.requestFocus()
+                }
         )
         DropdownMenu(
             expanded = expandableItemState.value == id,
             onDismissRequest = { expandableItemState.value = -1 }
         ) {
             for (item in listOfOptions) {
-                DropdownMenuItem(onClick = {
-                    textState.value = item
-                    expandableItemState.value = -1
-                }
+                DropdownMenuItem(
+                    onClick = {
+                        textState.value = item
+                        expandableItemState.value = -1
+                    }
                 ) {
                     Text(text = item)
                 }
@@ -400,7 +407,9 @@ fun TestDropdownMenuItem(
 }
 
 @Composable
-fun TestAnswer() {
+fun TestAnswer(
+    taskAnswerType: TaskAnswerType
+) {
     val stringState = remember { mutableStateOf("") }
     Column(Modifier.fillMaxWidth()) {
         OutlinedTextField(
@@ -410,7 +419,13 @@ fun TestAnswer() {
             value = stringState.value,
             onValueChange = { stringState.value = it },
             placeholder = { Text("Ваш ответ", color = Color.LightGray) },
-            textStyle = MaterialTheme.typography.body2
+            textStyle = MaterialTheme.typography.body2,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = when (taskAnswerType) {
+                    TaskAnswerType.NUMBERS -> KeyboardType.Number
+                    else -> KeyboardType.Text
+                }
+            )
         )
     }
 }
@@ -429,7 +444,6 @@ fun TestMultiChoice(
             )
         }
     }
-
 }
 
 @Composable
@@ -517,8 +531,6 @@ fun TestRadioButtonItem(
     }
 }
 
-
-
 fun testChecker(
     courseContentItemIndex: Int,
     lessonContentItemIndex: Int,
@@ -527,7 +539,10 @@ fun testChecker(
     listAnswer: List<String>
 ): Boolean {
     val courseData = exampleCourseContent().values.first()
-    val rightAnswer = ((courseData[courseContentItemIndex].lessonContent[lessonContentItemIndex] as TestContentItems)
-        .taskContent[testAttemptKey]!!.second[taskContentItemIndex] as TestTaskContentItem).taskRightAnswers
+
+    val rightAnswer = (
+        (courseData[courseContentItemIndex].lessonContent[lessonContentItemIndex] as TestContentItems)
+            .taskContent[testAttemptKey]!!.second[taskContentItemIndex] as TestTaskContentItem
+        ).taskRightAnswers
     return rightAnswer == listAnswer
 }

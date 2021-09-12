@@ -35,7 +35,7 @@ class CardsViewModel(titles: List<String>) : ViewModel() {
         }
     }
 
-    fun onCardArrowClicked(cardId: Int) {
+    fun onCardClicked(cardId: Int) {
         _expandedCardIdsList.value = _expandedCardIdsList.value.toMutableList().also { list ->
             if (list.contains(cardId)) list.remove(cardId) else list.add(cardId)
         }

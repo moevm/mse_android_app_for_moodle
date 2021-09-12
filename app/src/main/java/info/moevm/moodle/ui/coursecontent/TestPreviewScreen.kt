@@ -1,8 +1,5 @@
 package info.moevm.moodle.ui.coursecontent
 
-import android.graphics.Bitmap
-import android.graphics.Paint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,17 +11,13 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import info.moevm.moodle.R
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescreen.*
-import java.util.*
 
 @Composable
 fun TestPreviewScreen(
@@ -59,12 +52,16 @@ fun TestPreviewScreen(
                 Text(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(20.dp), text = "Ошибка загрузки данных"
+                        .padding(20.dp),
+                    text = "Ошибка загрузки данных"
                 )
-                IconButton(modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 80.dp)
-                    .size(60.dp), onClick = { /*TODO*/ }) {
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 80.dp)
+                        .size(60.dp),
+                    onClick = { /*TODO*/ }
+                ) {
                     Icon(
                         modifier = Modifier.size(42.dp),
                         imageVector = Icons.Filled.Refresh,
@@ -147,7 +144,6 @@ fun TestPreviewScreen(
     }
 }
 
-
 @Composable
 fun AttemptsCard(
     chosenAttempt: MutableState<String>,
@@ -193,13 +189,15 @@ fun AttemptsCard(
                         }
                     }
                 }
-                TextButton(modifier = Modifier
-                    .padding(end = 25.dp)
-                    .align(Alignment.CenterEnd),
+                TextButton(
+                    modifier = Modifier
+                        .padding(end = 25.dp)
+                        .align(Alignment.CenterEnd),
                     onClick = {
                         chosenAttempt.value = id.toString()
-                      navigateTo(Screen.Test)
-                    }) {
+                        navigateTo(Screen.Test)
+                    }
+                ) {
                     Text(
                         text = "Просмотр",
                         textDecoration = TextDecoration.Underline,
@@ -213,7 +211,6 @@ fun AttemptsCard(
                     .width(boxScope.maxWidth - 28.dp)
             )
         }
-
     }
 }
 
@@ -240,7 +237,7 @@ fun TestPreviewScreenBottomNavigator(
     courseData: List<CourseContentItem?>,
     courseContentItemIndex: MutableState<Int>,
     lessonContentItemIndex: MutableState<Int>,
-    lessonContentItemSize: Int,
+    lessonContentItemSize: Int
 ) {
     val lessonContent =
         courseData[courseContentItemIndex.value]?.lessonContent?.get(
@@ -310,13 +307,13 @@ fun TestPreviewScreenBottomNavigator(
     }
 }
 
-
 fun testData(id: Int): Pair<AttemptData, List<TaskContentItem?>> {
     return Pair(
         AttemptData(
             id,
             "Отправлено 19.07.2021, 10:45",
             TaskStatus.DONE
-        ), listOf()
+        ),
+        listOf()
     )
 }

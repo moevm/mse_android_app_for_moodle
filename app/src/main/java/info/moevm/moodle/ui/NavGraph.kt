@@ -7,7 +7,7 @@ import info.moevm.moodle.ui.ScreenName.*
 /**
  * Screen names (used for serialization)
  */
-enum class ScreenName { ENTER_SETUP, SIGN_IN, HOME, USER, INTERESTS, STATISTICS, SETTINGS, COURSE_CONTENT, ARTICLE, PREVIEW_TEST, TEST }
+enum class ScreenName { ENTER_SETUP, SIGN_IN, HOME, USER, INTERESTS, STATISTICS, SETTINGS, COURSE_CONTENT, FAKE_ARTICLE, PREVIEW_TEST, TEST, ARTICLE }
 
 /**
  * Class defining the screens we have in the app:
@@ -29,28 +29,28 @@ sealed class Screen(val id: ScreenName) {
     object Article : Screen(ARTICLE)
     object PreviewTest : Screen(PREVIEW_TEST)
     object Test : Screen(TEST)
-//    data class Article(val postId: String) : Screen(ARTICLE)
+    data class FakeArticle(val postId: String) : Screen(FAKE_ARTICLE)
 
-//    object ArticleArgs {
-//        const val PostId = "postId"
-//    }
+    object ArticleArgs {
+        const val PostId = "postId"
+    }
 }
 
 class Actions(navController: NavHostController) {
     val select: (Screen) -> Unit = { screen ->
 
-//        when (screen) {
-//            is Article -> {
-//                navController.navigate("${screen.id.name}/${screen.postId}")
-//            }
-//            else -> {
-        navController.popBackStack(
-            navController.graph.startDestinationId,
-            navController.currentDestination?.id != navController.graph.startDestinationId
-        )
-        navController.navigate(screen.id.name)
-//            }
-//        }
+        when (screen) {
+            is FakeArticle -> {
+                navController.navigate("${screen.id.name}/${screen.postId}")
+            }
+            else -> {
+                navController.popBackStack(
+                    navController.graph.startDestinationId,
+                    navController.currentDestination?.id != navController.graph.startDestinationId
+                )
+                navController.navigate(screen.id.name)
+            }
+        }
     }
 
     val upPress: () -> Unit = {

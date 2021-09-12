@@ -1,7 +1,5 @@
 package info.moevm.moodle.ui.coursescreen
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import info.moevm.moodle.R
 import java.util.*
@@ -11,6 +9,7 @@ typealias CourseMapData = Map<String, List<CourseContentItem>>
 enum class TaskType { NONE, TOPIC, TEST }
 enum class TaskStatus { NONE, WORKING, DONE, FAILED, RELOAD }
 enum class TaskContentType { VIDEO, ARTICLE, TEST_ONE_CHOICE, TEST_MULTI_CHOICE, TEST_ANSWER, TEST_MATCH, UNSUPPORTED }
+enum class TaskAnswerType { NONE, NUMBERS, TEXT }
 
 data class CourseContentItem(
     val lessonTitle: String,
@@ -43,8 +42,8 @@ data class TestContentItems(
     override val taskTitle: String,
     override val taskStatus: TaskStatus,
     val taskMark: String,
-    val taskContent: HashMap<String, Pair<AttemptData,List<TaskContentItem?>>>
-): LessonContentItem(
+    val taskContent: HashMap<String, Pair<AttemptData, List<TaskContentItem?>>>
+) : LessonContentItem(
     taskType, taskTitle, taskStatus
 )
 
@@ -72,6 +71,7 @@ data class TestTaskContentItem(
     override val taskMark: String,
     override val taskContentStatus: TaskStatus,
     val taskAnswers: List<String> = listOf(),
+    val taskAnswerType: TaskAnswerType = TaskAnswerType.TEXT,
     val taskRightAnswers: List<String> = listOf(),
     val taskAdditionInfo: List<String> = listOf(),
     override val taskContent: @Composable () -> Unit,

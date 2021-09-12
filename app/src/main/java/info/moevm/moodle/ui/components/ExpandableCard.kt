@@ -3,6 +3,7 @@ package info.moevm.moodle.ui.components
 import android.annotation.SuppressLint
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -29,7 +30,7 @@ import info.moevm.moodle.model.*
 fun ExpandableCard(
     cardContent: @Composable () -> Unit = {},
     card: ExpandableCardModel,
-    onCardArrowClick: () -> Unit,
+    onExpandableClick: () -> Unit,
     expanded: Boolean,
     dividerColor: MutableState<Color>
 ) {
@@ -91,7 +92,13 @@ fun ExpandableCard(
             )
     ) {
         Column(Modifier.fillMaxWidth()) {
-            BoxWithConstraints(Modifier.fillMaxWidth()) {
+            BoxWithConstraints(
+                Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onExpandableClick()
+                    }
+            ) {
                 val boxScope = this
                 Row {
                     CardTitle(
@@ -109,8 +116,7 @@ fun ExpandableCard(
                     )
                     CardArrow(
                         modifier = Modifier.padding(top = 4.dp),
-                        degrees = arrowRotationDegree,
-                        onClick = onCardArrowClick
+                        degrees = arrowRotationDegree
                     )
                 }
             }
@@ -141,19 +147,14 @@ fun CardTitle(
 @Composable
 fun CardArrow(
     modifier: Modifier,
-    degrees: Float,
-    onClick: () -> Unit
+    degrees: Float
 ) {
-    IconButton(
-        modifier = modifier,
-        onClick = onClick,
-        content = {
-            Icon(
-                imageVector = Icons.Filled.ExpandMore,
-                contentDescription = "Expandable Arrow",
-                modifier = Modifier.rotate(degrees)
-            )
-        }
+    Icon(
+        imageVector = Icons.Filled.ExpandMore,
+        contentDescription = "Expandable Arrow",
+        modifier = modifier
+            .padding(8.dp)
+            .rotate(degrees)
     )
 }
 
@@ -202,7 +203,7 @@ fun ExpandableCardPreviewLess() {
     val expandedCardIds = cardsViewModel.expandedCardIdsList.collectAsState()
     ExpandableCard(
         card = ExpandableCardModel(0, "Title"),
-        onCardArrowClick = { cardsViewModel.onCardArrowClicked(0) },
+        onExpandableClick = { cardsViewModel.onCardClicked(0) },
         expanded = expandedCardIds.value.contains(0),
         dividerColor = remember { mutableStateOf(Color.Magenta) }
     )
@@ -214,7 +215,7 @@ fun ExpandableCardPreviewMore() {
     val cardsViewModel = CardsViewModel(listOf())
     ExpandableCard(
         card = ExpandableCardModel(0, "Title"),
-        onCardArrowClick = { cardsViewModel.onCardArrowClicked(0) },
+        onExpandableClick = { cardsViewModel.onCardClicked(0) },
         expanded = true,
         dividerColor = remember { mutableStateOf(Color.LightGray) }
     )

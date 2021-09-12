@@ -1,7 +1,5 @@
 package info.moevm.moodle.ui.coursecontent
 
-import android.view.Gravity
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,8 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.AlignmentLine
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,7 +20,6 @@ import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescreen.ArticleContentItems
 import info.moevm.moodle.ui.coursescreen.ArticleTaskContentItem
 import info.moevm.moodle.ui.coursescreen.CourseContentItem
-import info.moevm.moodle.ui.coursescreen.CourseMapData
 
 @Composable
 fun ArticleScreen(
@@ -34,12 +29,14 @@ fun ArticleScreen(
     taskContentItemIndex: MutableState<Int>,
     navigateTo: (Screen) -> Unit
 ) {
-    val lessonContent = courseData[courseContentItemIndex.value]?.lessonContent?.
-        get(lessonContentItemIndex.value) as ArticleContentItems?
-    val taskContent = lessonContent?.taskContent?.get(taskContentItemIndex.value) as ArticleTaskContentItem?
+    val lessonContent =
+        courseData[courseContentItemIndex.value]?.lessonContent?.get(
+            lessonContentItemIndex.value
+        ) as ArticleContentItems?
+    val taskContent =
+        lessonContent?.taskContent?.get(taskContentItemIndex.value) as ArticleTaskContentItem?
     val scrollState = rememberScrollState()
     // FIXME моргание старого экрана при возвращении через "верхний" назад
-
     Scaffold(
         topBar = {
             ArticleScreenTopBar(
@@ -58,11 +55,24 @@ fun ArticleScreen(
     ) {
         if (lessonContent == null || taskContent == null) {
             BoxWithConstraints(Modifier.fillMaxSize()) {
-                Text(modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(20.dp) ,text = "Ошибка загрузки данных")
-                IconButton(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 80.dp).size(60.dp), onClick = { /*TODO*/ }) {
-                    Icon(modifier = Modifier.size(42.dp), imageVector = Icons.Filled.Refresh, contentDescription = null)
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(20.dp),
+                    text = "Ошибка загрузки данных"
+                )
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 80.dp)
+                        .size(60.dp),
+                    onClick = { /*TODO*/ } // Повторная загрузка
+                ) {
+                    Icon(
+                        modifier = Modifier.size(42.dp),
+                        imageVector = Icons.Filled.Refresh,
+                        contentDescription = null
+                    )
                 }
             }
             return@Scaffold
@@ -75,22 +85,22 @@ fun ArticleScreen(
                 .padding(bottom = 70.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-                Text(
-                    modifier = Modifier.padding(16.dp),
-                    text = taskContent.taskTitle,
-                    style = MaterialTheme.typography.h6,
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = taskContent.taskTitle,
+                style = MaterialTheme.typography.h6,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                text = taskContent.taskMark,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = Color(0f, 0f, 0f, 0.4f),
                     textAlign = TextAlign.Center
                 )
-                Text(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                    text = taskContent.taskMark,
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        color = Color(0f, 0f, 0f, 0.4f),
-                        textAlign = TextAlign.Center
-                    )
-                )
-                Spacer(modifier = Modifier.height(10.dp))
+            )
+            Spacer(modifier = Modifier.height(10.dp))
             taskContent.taskContent()
         }
     }

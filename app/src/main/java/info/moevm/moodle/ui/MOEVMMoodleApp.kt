@@ -23,13 +23,12 @@ import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.model.CardsViewModel
+import info.moevm.moodle.ui.article.ArticleScreen
 import info.moevm.moodle.ui.components.StatisticsTopAppBar
 import info.moevm.moodle.ui.coursecontent.TestPreviewScreen
 import info.moevm.moodle.ui.coursecontent.TestScreen
-import info.moevm.moodle.ui.coursescreen.AttemptData
 import info.moevm.moodle.ui.coursescreen.CourseContentScreen
 import info.moevm.moodle.ui.coursescreen.CourseMapData
-import info.moevm.moodle.ui.coursescreen.TaskStatus
 import info.moevm.moodle.ui.entersetup.EnterSetupScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
@@ -39,6 +38,7 @@ import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import info.moevm.moodle.ui.user.UserScreen
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
@@ -191,25 +191,38 @@ private fun AppContent(
                         scaffoldState = scaffoldState
                     )
                 }
-//                composable(ScreenName.ARTICLE.name + "/{${Screen.ArticleArgs.PostId}}") {
-//                    val postId =
-//                        requireNotNull(it.arguments?.getString(Screen.ArticleArgs.PostId))
-//                    ArticleScreen(
-//                        postId = postId,
-//                        postsRepository = postsRepository,
-//                        onBack = actions.upPress
-//                    )
-//                }
+                composable(ScreenName.FAKE_ARTICLE.name + "/{${Screen.ArticleArgs.PostId}}") {
+                    val postId =
+                        requireNotNull(it.arguments?.getString(Screen.ArticleArgs.PostId))
+                    ArticleScreen(
+                        postId = postId,
+                        postsRepository = postsRepository,
+                        onBack = actions.upPress
+                    )
+                }
                 composable(ScreenName.STATISTICS.name) {
                     val allScreens = SettingsScreenForStatistics.values().toList()
                     var currentScreen by rememberSaveable { mutableStateOf(SettingsScreenForStatistics.Overview) }
+                    val coroutineScope = rememberCoroutineScope()
                     Scaffold(
+                        scaffoldState = scaffoldState,
                         topBar = {
                             StatisticsTopAppBar(
                                 allScreens = allScreens,
                                 onTabSelected = { screen -> currentScreen = screen },
                                 currentScreen = currentScreen,
                                 scaffoldState = scaffoldState
+                            )
+                        },
+                        drawerContent = {
+                            AppDrawer(
+                                currentScreen = Screen.Statistics,
+                                closeDrawer = {
+                                    coroutineScope.launch {
+                                        scaffoldState.drawerState.close()
+                                    }
+                                },
+                                navigateTo = actions.select
                             )
                         }
                     ) { innerPadding ->

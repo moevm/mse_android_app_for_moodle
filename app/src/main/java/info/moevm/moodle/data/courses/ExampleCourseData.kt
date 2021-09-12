@@ -232,111 +232,122 @@ fun exampleCourseContent(): CourseMapData {
                         TaskStatus.WORKING,
                         "Метод оценивания: Высшая оценка",
                         hashMapOf(
-                            "0" to Pair(AttemptData(0,"Отправлено 19.07.2021, 10:45", TaskStatus.DONE), listOf(
-                                TestTaskContentItem(
-                                    "Вопрос 1",
-                                    TaskContentType.TEST_ONE_CHOICE,
-                                    "Баллов: 0 из 1",
-                                    TaskStatus.NONE,
-                                    taskAnswers = listOf(
-                                        "Тайный кот",
-                                        "Ненавидимый стажер",
-                                        "Обмен информацией",
-                                        "Информационный обмен",
-                                        "Тайные знания",
-                                        "Тайный код"
-                                    ),
-                                    taskRightAnswers = listOf("Тайный код")
-                                ) {
-                                    TestTaskTitle(
-                                        taskTitle = "Стажер в компании \"Crutches and bicycles\" весь день работал над фиксом к задаче AAA-234565. По завершению рабочего дня было написано примерно 50% от необходимого кода. Свои наработки стажер не загружал в основной репозиторий.\n" +
-                                            "\n" +
-                                            "Какое явление из предыдущего степа воспроизвел стажер?",
-                                    )
-                                },
-                                TestTaskContentItem(
-                                    "Вопрос 2",
-                                    TaskContentType.TEST_MULTI_CHOICE,
-                                    "Баллов: 1 из 1",
-                                    TaskStatus.NONE,
-                                    taskAnswers = listOf(
-                                        "Требование определяет исполнитель",
-                                        "Успешность проекта определяется соответствием требованиям",
-                                        "Требования определяет заказчик",
-                                        "Требования не могут измениться в ходе работы",
-                                        "Требования изменятся в ходе работы",
-                                        "Успешность проекта не определяется соответствием требованиям"
-                                    ),
-                                    taskRightAnswers = listOf(
-                                        "Успешность проекта определяется соответствием требованиям",
-                                        "Требования определяет заказчик",
-                                        "Требования изменятся в ходе работы"
-                                    ),
-                                    taskContent = {
-                                        TestTaskTitle(
-                                            taskTitle = "Выберите один или несколько ответов:"
-                                        )
-                                    }
+                            "0" to Pair(
+                                AttemptData(
+                                    0,
+                                    "Отправлено 19.07.2021, 10:45",
+                                    TaskStatus.DONE
                                 ),
-                                TestTaskContentItem(
-                                    "Вопрос 3",
-                                    TaskContentType.TEST_ANSWER,
-                                    "Баллов: 0 из 1",
-                                    TaskStatus.NONE,
-                                    taskAnswers = listOf(),
-                                    taskRightAnswers = listOf("1"),
-                                    taskContent = {
+                                listOf(
+                                    TestTaskContentItem(
+                                        "Вопрос 1",
+                                        TaskContentType.TEST_ONE_CHOICE,
+                                        "Баллов: 0 из 1",
+                                        TaskStatus.NONE,
+                                        taskAnswers = listOf(
+                                            "Тайный кот",
+                                            "Ненавидимый стажер",
+                                            "Обмен информацией",
+                                            "Информационный обмен",
+                                            "Тайные знания",
+                                            "Тайный код"
+                                        ),
+                                        taskRightAnswers = listOf("Тайный код")
+                                    ) {
                                         TestTaskTitle(
-                                            taskTitle = "В компании \"Crutches and bicycles\" разрабатывается веб-приложение для оценки эффективности программистов. \n" +
+                                            taskTitle = "Стажер в компании \"Crutches and bicycles\" весь день работал над фиксом к задаче AAA-234565. По завершению рабочего дня было написано примерно 50% от необходимого кода. Свои наработки стажер не загружал в основной репозиторий.\n" +
                                                 "\n" +
-                                                "Команда разработчиков продукта состоит из следующих людей:\n" +
-                                                "\n" +
-                                                "Иван, frontend developer.\n" +
-                                                "Сергей, frontend developer.\n" +
-                                                "Екатерина, fullstack developer.\n" +
-                                                "\n" +
-                                                "Для успешной работы проекта необходимо решать как frontend, так и backend задачи. \n" +
-                                                "\n" +
-                                                "Чему равен bus factor данной команды? "
+                                                "Какое явление из предыдущего степа воспроизвел стажер?",
                                         )
-                                    }
-                                ),
-                                TestTaskContentItem(
-                                    "Вопрос 4",
-                                    TaskContentType.TEST_MATCH,
-                                    "Баллов: 0 из 1",
-                                    TaskStatus.NONE,
-                                    taskAnswers = listOf(
-                                        "|3.842|",
-                                        "|3.842e+00|asdkldgnalkg;ljamjknMGALJNlsdGALSKGN",
-                                        "|3.84|",
-                                        "|3.841500|",
-                                        "|3.8415|"
+                                    },
+                                    TestTaskContentItem(
+                                        "Вопрос 2",
+                                        TaskContentType.TEST_MULTI_CHOICE,
+                                        "Баллов: 1 из 1",
+                                        TaskStatus.NONE,
+                                        taskAnswers = listOf(
+                                            "Требование определяет исполнитель",
+                                            "Успешность проекта определяется соответствием требованиям",
+                                            "Требования определяет заказчик",
+                                            "Требования не могут измениться в ходе работы",
+                                            "Требования изменятся в ходе работы",
+                                            "Успешность проекта не определяется соответствием требованиям"
+                                        ),
+                                        taskRightAnswers = listOf(
+                                            "Успешность проекта определяется соответствием требованиям",
+                                            "Требования определяет заказчик",
+                                            "Требования изменятся в ходе работы"
+                                        ),
+                                        taskContent = {
+                                            TestTaskTitle(
+                                                taskTitle = "Выберите один или несколько ответов:"
+                                            )
+                                        }
                                     ),
-                                    taskAdditionInfo = listOf(
-                                        "printf(\"|%g|\\n\", f);",
-                                        "printf(\"|%1.2f|\\n\", f);\n",
-                                        "printf(\"|%.3e|\\n\", f);",
-                                        "printf(\"|%3.3f|\\n\", f);",
-                                        "printf(\"|%f|\\n\", f);"
+                                    TestTaskContentItem(
+                                        "Вопрос 3",
+                                        TaskContentType.TEST_ANSWER,
+                                        "Баллов: 0 из 1",
+                                        TaskStatus.NONE,
+                                        taskAnswers = listOf(),
+                                        taskRightAnswers = listOf("1"),
+                                        taskAnswerType = TaskAnswerType.NUMBERS,
+                                        taskContent = {
+                                            TestTaskTitle(
+                                                taskTitle = "В компании \"Crutches and bicycles\" разрабатывается веб-приложение для оценки эффективности программистов. \n" +
+                                                    "\n" +
+                                                    "Команда разработчиков продукта состоит из следующих людей:\n" +
+                                                    "\n" +
+                                                    "Иван, frontend developer.\n" +
+                                                    "Сергей, frontend developer.\n" +
+                                                    "Екатерина, fullstack developer.\n" +
+                                                    "\n" +
+                                                    "Для успешной работы проекта необходимо решать как frontend, так и backend задачи. \n" +
+                                                    "\n" +
+                                                    "Чему равен bus factor данной команды? "
+                                            )
+                                        }
                                     ),
-                                    taskRightAnswers = listOf(
-                                        "|3.8415|",
-                                        "|3.84|",
-                                        "|3.842e+00|",
-                                        "|3.842|",
-                                        "|3.841500|"
+                                    TestTaskContentItem(
+                                        "Вопрос 4",
+                                        TaskContentType.TEST_MATCH,
+                                        "Баллов: 0 из 1",
+                                        TaskStatus.NONE,
+                                        taskAnswers = listOf(
+                                            "|3.842|",
+                                            "|3.842e+00|asdkldgnalkg;ljamjknMGALJNlsdGALSKGN",
+                                            "|3.84|",
+                                            "|3.841500|",
+                                            "|3.8415|"
+                                        ),
+                                        taskAdditionInfo = listOf(
+                                            "printf(\"|%g|\\n\", f);",
+                                            "printf(\"|%1.2f|\\n\", f);\n",
+                                            "printf(\"|%.3e|\\n\", f);",
+                                            "printf(\"|%3.3f|\\n\", f);",
+                                            "printf(\"|%f|\\n\", f);"
+                                        ),
+                                        taskRightAnswers = listOf(
+                                            "|3.8415|",
+                                            "|3.84|",
+                                            "|3.842e+00|",
+                                            "|3.842|",
+                                            "|3.841500|"
+                                        ),
+                                        taskContent = {
+                                            TestTaskTitle(
+                                                taskTitle = "Сопоставьте инструкцию и результат, который будет выведен на экран, при условии, что\n" +
+                                                    "\n" +
+                                                    "float f = 3.8415;"
+                                            )
+                                        }
                                     ),
-                                    taskContent = {
-                                        TestTaskTitle(
-                                            taskTitle = "Сопоставьте инструкцию и результат, который будет выведен на экран, при условии, что\n" +
-                                                "\n" +
-                                                "float f = 3.8415;"
-                                        )
-                                    }
-                                ),
-                            )),
-                            "1" to Pair(AttemptData(1,"",TaskStatus.DONE), listOf())
+                                )
+                            ),
+                            "1" to Pair(
+                                AttemptData(1, "", TaskStatus.DONE),
+                                listOf()
+                            )
                         )
                     )
                 )
