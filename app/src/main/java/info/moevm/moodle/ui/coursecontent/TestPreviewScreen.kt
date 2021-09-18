@@ -16,22 +16,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import info.moevm.moodle.data.courses.CoursesManager
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescreen.*
 
 @Composable
 fun TestPreviewScreen(
-    courseData: List<CourseContentItem?>,
-    courseContentItemIndex: MutableState<Int>,
-    lessonContentItemIndex: MutableState<Int>,
-    taskContentItemIndex: MutableState<Int>,
-    testAttemptKey: MutableState<String>,
+    coursesManager: CoursesManager,
     navigateTo: (Screen) -> Unit
 ) {
-    val lessonContent =
-        courseData[courseContentItemIndex.value]?.lessonContent?.get(
-            lessonContentItemIndex.value
-        ) as TestContentItems?
+    val lessonContent = coursesManager.getTestLessonContent()
     val mapAttempts =
         remember { mutableStateMapOf<String, Pair<AttemptData, List<TaskContentItem?>>>() }
     mapAttempts.putAll(lessonContent?.taskContent.orEmpty())
@@ -40,10 +34,7 @@ fun TestPreviewScreen(
         bottomBar = {
             TestPreviewScreenBottomNavigator(
                 mapAttempts = mapAttempts,
-                courseData = courseData,
-                courseContentItemIndex = courseContentItemIndex,
-                lessonContentItemIndex = lessonContentItemIndex,
-                lessonContentItemSize = courseData.size
+                coursesManager = coursesManager
             )
         }
     ) {
@@ -132,7 +123,7 @@ fun TestPreviewScreen(
                 }
                 for (item in mapAttempts.values) {
                     AttemptsCard(
-                        chosenAttempt = testAttemptKey,
+                        chosenAttempt = coursesManager.getAttemptKey(),
                         id = item.first.id,
                         taskStatus = item.first.taskStatus,
                         date = item.first.date,
@@ -234,22 +225,16 @@ fun TestPreviewScreenTopBar(
 @Composable
 fun TestPreviewScreenBottomNavigator(
     mapAttempts: SnapshotStateMap<String, Pair<AttemptData, List<TaskContentItem?>>>,
-    courseData: List<CourseContentItem?>,
-    courseContentItemIndex: MutableState<Int>,
-    lessonContentItemIndex: MutableState<Int>,
-    lessonContentItemSize: Int
+    coursesManager: CoursesManager
 ) {
-    val lessonContent =
-        courseData[courseContentItemIndex.value]?.lessonContent?.get(
-            lessonContentItemIndex.value
-        ) as TestContentItems?
+    val lessonContent = coursesManager.getTestLessonContent()
 
-    val (iconBack, textBack) = when (lessonContentItemIndex.value) {
+    val (iconBack, textBack) = when (coursesManager.getLessonContentItemIndex().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
     }
-    val (iconForward, textForward) = when (lessonContentItemIndex.value) {
-        lessonContentItemSize - 1 -> Pair(Icons.Filled.Task, "Завершить")
+    val (iconForward, textForward) = when (coursesManager.getLessonContentItemIndex().value) {
+        coursesManager.getLessonContentSize() - 1 -> Pair(Icons.Filled.Task, "Завершить")
         else -> Pair(Icons.Filled.ChevronRight, "Далее")
     }
     val (iconAttempt, textAttempt) = Pair(
@@ -262,9 +247,10 @@ fun TestPreviewScreenBottomNavigator(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-                if (lessonContentItemIndex.value - 1 >= 0) {
-                    lessonContentItemIndex.value--
-                }
+//                      coursesNavigator.moveLessonIndex(-1)
+//                if (coursesNavigator.getLessonContentItemIndex().value - 1 >= 0) {
+//                    lessonContentItemIndex.value--
+//                }
             }, // FIXME исправить на нормально
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
@@ -292,9 +278,9 @@ fun TestPreviewScreenBottomNavigator(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 2,
             onClick = {
-                if (lessonContentItemIndex.value + 1 < lessonContentItemSize) {
-                    lessonContentItemIndex.value++
-                }
+//                if (lessonContentItemIndex.value + 1 < lessonContentItemSize) {
+//                    lessonContentItemIndex.value++
+//                }
             }, // FIXME исправить на нормально
             icon = {
                 Icon(

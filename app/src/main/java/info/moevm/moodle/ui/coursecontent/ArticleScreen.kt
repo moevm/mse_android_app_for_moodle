@@ -15,26 +15,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import info.moevm.moodle.data.courses.CoursesManager
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.coursescreen.ArticleContentItems
 import info.moevm.moodle.ui.coursescreen.ArticleTaskContentItem
-import info.moevm.moodle.ui.coursescreen.CourseContentItem
 
 @Composable
 fun ArticleScreen(
-    courseData: List<CourseContentItem?>,
-    courseContentItemIndex: MutableState<Int>,
-    lessonContentItemIndex: MutableState<Int>,
-    taskContentItemIndex: MutableState<Int>,
+    coursesManager: CoursesManager,
     navigateTo: (Screen) -> Unit
 ) {
-    val lessonContent =
-        courseData[courseContentItemIndex.value]?.lessonContent?.get(
-            lessonContentItemIndex.value
-        ) as ArticleContentItems?
+    val lessonContent = coursesManager.getArticleLessonContent()
     val taskContent =
-        lessonContent?.taskContent?.get(taskContentItemIndex.value) as ArticleTaskContentItem?
+        lessonContent?.taskContent?.get(coursesManager.getTaskContentItemIndexState().value) as ArticleTaskContentItem?
     val scrollState = rememberScrollState()
     // FIXME моргание старого экрана при возвращении через "верхний" назад
     Scaffold(
@@ -45,10 +38,7 @@ fun ArticleScreen(
         },
         bottomBar = {
             ArticleScreenBottomNavigator(
-                courseData = courseData,
-                courseContentItemIndex = courseContentItemIndex,
-                lessonContentItemIndex = lessonContentItemIndex,
-                taskContentItemIndex = taskContentItemIndex,
+                coursesManager = coursesManager,
                 taskContentItemSize = lessonContent?.taskContent?.size ?: 1
             )
         }
@@ -125,17 +115,14 @@ fun ArticleScreenTopBar(
 
 @Composable
 fun ArticleScreenBottomNavigator(
-    courseData: List<CourseContentItem?>,
-    courseContentItemIndex: MutableState<Int>,
-    lessonContentItemIndex: MutableState<Int>,
-    taskContentItemIndex: MutableState<Int>,
+    coursesManager: CoursesManager,
     taskContentItemSize: Int
 ) {
-    val (iconBack, textBack) = when (taskContentItemIndex.value) {
+    val (iconBack, textBack) = when (coursesManager.getTaskContentItemIndexState().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
     }
-    val (iconForward, textForward) = when (taskContentItemIndex.value) {
+    val (iconForward, textForward) = when (coursesManager.getTaskContentItemIndexState().value) {
         taskContentItemSize - 1 -> Pair(Icons.Filled.Task, "Завершить")
         else -> Pair(Icons.Filled.ChevronRight, "Далее")
     }
@@ -144,9 +131,7 @@ fun ArticleScreenBottomNavigator(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-                if (taskContentItemIndex.value - 1 >= 0) {
-                    taskContentItemIndex.value--
-                }
+                      coursesManager.moveTaskIndex(-1)
             }, // FIXME исправить на нормально
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
@@ -154,9 +139,7 @@ fun ArticleScreenBottomNavigator(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 1,
             onClick = {
-                if (taskContentItemIndex.value + 1 < taskContentItemSize) {
-                    taskContentItemIndex.value++
-                }
+                      coursesManager.moveTaskIndex(1)
             }, // FIXME исправить на нормально
             icon = {
                 Icon(
@@ -176,23 +159,23 @@ fun ArticleScreenPreview() {
     val lessonContentItemIndex = remember { mutableStateOf(0) }
     val taskContentItemIndex = remember { mutableStateOf(0) }
     val content = exampleCourseContent()
-    ArticleScreen(
-        courseData = content.values.first(),
-        courseContentItemIndex = courseContentItemIndex,
-        lessonContentItemIndex = lessonContentItemIndex,
-        taskContentItemIndex = taskContentItemIndex,
-        navigateTo = { }
-    )
+//    ArticleScreen(
+//        courseData = content.values.first(),
+//        courseContentItemIndex = courseContentItemIndex,
+//        lessonContentItemIndex = lessonContentItemIndex,
+//        taskContentItemIndex = taskContentItemIndex,
+//        navigateTo = { }
+//    )
 }
 
 @Preview
 @Composable
 fun ArticleScreenBottomNavigatorPreview() {
-    ArticleScreenBottomNavigator(
-        listOf(),
-        remember { mutableStateOf(0) },
-        remember { mutableStateOf(0) },
-        remember { mutableStateOf(0) },
-        5
-    )
+//    ArticleScreenBottomNavigator(
+//        listOf(),
+//        remember { mutableStateOf(0) },
+//        remember { mutableStateOf(0) },
+//        remember { mutableStateOf(0) },
+//        5
+//    )
 }

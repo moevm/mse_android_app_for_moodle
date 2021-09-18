@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import info.moevm.moodle.R
+import info.moevm.moodle.data.courses.CoursesManager
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.components.ExpandableCard
@@ -32,22 +33,19 @@ import kotlin.IllegalArgumentException
 
 @Composable
 fun CourseContentScreen(
-    CourseName: String,
-    CourseMapData: CourseMapData,
-    courseContentItemIndex: MutableState<Int>,
-    lessonContentItemIndex: MutableState<Int>,
-    taskContentItemIndex: MutableState<Int>,
+    courseName: String,
+    coursesManager: CoursesManager,
     CardsViewModel: CardsViewModel,
     navigateTo: (Screen) -> Unit
 ) {
-    taskContentItemIndex.value = 0
+    coursesManager.getTaskContentItemIndexState().value = 0
     val cards = CardsViewModel.cards.collectAsState()
     val expandedCardIds = CardsViewModel.expandedCardIdsList.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
                 modifier = Modifier.testTag("topAppBarInterests"),
-                title = { Text(CourseName) },
+                title = { Text(courseName) },
                 navigationIcon = {
                     IconButton(onClick = { navigateTo(Screen.Interests) }) {
                         Icon(Icons.Filled.ArrowBack, null)
@@ -68,7 +66,7 @@ fun CourseContentScreen(
                 val dividerColor = remember { mutableStateOf(primaryColor) }
                 ExpandableCard(
                     cardContent = {
-                        val lessonContent = CourseMapData[CourseName]?.find { it.lessonTitle == card.title }?.lessonContent
+                        val lessonContent = coursesManager.getLessonsContents(index)
 //                        var foundNullItem = lessonContent == null
 //                        for (item in lessonContent.orEmpty())
 //                            foundNullItem = foundNullItem || item == null
@@ -76,12 +74,11 @@ fun CourseContentScreen(
 //                           return@ExpandableCard
 //                        }
                         CardItems(
-                            tasksType = lessonContent?.map { it?.taskType ?: TaskType.NONE }?.toList().orEmpty(),
-                            tasksTitles = lessonContent?.map { it?.taskTitle ?: "<Ошибка загрузки данных>" }?.toList().orEmpty(),
-                            tasksStatus = lessonContent?.map { it?.taskStatus ?: TaskStatus.RELOAD }?.toList().orEmpty(),
+                            tasksType = lessonContent.map { it?.taskType ?: TaskType.NONE }.toList(),
+                            tasksTitles = lessonContent.map { it?.taskTitle ?: "<Ошибка загрузки данных>" }.toList(),
+                            tasksStatus = lessonContent.map { it?.taskStatus ?: TaskStatus.RELOAD }.toList(),
                             courseId = index,
-                            courseContentItemIndex = courseContentItemIndex,
-                            lessonContentItemIndex = lessonContentItemIndex,
+                            coursesManager = coursesManager,
                             navigateTo = navigateTo
                         )
                     },
@@ -104,8 +101,7 @@ fun CardItems(
     tasksType: List<TaskType>,
     tasksTitles: List<String>,
     tasksStatus: List<TaskStatus>,
-    courseContentItemIndex: MutableState<Int>,
-    lessonContentItemIndex: MutableState<Int>,
+    coursesManager: CoursesManager,
     courseId: Int,
     navigateTo: (Screen) -> Unit
 ) {
@@ -123,8 +119,7 @@ fun CardItems(
                 taskType = tasksType[i],
                 taskTitle = tasksTitles[i],
                 taskStatus = tasksStatus[i],
-                courseContentItemIndex = courseContentItemIndex,
-                lessonContentItemIndex = lessonContentItemIndex,
+                coursesManager = coursesManager,
                 courseId = courseId,
                 lessonId = i,
                 navigateTo = navigateTo
@@ -138,8 +133,7 @@ fun CardItem(
     taskType: TaskType,
     taskTitle: String,
     taskStatus: TaskStatus,
-    courseContentItemIndex: MutableState<Int>,
-    lessonContentItemIndex: MutableState<Int>,
+    coursesManager: CoursesManager,
     courseId: Int,
     lessonId: Int,
     navigateTo: (Screen) -> Unit
@@ -151,8 +145,8 @@ fun CardItem(
         val boxScope = this
         Column(
             Modifier.clickable {
-                courseContentItemIndex.value = courseId
-                lessonContentItemIndex.value = lessonId
+                coursesManager.setCourseIndex(courseId)
+                coursesManager.setLessonIndex(lessonId)
                 when (taskType) {
                     TaskType.TOPIC -> navigateTo(Screen.Article)
                     TaskType.TEST -> navigateTo(Screen.PreviewTest)

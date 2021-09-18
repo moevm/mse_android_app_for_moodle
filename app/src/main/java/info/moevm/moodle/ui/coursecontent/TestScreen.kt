@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import info.moevm.moodle.data.courses.CoursesManager
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescreen.*
@@ -31,20 +32,13 @@ import java.lang.Math.random
 
 @Composable
 fun TestScreen(
-    courseData: List<CourseContentItem?>,
-    courseContentItemIndex: MutableState<Int>,
-    lessonContentItemIndex: MutableState<Int>,
-    taskContentItemIndex: MutableState<Int>,
-    testAttemptKey: MutableState<String>,
+    coursesManager: CoursesManager,
     navigateTo: (Screen) -> Unit
 ) {
-    val lessonContent =
-        courseData[courseContentItemIndex.value]?.lessonContent?.get(
-            lessonContentItemIndex.value
-        ) as TestContentItems?
+    val lessonContent = coursesManager.getTestLessonContent()
     val taskContent =
-        lessonContent?.taskContent?.get(testAttemptKey.value)?.second?.get(
-            taskContentItemIndex.value
+        lessonContent?.taskContent?.get(coursesManager.getAttemptKey().value)?.second?.get(
+            coursesManager.getTaskContentItemIndexState().value
         ) as TestTaskContentItem?
     val taskState: MutableState<TaskStatus?> =
         remember { mutableStateOf(TaskStatus.NONE) }
@@ -58,14 +52,10 @@ fun TestScreen(
         },
         bottomBar = {
             TestScreenBottomNavigator(
-                courseData = courseData,
-                courseContentItemIndex = courseContentItemIndex,
-                lessonContentItemIndex = lessonContentItemIndex,
-                taskContentItemIndex = taskContentItemIndex,
-                testAttemptKey = testAttemptKey,
+                coursesManager = coursesManager,
                 taskState = taskState,
                 taskContentItemSize = lessonContent?.taskContent?.get(
-                    testAttemptKey.value
+                    coursesManager.getAttemptKey().value
                 )?.second?.size ?: 1
             )
         }
@@ -192,20 +182,16 @@ fun TestScreenTopBar(
 
 @Composable
 fun TestScreenBottomNavigator(
-    courseData: List<CourseContentItem?>,
-    courseContentItemIndex: MutableState<Int>,
-    lessonContentItemIndex: MutableState<Int>,
-    taskContentItemIndex: MutableState<Int>,
-    testAttemptKey: MutableState<String>,
+    coursesManager: CoursesManager,
     taskState: MutableState<TaskStatus?>,
     taskContentItemSize: Int
 ) {
     // TODO добавить изменение иконок при проверке
-    val (iconBack, textBack) = when (taskContentItemIndex.value) {
+    val (iconBack, textBack) = when (coursesManager.getTaskContentItemIndexState().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
     }
-    val (iconForward, textForward) = when (taskContentItemIndex.value) {
+    val (iconForward, textForward) = when (coursesManager.getTaskContentItemIndexState().value) {
         taskContentItemSize - 1 -> Pair(Icons.Filled.Task, "Завершить")
         else -> Pair(Icons.Filled.ChevronRight, "Далее")
     }
@@ -220,9 +206,7 @@ fun TestScreenBottomNavigator(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-                if (taskContentItemIndex.value - 1 >= 0) {
-                    taskContentItemIndex.value--
-                }
+                      coursesManager.moveTaskIndex(-1)
             }, // FIXME исправить на нормально
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
@@ -264,9 +248,7 @@ fun TestScreenBottomNavigator(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 2,
             onClick = {
-                if (taskContentItemIndex.value + 1 < taskContentItemSize) {
-                    taskContentItemIndex.value++
-                }
+                      coursesManager.moveTaskIndex()
             }, // FIXME исправить на нормально
             icon = {
                 Icon(
