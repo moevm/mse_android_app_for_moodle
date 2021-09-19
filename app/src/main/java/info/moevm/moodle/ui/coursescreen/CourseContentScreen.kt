@@ -35,12 +35,12 @@ import kotlin.IllegalArgumentException
 fun CourseContentScreen(
     courseName: String,
     coursesManager: CoursesManager,
-    CardsViewModel: CardsViewModel,
+    cardsViewModel: CardsViewModel,
     navigateTo: (Screen) -> Unit
 ) {
     coursesManager.getTaskContentItemIndexState().value = 0
-    val cards = CardsViewModel.cards.collectAsState()
-    val expandedCardIds = CardsViewModel.expandedCardIdsList.collectAsState()
+    val cards = cardsViewModel.cards.collectAsState()
+    val expandedCardIds = cardsViewModel.expandedCardIdsList.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -86,7 +86,7 @@ fun CourseContentScreen(
                     onExpandableClick = {
                         dividerColor.value =
                             if (dividerColor.value == primaryColor) Color.LightGray else primaryColor
-                        CardsViewModel.onCardClicked(card.id)
+                        cardsViewModel.onCardClicked(card.id)
                     },
                     expanded = expandedCardIds.value.contains(card.id),
                     dividerColor = dividerColor

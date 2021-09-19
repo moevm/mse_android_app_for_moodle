@@ -19,31 +19,42 @@ import info.moevm.moodle.data.courses.CoursesManager
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescreen.ArticleTaskContentItem
+import info.moevm.moodle.ui.coursescreen.TaskType
 
 @Composable
 fun ArticleScreen(
     coursesManager: CoursesManager,
     navigateTo: (Screen) -> Unit
 ) {
+    if (coursesManager.requiredMoveLessonIndexForward) {
+        coursesManager.requiredMoveLessonIndexForward = false
+        coursesManager.moveLessonIndex(1)
+    } else if (coursesManager.requiredMoveLessonIndexBack) {
+        coursesManager.requiredMoveLessonIndexBack = false
+        coursesManager.moveLessonIndex(-1)
+    }
+
     val lessonContent = coursesManager.getArticleLessonContent()
+
     val taskContent =
         lessonContent?.taskContent?.get(coursesManager.getTaskContentItemIndexState().value) as ArticleTaskContentItem?
     val scrollState = rememberScrollState()
     // FIXME моргание старого экрана при возвращении через "верхний" назад
     Scaffold(
         topBar = {
-            ArticleScreenTopBar(
+            TaskScreenTopBar(
                 onBack = { navigateTo(Screen.CourseContent) }
             )
         },
         bottomBar = {
-            ArticleScreenBottomNavigator(
+            TaskBottomNavigator(
                 coursesManager = coursesManager,
-                taskContentItemSize = lessonContent?.taskContent?.size ?: 1
+                taskContentItemSize = lessonContent?.taskContent?.size ?: 1,
+                navigateTo = navigateTo
             )
         }
     ) {
-        if (lessonContent == null || taskContent == null) {
+        if (lessonContent == null || taskContent == null) { // FIXME исправить появление Ошибки при перезоде между статьёй и тестом
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 Text(
                     modifier = Modifier
@@ -67,6 +78,7 @@ fun ArticleScreen(
             }
             return@Scaffold
         }
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -97,7 +109,7 @@ fun ArticleScreen(
 }
 
 @Composable
-fun ArticleScreenTopBar(
+fun TaskScreenTopBar(
     onBack: () -> Unit
 ) {
     TopAppBar(
@@ -114,9 +126,10 @@ fun ArticleScreenTopBar(
 }
 
 @Composable
-fun ArticleScreenBottomNavigator(
+fun TaskBottomNavigator(
     coursesManager: CoursesManager,
-    taskContentItemSize: Int
+    taskContentItemSize: Int,
+    navigateTo: (Screen) -> Unit
 ) {
     val (iconBack, textBack) = when (coursesManager.getTaskContentItemIndexState().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
@@ -131,7 +144,15 @@ fun ArticleScreenBottomNavigator(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-                      coursesManager.moveTaskIndex(-1)
+                if (coursesManager.getTaskContentItemIndexState().value == 0) {
+                    coursesManager.requiredMoveLessonIndexBack = true
+                    when (coursesManager.getPrevLessonType()) {
+                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
+                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                        TaskType.NONE -> {}
+                    }
+                } else
+                    coursesManager.moveTaskIndex(-1)
             }, // FIXME исправить на нормально
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
@@ -139,7 +160,15 @@ fun ArticleScreenBottomNavigator(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 1,
             onClick = {
-                      coursesManager.moveTaskIndex(1)
+                if (coursesManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
+                    coursesManager.requiredMoveLessonIndexForward = true
+                    when (coursesManager.getNextLessonType()) {
+                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
+                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                        TaskType.NONE -> {}
+                    }
+                } else
+                    coursesManager.moveTaskIndex(1)
             }, // FIXME исправить на нормально
             icon = {
                 Icon(

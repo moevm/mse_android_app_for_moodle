@@ -154,7 +154,7 @@ private fun AppContent(
                     CourseContentScreen(
                         courseName = nameCourses.first(),
                         coursesManager = coursesManager,
-                        CardsViewModel = CardsViewModel(coursesManager.getLessonsTitles()),
+                        cardsViewModel = CardsViewModel(coursesManager.getLessonsTitles()),
                         navigateTo = actions.select
                     )
                 }
@@ -237,9 +237,11 @@ private fun AppContent(
                         }
                     ) { innerPadding ->
                         Box(Modifier.padding(innerPadding)) {
-                            currentScreen.Content(onScreenChange = { screen ->
-                                currentScreen = screen
-                            })
+                            currentScreen.Content(
+                                onScreenChange = { screen ->
+                                    currentScreen = screen
+                                }
+                            )
                         }
                     }
                 }
@@ -250,7 +252,7 @@ private fun AppContent(
                     )
                 }
                 composable(ScreenName.ADD.name) {
-                    Text("Unused")
+                    // Unused
                 }
             }
         }

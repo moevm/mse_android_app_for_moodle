@@ -35,6 +35,13 @@ fun TestScreen(
     coursesManager: CoursesManager,
     navigateTo: (Screen) -> Unit
 ) {
+    if (coursesManager.requiredMoveLessonIndexForward) {
+        coursesManager.requiredMoveLessonIndexForward = false
+        coursesManager.moveLessonIndex(1)
+    } else if (coursesManager.requiredMoveLessonIndexBack) {
+        coursesManager.requiredMoveLessonIndexBack = false
+        coursesManager.moveLessonIndex(-1)
+    }
     val lessonContent = coursesManager.getTestLessonContent()
     val taskContent =
         lessonContent?.taskContent?.get(coursesManager.getAttemptKey().value)?.second?.get(
@@ -46,17 +53,18 @@ fun TestScreen(
 
     Scaffold(
         topBar = {
-            TestScreenTopBar(
+            TaskScreenTopBar(
                 onBack = { navigateTo(Screen.CourseContent) }
             )
         },
         bottomBar = {
-            TestScreenBottomNavigator(
+            BottomNavigatorWithChecker(
                 coursesManager = coursesManager,
                 taskState = taskState,
-                taskContentItemSize = lessonContent?.taskContent?.get(
+                taskContentItemSize = coursesManager.getTestLessonContent()?.taskContent?.get(
                     coursesManager.getAttemptKey().value
-                )?.second?.size ?: 1
+                )?.second?.size ?: 1,
+                navigateTo = navigateTo
             )
         }
     ) {
@@ -74,7 +82,7 @@ fun TestScreen(
                         .align(Alignment.BottomCenter)
                         .padding(bottom = 80.dp)
                         .size(60.dp),
-                    onClick = { /*TODO*/ }
+                    onClick = { /*TODO*/ } // Повторная загрузка
                 ) {
                     Icon(
                         modifier = Modifier.size(42.dp),
@@ -164,27 +172,11 @@ fun TestScreen(
 }
 
 @Composable
-fun TestScreenTopBar(
-    onBack: () -> Unit
-) {
-    TopAppBar(
-        title = { Text("Элемент курса") },
-        navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = null
-                )
-            }
-        }
-    )
-}
-
-@Composable
-fun TestScreenBottomNavigator(
+fun BottomNavigatorWithChecker(
     coursesManager: CoursesManager,
     taskState: MutableState<TaskStatus?>,
-    taskContentItemSize: Int
+    taskContentItemSize: Int,
+    navigateTo: (Screen) -> Unit
 ) {
     // TODO добавить изменение иконок при проверке
     val (iconBack, textBack) = when (coursesManager.getTaskContentItemIndexState().value) {
@@ -206,7 +198,15 @@ fun TestScreenBottomNavigator(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-                      coursesManager.moveTaskIndex(-1)
+                if (coursesManager.getTaskContentItemIndexState().value == 0) {
+                    coursesManager.requiredMoveLessonIndexBack = true
+                    when (coursesManager.getPrevLessonType()) {
+                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
+                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                        TaskType.NONE -> {}
+                    }
+                } else
+                    coursesManager.moveTaskIndex(-1)
             }, // FIXME исправить на нормально
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
@@ -248,8 +248,16 @@ fun TestScreenBottomNavigator(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 2,
             onClick = {
-                      coursesManager.moveTaskIndex()
-            }, // FIXME исправить на нормально
+                if (coursesManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
+                    coursesManager.requiredMoveLessonIndexForward = true
+                    when (coursesManager.getNextLessonType()) {
+                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
+                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                        TaskType.NONE -> {}
+                    }
+                } else
+                    coursesManager.moveTaskIndex(1)
+            },
             icon = {
                 Icon(
                     imageVector = iconForward,

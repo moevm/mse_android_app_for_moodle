@@ -25,20 +25,37 @@ fun TestPreviewScreen(
     coursesManager: CoursesManager,
     navigateTo: (Screen) -> Unit
 ) {
+    if (coursesManager.requiredMoveLessonIndexForward) {
+        coursesManager.requiredMoveLessonIndexForward = false
+        coursesManager.moveLessonIndex(1)
+    } else if (coursesManager.requiredMoveLessonIndexBack) {
+        coursesManager.requiredMoveLessonIndexBack = false
+        coursesManager.moveLessonIndex(-1)
+    }
+
     val lessonContent = coursesManager.getTestLessonContent()
     val mapAttempts =
         remember { mutableStateMapOf<String, Pair<AttemptData, List<TaskContentItem?>>>() }
     mapAttempts.putAll(lessonContent?.taskContent.orEmpty())
+    val taskContentItemSize =
+        coursesManager.getTestLessonContent()?.taskContent?.get(
+            coursesManager.getAttemptKey().value
+        )?.second?.size ?: 1
     Scaffold(
         topBar = { TestPreviewScreenTopBar { navigateTo(Screen.CourseContent) } },
         bottomBar = {
-            TestPreviewScreenBottomNavigator(
+            BottomNavigatorWithAttempt(
                 mapAttempts = mapAttempts,
-                coursesManager = coursesManager
+                coursesManager = coursesManager,
+                taskContentItemSize = taskContentItemSize,
+                navigateTo = navigateTo
             )
         }
     ) {
         if (lessonContent == null) {
+            return@Scaffold
+        }
+        if (lessonContent.taskType == TaskType.NONE) {
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 Text(
                     modifier = Modifier
@@ -60,7 +77,6 @@ fun TestPreviewScreen(
                     )
                 }
             }
-            return@Scaffold
         }
         val scrollState = rememberScrollState()
         Column(
@@ -223,9 +239,11 @@ fun TestPreviewScreenTopBar(
 }
 
 @Composable
-fun TestPreviewScreenBottomNavigator(
+fun BottomNavigatorWithAttempt(
     mapAttempts: SnapshotStateMap<String, Pair<AttemptData, List<TaskContentItem?>>>,
-    coursesManager: CoursesManager
+    coursesManager: CoursesManager,
+    taskContentItemSize: Int,
+    navigateTo: (Screen) -> Unit
 ) {
     val lessonContent = coursesManager.getTestLessonContent()
 
@@ -234,7 +252,10 @@ fun TestPreviewScreenBottomNavigator(
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
     }
     val (iconForward, textForward) = when (coursesManager.getLessonContentItemIndex().value) {
-        coursesManager.getLessonContentSize() - 1 -> Pair(Icons.Filled.Task, "Завершить")
+        coursesManager.getLessonContentSize() - 1 -> Pair(
+            Icons.Filled.Task,
+            "Завершить"
+        )
         else -> Pair(Icons.Filled.ChevronRight, "Далее")
     }
     val (iconAttempt, textAttempt) = Pair(
@@ -247,11 +268,16 @@ fun TestPreviewScreenBottomNavigator(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-//                      coursesNavigator.moveLessonIndex(-1)
-//                if (coursesNavigator.getLessonContentItemIndex().value - 1 >= 0) {
-//                    lessonContentItemIndex.value--
-//                }
-            }, // FIXME исправить на нормально
+                if (coursesManager.getTaskContentItemIndexState().value == 0) {
+                    coursesManager.requiredMoveLessonIndexBack = true
+                    when (coursesManager.getPrevLessonType()) {
+                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
+                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                        TaskType.NONE -> {}
+                    }
+                } else
+                    coursesManager.moveTaskIndex(-1)
+            },
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
         )
@@ -278,9 +304,15 @@ fun TestPreviewScreenBottomNavigator(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 2,
             onClick = {
-//                if (lessonContentItemIndex.value + 1 < lessonContentItemSize) {
-//                    lessonContentItemIndex.value++
-//                }
+                if (coursesManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
+                    coursesManager.requiredMoveLessonIndexForward = true
+                    when (coursesManager.getNextLessonType()) {
+                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
+                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                        TaskType.NONE -> {}
+                    }
+                } else
+                    coursesManager.moveTaskIndex(1)
             }, // FIXME исправить на нормально
             icon = {
                 Icon(

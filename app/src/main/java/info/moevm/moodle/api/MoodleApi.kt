@@ -159,10 +159,9 @@ class MoodleApi {
         return data
     }
 
-
-    //Временно---------------------------
+    // Временно ---------------------------
     fun getFakeCourses(courseName: String): List<CourseContentItem>? {
         return exampleCourseContent()[courseName]
     }
-    //-----------------------------------
+    // -----------------------------------
 }
