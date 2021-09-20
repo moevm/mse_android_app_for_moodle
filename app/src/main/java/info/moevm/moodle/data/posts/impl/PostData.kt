@@ -21,6 +21,9 @@ val nobody = PostAuthor(
 val sergey =
     PostAuthor("Беляев Сергей Алексеевич", "https://etu.ru/")
 
+val Krinkin =
+    PostAuthor("Кринкин Кирилл Владимирович", "https://etu.ru/")
+
 val publication = Publication(
     "Programming",
     "https://cdn-images-1.medium.com/max/258/1*u7oZc2_5mrkcFaxkXEyfYA@2x.png"
@@ -792,7 +795,7 @@ val paragraphsPost5 = listOf(
 
 val post1 = Post(
     id = "dc523f0ed25c",
-    title = "Введение в программную инженерию",
+    title = "Введение в программную инженерию (недоступно)",
     subtitle = "Основы разработки конечного программного продукта.",
     url = "https://etu.ru/",
     publication = publication,
@@ -802,13 +805,13 @@ val post1 = Post(
         hoursToPass = 1
     ),
     paragraphs = paragraphsPost1,
-    imageId = R.drawable.post_1,
-    imageThumbId = R.drawable.post_1_thumb
+    imageId = R.drawable.not_available_course,
+    imageThumbId = R.drawable.not_available_course
 )
 
 val post2 = Post(
     id = "7446d8dfd7dc",
-    title = "Базы данных",
+    title = "Базы данных (недоступно)",
     subtitle = "Разработка БД на Access",
     url = "https://etu.ru/",
     publication = publication,
@@ -818,13 +821,13 @@ val post2 = Post(
         hoursToPass = 3
     ),
     paragraphs = paragraphsPost2,
-    imageId = R.drawable.post_2,
-    imageThumbId = R.drawable.post_2_thumb
+    imageId = R.drawable.not_available_course,
+    imageThumbId = R.drawable.not_available_course
 )
 
 val post3 = Post(
     id = "ac552dcc1741",
-    title = "Функциональное программирование",
+    title = "Функциональное программирование (недоступно)",
     subtitle = "Реально очень полезный предмет",
     url = "https://etu.ru/",
     publication = publication,
@@ -834,29 +837,29 @@ val post3 = Post(
         hoursToPass = 1
     ),
     paragraphs = paragraphsPost3,
-    imageId = R.drawable.post_3,
-    imageThumbId = R.drawable.post_3_thumb
+    imageId = R.drawable.not_available_course,
+    imageThumbId = R.drawable.not_available_course
 )
 
 val post4 = Post(
     id = "84eb677660d9",
-    title = "Web-технологии",
-    subtitle = "Комплексное изучение современной Web-разработки",
+    title = "Курс молодого бойца",
+    subtitle = "Данный курс представляет собой обобщение правил работы над студенческими проектами, принятых в Open Source and Linux Laboratory.",
     url = "https://etu.ru/",
     publication = publication,
     metadata = Metadata(
-        author = sergey,
+        author = Krinkin,
         date = "Pass till November 30",
         hoursToPass = 1
     ),
     paragraphs = paragraphsPost4,
-    imageId = R.drawable.post_4,
-    imageThumbId = R.drawable.post_4_thumb
+    imageId = R.drawable.kmb_cource_logo,
+    imageThumbId = R.drawable.kmb_cource_logo
 )
 
 val post5 = Post(
     id = "55db18283aca",
-    title = "Collections and sequences in Kotlin",
+    title = "Collections and sequences in Kotlin (недоступно)",
     subtitle = "Working with collections is a common task and the Kotlin Standard Library offers many great utility functions. It also offers two ways of…",
     url = "https://etu.ru/",
     publication = publication,
@@ -866,8 +869,8 @@ val post5 = Post(
         hoursToPass = 4
     ),
     paragraphs = paragraphsPost5,
-    imageId = R.drawable.post_5,
-    imageThumbId = R.drawable.post_5_thumb
+    imageId = R.drawable.not_available_course,
+    imageThumbId = R.drawable.not_available_course
 )
 
 val posts: List<Post> =

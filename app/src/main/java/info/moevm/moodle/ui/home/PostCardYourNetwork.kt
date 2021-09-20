@@ -1,6 +1,7 @@
 package info.moevm.moodle.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -29,7 +30,12 @@ fun PostCardPopular(
         shape = MaterialTheme.shapes.medium,
         modifier = modifier.size(280.dp, 240.dp)
     ) {
-        Column(modifier = Modifier/*.clickable(onClick = { navigateTo(Screen.Article(post.id)) })*/) {
+        Column(modifier = Modifier.clickable(onClick = {
+//            navigateTo(Screen.Article(post.id))
+            if (post.title == "Курс молодого бойца") // FIXME исправить на нормальное переключение
+                navigateTo(Screen.CourseContent)
+            })
+        ) {
             val image = post.image ?: ImageBitmap.imageResource(R.drawable.placeholder_4_3)
             Image(
                 bitmap = image,
