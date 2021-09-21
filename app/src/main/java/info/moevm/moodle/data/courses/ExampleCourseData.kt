@@ -302,6 +302,7 @@ fun exampleCourseContent(): CourseMapData {
                                                     "Сергей, frontend developer.\n" +
                                                     "Екатерина, fullstack developer.\n" +
                                                     "\n" +
+                                                    "\n\n\n\n\n\n\n" +
                                                     "Для успешной работы проекта необходимо решать как frontend, так и backend задачи. \n" +
                                                     "\n" +
                                                     "Чему равен bus factor данной команды? "
