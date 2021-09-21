@@ -4,12 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -20,11 +18,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.OnGloballyPositionedModifier
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,10 +33,7 @@ import info.moevm.moodle.data.courses.CoursesManager
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescreen.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.lang.Math.random
 
 @OptIn(ExperimentalAnimatedInsets::class)
@@ -453,7 +445,7 @@ fun TestAnswer(
                 .navigationBarsWithImePadding()
                 .padding(start = 26.dp, end = 26.dp)
                 .onFocusChanged {
-                    if(it.isFocused) {
+                    if (it.isFocused) {
                         coroutineScope.launch {
                             lazyListState.animateScrollToItem(0)
                         }
