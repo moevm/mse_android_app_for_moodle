@@ -30,13 +30,17 @@ fun PostCardPopular(
         shape = MaterialTheme.shapes.medium,
         modifier = modifier.size(280.dp, 240.dp)
     ) {
-        Column(modifier = Modifier.clickable(onClick = {
+        Column(
+            modifier = Modifier.clickable(
+                onClick = {
 //            navigateTo(Screen.Article(post.id))
-            if (post.title == "Курс молодого бойца") // FIXME исправить на нормальное переключение
-                navigateTo(Screen.CourseContent)
-            })
+                    if (post.title == "Курс молодого бойца") // FIXME исправить на нормальное переключение
+                        navigateTo(Screen.CourseContent)
+                }
+            )
         ) {
-            val image = post.image ?: ImageBitmap.imageResource(R.drawable.placeholder_4_3)
+            val image = post.image
+                ?: ImageBitmap.imageResource(R.drawable.placeholder_4_3)
             Image(
                 bitmap = image,
                 contentDescription = null,
