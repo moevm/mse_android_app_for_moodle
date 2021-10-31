@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import info.moevm.moodle.data.courses.CoursesManager
+import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescreen.ArticleTaskContentItem
@@ -23,21 +23,21 @@ import info.moevm.moodle.ui.coursescreen.TaskType
 
 @Composable
 fun ArticleScreen(
-    coursesManager: CoursesManager,
+    courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
-    if (coursesManager.requiredMoveLessonIndexForward) {
-        coursesManager.requiredMoveLessonIndexForward = false
-        coursesManager.moveLessonIndex(1)
-    } else if (coursesManager.requiredMoveLessonIndexBack) {
-        coursesManager.requiredMoveLessonIndexBack = false
-        coursesManager.moveLessonIndex(-1)
+    if (courseManager.requiredMoveLessonIndexForward) {
+        courseManager.requiredMoveLessonIndexForward = false
+        courseManager.moveLessonIndex(1)
+    } else if (courseManager.requiredMoveLessonIndexBack) {
+        courseManager.requiredMoveLessonIndexBack = false
+        courseManager.moveLessonIndex(-1)
     }
 
-    val lessonContent = coursesManager.getArticleLessonContent()
+    val lessonContent = courseManager.getArticleLessonContent()
 
     val taskContent =
-        lessonContent?.taskContent?.get(coursesManager.getTaskContentItemIndexState().value) as ArticleTaskContentItem?
+        lessonContent?.taskContent?.get(courseManager.getTaskContentItemIndexState().value) as ArticleTaskContentItem?
     val scrollState = rememberScrollState()
     // FIXME моргание старого экрана при возвращении через "верхний" назад
     Scaffold(
@@ -48,7 +48,7 @@ fun ArticleScreen(
         },
         bottomBar = {
             TaskBottomNavigator(
-                coursesManager = coursesManager,
+                courseManager = courseManager,
                 taskContentItemSize = lessonContent?.taskContent?.size ?: 1,
                 navigateTo = navigateTo
             )
@@ -127,15 +127,15 @@ fun TaskScreenTopBar(
 
 @Composable
 fun TaskBottomNavigator(
-    coursesManager: CoursesManager,
+    courseManager: CourseManager,
     taskContentItemSize: Int,
     navigateTo: (Screen) -> Unit
 ) {
-    val (iconBack, textBack) = when (coursesManager.getTaskContentItemIndexState().value) {
+    val (iconBack, textBack) = when (courseManager.getTaskContentItemIndexState().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
     }
-    val (iconForward, textForward) = when (coursesManager.getTaskContentItemIndexState().value) {
+    val (iconForward, textForward) = when (courseManager.getTaskContentItemIndexState().value) {
         taskContentItemSize - 1 -> Pair(Icons.Filled.Task, "Завершить")
         else -> Pair(Icons.Filled.ChevronRight, "Далее")
     }
@@ -144,15 +144,15 @@ fun TaskBottomNavigator(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-                if (coursesManager.getTaskContentItemIndexState().value == 0) {
-                    coursesManager.requiredMoveLessonIndexBack = true
-                    when (coursesManager.getPrevLessonType()) {
-                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
-                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                if (courseManager.getTaskContentItemIndexState().value == 0) {
+                    courseManager.requiredMoveLessonIndexBack = true
+                    when (courseManager.getPrevLessonType()) {
+                        TaskType.QUIZ -> navigateTo(Screen.PreviewTest)
+                        TaskType.LESSON -> navigateTo(Screen.Article)
                         TaskType.NONE -> {}
                     }
                 } else
-                    coursesManager.moveTaskIndex(-1)
+                    courseManager.moveTaskIndex(-1)
             }, // FIXME исправить на нормально
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
@@ -160,15 +160,15 @@ fun TaskBottomNavigator(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 1,
             onClick = {
-                if (coursesManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
-                    coursesManager.requiredMoveLessonIndexForward = true
-                    when (coursesManager.getNextLessonType()) {
-                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
-                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                if (courseManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
+                    courseManager.requiredMoveLessonIndexForward = true
+                    when (courseManager.getNextLessonType()) {
+                        TaskType.QUIZ -> navigateTo(Screen.PreviewTest)
+                        TaskType.LESSON -> navigateTo(Screen.Article)
                         TaskType.NONE -> {}
                     }
                 } else
-                    coursesManager.moveTaskIndex(1)
+                    courseManager.moveTaskIndex(1)
             }, // FIXME исправить на нормально
             icon = {
                 Icon(

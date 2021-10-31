@@ -6,8 +6,8 @@ import java.util.*
 
 typealias CourseMapData = Map<String, List<CourseContentItem>>
 
-enum class TaskType { NONE, TOPIC, TEST }
-enum class TaskStatus { NONE, WORKING, DONE, FAILED, RELOAD }
+enum class TaskType(val value: String = "") { NONE(""), LESSON("lesson"), QUIZ("quiz"), FORUM("forum"), LTI("lti") }
+enum class TaskStatus(val value: Int = -1) { NONE(-1), WORKING(0), DONE(1), FAILED(2), RELOAD(3) } // TODO: исправить на нужные из документации
 enum class TaskContentType { VIDEO, ARTICLE, TEST_ONE_CHOICE, TEST_MULTI_CHOICE, TEST_ANSWER, TEST_MATCH, UNSUPPORTED }
 enum class TaskAnswerType { NONE, NUMBERS, TEXT }
 
@@ -41,7 +41,7 @@ data class TestContentItems(
     override val taskType: TaskType,
     override val taskTitle: String,
     override val taskStatus: TaskStatus,
-    val taskMark: String,
+//    val taskMark: String,
     val taskContent: HashMap<String, Pair<AttemptData, List<TaskContentItem?>>>
 ) : LessonContentItem(
     taskType, taskTitle, taskStatus
@@ -90,8 +90,8 @@ fun getTaskStatusIconId(taskStatus: TaskStatus): Int {
 
 fun getTaskTypeIconId(taskType: TaskType): Int {
     return when (taskType) {
-        TaskType.TOPIC -> R.drawable.topic_logo
-        TaskType.TEST -> R.drawable.test_logo
-        TaskType.NONE -> R.drawable.empty_img
+        TaskType.LESSON -> R.drawable.topic_logo
+        TaskType.QUIZ -> R.drawable.test_logo
+        else -> R.drawable.empty_img
     }
 }

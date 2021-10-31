@@ -2,6 +2,7 @@ package info.moevm.moodle.api
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import info.moevm.moodle.data.courses.CourseMoodleContentData
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.model.*
 import info.moevm.moodle.model.APIVariables
@@ -34,6 +35,7 @@ class MoodleApi {
         .client(okHttpClient)
         .build()
         .create(ApiRequests::class.java)
+
 
     fun checkLogIn(userName: String, passWord: String): LiveData<LoginSuccess> {
         Timber.tag("Check_login").i("checkLogIn with API was called")
@@ -156,6 +158,32 @@ class MoodleApi {
                     data.value = null
                 }
             })
+        return data
+    }
+
+    fun getCourseContent(token: String, courseId: String): List<CourseMoodleContentData>? {
+        var data: List<CourseMoodleContentData>? = null
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val response = api.getCourseContent(token, APIVariables.CORE_COURSE_GET_CONTENTS.value, courseId, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
+                if (response.isSuccessful) {
+                    Timber.d("get response " + response.body())
+                    data = response.body()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    val z = e.message
+                    Timber.d("fatal error")
+                }
+            }
+        }
+        // WORK IN PROGRESS
+        val time = System.currentTimeMillis()
+        while (data == null) {
+            if (System.currentTimeMillis() - time > 1000)
+                break
+        }
+        Timber.d("answer is received")
         return data
     }
 

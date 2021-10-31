@@ -1,5 +1,6 @@
 package info.moevm.moodle.api
 
+import info.moevm.moodle.data.courses.CourseMoodleContentData
 import info.moevm.moodle.model.*
 import retrofit2.Call
 import retrofit2.http.GET
@@ -11,6 +12,7 @@ interface ApiRequests {
 
     @GET("/webservice/rest/server.php")
     fun getCourses(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<Courses>
+
     @GET("/webservice/rest/server.php")
     fun getCurrentCourses(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<CurrentCourses>
 
@@ -22,4 +24,7 @@ interface ApiRequests {
      */
     @GET("/webservice/rest/server.php")
     fun getUserInformation(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("moodlewsrestformat") moodlewsRestFormat: String, @Query("field") username: String, @Query("values[0]") userLogin: String): Call<List<MoodleUser>>
+
+    @GET("/webservice/rest/server.php")
+    fun getCourseContent(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("courseid") courseId: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<List<CourseMoodleContentData>?>
 }

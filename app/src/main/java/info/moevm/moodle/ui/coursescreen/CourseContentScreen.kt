@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import info.moevm.moodle.R
-import info.moevm.moodle.data.courses.CoursesManager
+import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.components.ExpandableCard
@@ -33,19 +33,33 @@ import kotlin.IllegalArgumentException
 
 @Composable
 fun CourseContentScreen(
-    courseName: String,
-    coursesManager: CoursesManager,
-    cardsViewModel: CardsViewModel,
+//    courseName: String,
+    courseManager: CourseManager,
+//    cardsViewModel: CardsViewModel,
     navigateTo: (Screen) -> Unit
 ) {
-    coursesManager.getTaskContentItemIndexState().value = 0
+    courseManager.getTaskContentItemIndexState().value = 0
+    val titles = courseManager.getLessonsTitles()
+    if (titles == null) {
+        val z = 2
+        return
+    }
+
+
+//    return // TODO: исправить на вывод ошибки
+    val cardsViewModel = CardsViewModel(titles)
     val cards = cardsViewModel.cards.collectAsState()
     val expandedCardIds = cardsViewModel.expandedCardIdsList.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
                 modifier = Modifier.testTag("topAppBarInterests"),
-                title = { Text(courseName) },
+                title = {
+                    Text(
+                        fontSize = 15.sp, // TODO: заменить на нормальный подбор?
+                        text = courseManager.getCourseName()
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navigateTo(Screen.Interests) }) {
                         Icon(Icons.Filled.ArrowBack, null)
@@ -66,21 +80,32 @@ fun CourseContentScreen(
                 val dividerColor = remember { mutableStateOf(primaryColor) }
                 ExpandableCard(
                     cardContent = {
-                        val lessonContent = coursesManager.getLessonsContents(index)
+                        val lessonContent =
+                            courseManager.getLessonsContents(index)
 //                        var foundNullItem = lessonContent == null
 //                        for (item in lessonContent.orEmpty())
 //                            foundNullItem = foundNullItem || item == null
 //                        if (foundNullItem) {
 //                           return@ExpandableCard
 //                        }
-                        CardItems(
-                            tasksType = lessonContent.map { it?.taskType ?: TaskType.NONE }.toList(),
-                            tasksTitles = lessonContent.map { it?.taskTitle ?: "<Ошибка загрузки данных>" }.toList(),
-                            tasksStatus = lessonContent.map { it?.taskStatus ?: TaskStatus.RELOAD }.toList(),
-                            courseId = index,
-                            coursesManager = coursesManager,
-                            navigateTo = navigateTo
-                        )
+                        if (lessonContent != null) {
+                            CardItems(// TODO: исправить на нормально
+                                tasksType = lessonContent.map { TaskType.valueOf(it.modname?.uppercase()?: "NONE")}.toList(),
+                                tasksTitles = lessonContent.map { it.name ?: "<Ошибка загрузки данных>" }.toList(),
+                                tasksStatus = lessonContent.map {
+                                    when(it.completiondata?.state) {
+                                        TaskStatus.DONE.value -> TaskStatus.DONE
+                                        TaskStatus.FAILED.value -> TaskStatus.FAILED
+                                        TaskStatus.WORKING.value -> TaskStatus.WORKING
+                                        TaskStatus.RELOAD.value -> TaskStatus.RELOAD
+                                        else -> TaskStatus.NONE
+                                    }
+                                                                },
+                                lessonId = index,
+                                courseManager = courseManager,
+                                navigateTo = navigateTo
+                            )
+                        }
                     },
                     card = card,
                     onExpandableClick = {
@@ -101,8 +126,8 @@ fun CardItems(
     tasksType: List<TaskType>,
     tasksTitles: List<String>,
     tasksStatus: List<TaskStatus>,
-    coursesManager: CoursesManager,
-    courseId: Int,
+    courseManager: CourseManager,
+    lessonId: Int,
     navigateTo: (Screen) -> Unit
 ) {
     try {
@@ -119,8 +144,8 @@ fun CardItems(
                 taskType = tasksType[i],
                 taskTitle = tasksTitles[i],
                 taskStatus = tasksStatus[i],
-                coursesManager = coursesManager,
-                courseId = courseId,
+                courseManager = courseManager,
+                courseId = lessonId,
                 lessonId = i,
                 navigateTo = navigateTo
             )
@@ -133,7 +158,7 @@ fun CardItem(
     taskType: TaskType,
     taskTitle: String,
     taskStatus: TaskStatus,
-    coursesManager: CoursesManager,
+    courseManager: CourseManager,
     courseId: Int,
     lessonId: Int,
     navigateTo: (Screen) -> Unit
@@ -145,12 +170,12 @@ fun CardItem(
         val boxScope = this
         Column(
             Modifier.clickable {
-                coursesManager.setCourseIndex(courseId)
-                coursesManager.setLessonIndex(lessonId)
-                when (taskType) {
-                    TaskType.TOPIC -> navigateTo(Screen.Article)
-                    TaskType.TEST -> navigateTo(Screen.PreviewTest)
-                }
+//                courseManager.setCourseContentIndex(courseId)
+//                courseManager.setLessonIndex(lessonId)
+//                when (taskType) {
+//                    TaskType.TOPIC -> navigateTo(Screen.Article)
+//                    TaskType.TEST -> navigateTo(Screen.PreviewTest)
+//                }
             }
         ) {
             Row(Modifier.padding(top = 8.dp, bottom = 15.dp)) {
@@ -196,7 +221,7 @@ fun CardItem(
                         ),
                         contentDescription = "taskStatus",
 
-                    )
+                        )
                 }
             }
             Divider(

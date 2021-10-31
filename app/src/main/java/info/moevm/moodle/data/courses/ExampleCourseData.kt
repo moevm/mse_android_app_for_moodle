@@ -19,7 +19,7 @@ fun exampleCourseContent(): CourseMapData {
                 listOf(
                     null,
                     ArticleContentItems(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Введение",
                         TaskStatus.NONE,
                         listOf(
@@ -161,7 +161,7 @@ fun exampleCourseContent(): CourseMapData {
                         )
                     ),
                     ArticleContentItems(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Автобусный фактор (bus factor)",
                         TaskStatus.NONE,
                         listOf(
@@ -227,7 +227,7 @@ fun exampleCourseContent(): CourseMapData {
                         )
                     ),
                     TestContentItems(
-                        TaskType.TEST,
+                        TaskType.QUIZ,
                         "Общие правила работы проектами. Тест",
                         TaskStatus.WORKING,
                         "Метод оценивания: Высшая оценка",
@@ -357,17 +357,17 @@ fun exampleCourseContent(): CourseMapData {
                 "Планирование календаря",
                 listOf(
                     LessonContentItem(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Как планировать календарь работы",
                         TaskStatus.NONE
                     ),
                     LessonContentItem(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Планирование и оценка времени выполнения задач",
                         TaskStatus.NONE
                     ),
                     LessonContentItem(
-                        TaskType.TEST,
+                        TaskType.QUIZ,
                         "Планирование календаря. Тест",
                         TaskStatus.NONE
                     )
@@ -377,27 +377,27 @@ fun exampleCourseContent(): CourseMapData {
                 "Коммуникация по проекту",
                 listOf(
                     LessonContentItem(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Решение оперативных задач",
                         TaskStatus.NONE
                     ),
                     LessonContentItem(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Как писать письма",
                         TaskStatus.NONE
                     ),
                     LessonContentItem(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Описание проблем в письмах",
                         TaskStatus.NONE
                     ),
                     LessonContentItem(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Протоколы встреч",
                         TaskStatus.NONE
                     ),
                     LessonContentItem(
-                        TaskType.TEST,
+                        TaskType.QUIZ,
                         "Коммуникация по проекту. Тест",
                         TaskStatus.WORKING
                     ),
@@ -407,27 +407,27 @@ fun exampleCourseContent(): CourseMapData {
                 "Работа с задачами",
                 listOf(
                     LessonContentItem(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Трекеры задач",
                         TaskStatus.NONE
                     ),
                     LessonContentItem(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Наблюдаемые результаты задач",
                         TaskStatus.NONE
                     ),
                     LessonContentItem(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Декомпозиция задач",
                         TaskStatus.NONE
                     ),
                     LessonContentItem(
-                        TaskType.TEST,
+                        TaskType.QUIZ,
                         "Работа с задачами. Тест",
                         TaskStatus.DONE
                     ),
                     LessonContentItem(
-                        TaskType.TOPIC,
+                        TaskType.LESSON,
                         "Прощание",
                         TaskStatus.NONE
                     ),

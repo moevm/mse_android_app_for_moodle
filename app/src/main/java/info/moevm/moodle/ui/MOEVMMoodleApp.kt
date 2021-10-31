@@ -20,9 +20,8 @@ import androidx.navigation.compose.rememberNavController
 import info.moevm.moodle.api.DataStoreMoodleUser
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.data.AppContainer
-import info.moevm.moodle.data.courses.CoursesManager
+import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.data.courses.CoursesRepository
-import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.article.ArticleScreen
@@ -102,59 +101,58 @@ private fun AppContent(
     }
 
     var nameCourses: List<String>
-    runBlocking {
-        withContext(Dispatchers.IO) {
-            nameCourses =
-                exampleCourseContent().keys.toList() // TODO заменить на получение заголовков
-        }
-    }
-
+//    runBlocking {
+//        withContext(Dispatchers.IO) {
+//            nameCourses =
+//                exampleCourseContent().keys.toList() // TODO заменить на получение заголовков
+//        }
+//    }
+    val courseId = remember { mutableStateOf(0) }
     val courseContentItemIndex = remember { mutableStateOf(0) }
     val lessonContentItemIndex = remember { mutableStateOf(0) }
     val taskContentItemIndex = remember { mutableStateOf(0) }
     val testAttemptKey = remember { mutableStateOf("0") }
 
-    val coursesManager = CoursesManager(
+    val courseManager = CourseManager(
+        token = "", // инициализируется после входа в аккаунт в PreviewScreen
         moodleApi = MoodleApi(),
-        courseName = nameCourses.first(),
+        courseId = courseId,
         courseContentItemIndex = courseContentItemIndex,
         lessonContentItemIndex = lessonContentItemIndex,
         taskContentItemIndex = taskContentItemIndex,
         testAttemptKey = testAttemptKey
     )
-    coursesManager.receiveFullCoursesData()
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
             NavHost(navController, startDestination = ScreenName.PREVIEW.name) {
                 composable(ScreenName.PREVIEW.name) {
                     PreviewScreen(
+                        courseManager = courseManager,
                         navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.TEST.name) {
                     TestScreen(
-                        coursesManager = coursesManager,
+                        courseManager = courseManager,
                         navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.PREVIEW_TEST.name) {
                     TestPreviewScreen(
-                        coursesManager = coursesManager,
+                        courseManager = courseManager,
                         navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.ARTICLE.name) {
                     info.moevm.moodle.ui.coursecontent.ArticleScreen(
-                        coursesManager = coursesManager,
+                        courseManager = courseManager,
                         navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.COURSE_CONTENT.name) {
                     CourseContentScreen(
-                        courseName = nameCourses.first(),
-                        coursesManager = coursesManager,
-                        cardsViewModel = CardsViewModel(coursesManager.getLessonsTitles()),
+                        courseManager = courseManager,
                         navigateTo = actions.select
                     )
                 }
@@ -190,6 +188,7 @@ private fun AppContent(
                 composable(ScreenName.INTERESTS.name) {
                     InterestsScreen(
                         navigateTo = actions.select,
+                        courseManager = courseManager,
                         coursesRepository = coursesRepository,
                         scaffoldState = scaffoldState
                     )

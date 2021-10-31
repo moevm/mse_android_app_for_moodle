@@ -24,23 +24,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.asLiveData
 import info.moevm.moodle.R
 import info.moevm.moodle.api.DataStoreUser
-import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.courses.CoursesMap
+import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.courses.TopicSelection
-import info.moevm.moodle.data.courses.impl.FakeCoursesRepository
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.ThemedPreview
 import info.moevm.moodle.utils.produceUiState
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 enum class Sections(val title: String) {
     Topics("All"),
@@ -71,6 +67,7 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
 fun InterestsScreen(
     navigateTo: (Screen) -> Unit,
     coursesRepository: CoursesRepository,
+    courseManager: CourseManager,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
 
@@ -102,7 +99,10 @@ fun InterestsScreen(
     // Returns a [CoroutineScope] that is scoped to the lifecycle of [InterestsScreen]. When this
     // screen is removed from composition, the scope will be cancelled.
     val coroutineScope = rememberCoroutineScope()
-
+    val changeCourse = { courseId: Int, courseName: String ->
+        courseManager.setCourseId(courseId)
+        courseManager.setCourseName(courseName)
+    }
     // Describe the screen sections here since each section needs 2 states and 1 event.
     // Pass them to the stateless InterestsScreen using a tabContent.
     val topicsSection = TabContent(Sections.Topics) {
@@ -116,7 +116,7 @@ fun InterestsScreen(
             coroutineScope.launch { coursesRepository.toggleTopicSelection(it) }
         }
         val data = topics.value.data ?: return@TabContent
-        TopicList(navigateTo, data, selectedTopics, onTopicSelect)
+        TopicList(navigateTo, data, selectedTopics, onTopicSelect, changeCourse)
     }
 
     val peopleSection = TabContent(Sections.People) {
@@ -128,33 +128,34 @@ fun InterestsScreen(
         val onPeopleSelect: (String) -> Unit = {
             coroutineScope.launch { coursesRepository.togglePersonSelected(it) }
         }
-        val data = people.value.data ?: return@TabContent
-        PeopleList(navigateTo, data, selectedPeople, onPeopleSelect)
+        val data = people.value.data ?: return@TabContent //List<String>
+
+        PeopleList(navigateTo, data, selectedPeople, onPeopleSelect, changeCourse)
     }
 
-    val publicationSection = TabContent(Sections.Publications) {
-        val (publications) = produceUiState(coursesRepository) {
-            getPublications()
-        }
-        val selectedPublications by coursesRepository.observePublicationSelected()
-            .collectAsState(setOf())
-        val onPublicationSelect: (String) -> Unit = {
-            coroutineScope.launch {
-                coursesRepository.togglePublicationSelected(
-                    it
-                )
-            }
-        }
-        val data = publications.value.data ?: return@TabContent
-        PublicationList(
-            navigateTo,
-            data,
-            selectedPublications,
-            onPublicationSelect
-        )
-    }
+//    val publicationSection = TabContent(Sections.Publications) {
+//        val (publications) = produceUiState(coursesRepository) {
+//            getPublications()
+//        }
+//        val selectedPublications by coursesRepository.observePublicationSelected()
+//            .collectAsState(setOf())
+//        val onPublicationSelect: (String) -> Unit = {
+//            coroutineScope.launch {
+//                coursesRepository.togglePublicationSelected(
+//                    it
+//                )
+//            }
+//        }
+//        val data = publications.value.data ?: return@TabContent
+//        PublicationList(
+//            navigateTo,
+//            data,
+//            selectedPublications,
+//            onPublicationSelect
+//        )
+//    }
 
-    val tabContent = listOf(topicsSection, peopleSection, publicationSection)
+    val tabContent = listOf(topicsSection, peopleSection/*, publicationSection*/)
     val (currentSection, updateSection) = rememberSaveable {
         mutableStateOf(
             tabContent.first().section
@@ -275,9 +276,10 @@ private fun TopicList(
     navigateTo: (Screen) -> Unit,
     courses: CoursesMap,
     selectedTopics: Set<TopicSelection>,
-    onTopicSelect: (TopicSelection) -> Unit
+    onTopicSelect: (TopicSelection) -> Unit,
+    onCourseClicked: (Int, String) -> Unit
 ) {
-    TabWithSections(navigateTo, courses, selectedTopics, onTopicSelect)
+    TabWithSections(navigateTo, courses, selectedTopics, onTopicSelect, onCourseClicked)
 }
 
 /**
@@ -290,11 +292,12 @@ private fun TopicList(
 @Composable
 private fun PeopleList(
     navigateTo: (Screen) -> Unit,
-    people: List<String>,
+    people: List<Pair<String, Int>>,
     selectedPeople: Set<String>,
-    onPersonSelect: (String) -> Unit
+    onPersonSelect: (String) -> Unit,
+    onCourseClicked: (Int, String) -> Unit
 ) {
-    TabWithTopics(navigateTo, people, selectedPeople, onPersonSelect)
+    TabWithTopics(navigateTo, people, selectedPeople, onPersonSelect, onCourseClicked)
 }
 
 /**
@@ -304,20 +307,20 @@ private fun PeopleList(
  * @param selectedPublications (state) currently selected publications
  * @param onPublicationSelect (event) request a publication selection be changed
  */
-@Composable
-private fun PublicationList(
-    navigateTo: (Screen) -> Unit,
-    publications: List<String>,
-    selectedPublications: Set<String>,
-    onPublicationSelect: (String) -> Unit
-) {
-    TabWithTopics(
-        navigateTo,
-        publications,
-        selectedPublications,
-        onPublicationSelect
-    )
-}
+//@Composable
+//private fun PublicationList(
+//    navigateTo: (Screen) -> Unit,
+//    publications: List<String>,
+//    selectedPublications: Set<String>,
+//    onPublicationSelect: (String) -> Unit
+//) {
+//    TabWithTopics(
+//        navigateTo,
+//        publications,
+//        selectedPublications,
+//        onPublicationSelect
+//    )
+//}
 
 /**
  * Display a simple list of topics
@@ -329,9 +332,10 @@ private fun PublicationList(
 @Composable
 private fun TabWithTopics(
     navigateTo: (Screen) -> Unit,
-    topics: List<String>,
+    topics: List<Pair<String, Int>>,
     selectedTopics: Set<String>,
-    onTopicSelect: (String) -> Unit
+    onTopicSelect: (String) -> Unit,
+    onCourseClicked: (Int, String) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -339,14 +343,17 @@ private fun TabWithTopics(
             .padding(top = 16.dp)
             .verticalScroll(scrollState)
     ) {
-        topics.forEach { topic ->
+        for (index in topics.indices) {
             TopicItem(
                 navigateTo = navigateTo,
-                itemTitle = topic,
-                selected = selectedTopics.contains(topic)
-            ) { onTopicSelect(topic) }
+                itemTitle = topics[index].first,
+                selected = selectedTopics.contains(topics[index].first),
+                itemIndex = topics[index].second, // TODO: заменить на id курсов
+                onCourseClicked = onCourseClicked
+            ) { onTopicSelect(topics[index].first) }
             TopicDivider()
         }
+
     }
 }
 
@@ -362,7 +369,8 @@ private fun TabWithSections(
     navigateTo: (Screen) -> Unit,
     sections: CoursesMap,
     selectedTopics: Set<TopicSelection>,
-    onTopicSelect: (TopicSelection) -> Unit
+    onTopicSelect: (TopicSelection) -> Unit,
+    onCourseClicked: (Int, String) -> Unit
 ) {
     val scrollState = rememberScrollState()
 
@@ -373,17 +381,19 @@ private fun TabWithSections(
                 modifier = Modifier.padding(16.dp),
                 style = MaterialTheme.typography.subtitle1
             )
-            topics.forEach { topic ->
+            for(index in topics.indices) {
                 TopicItem(
                     navigateTo = navigateTo,
-                    itemTitle = topic,
+                    itemTitle = topics[index],
                     selected = selectedTopics.contains(
                         TopicSelection(
                             section,
-                            topic
+                            topics[index]
                         )
-                    )
-                ) { onTopicSelect(TopicSelection(section, topic)) }
+                    ),
+                    itemIndex = index, // TODO: заменить на id курсов
+                    onCourseClicked = onCourseClicked
+                ) { onTopicSelect(TopicSelection(section, topics[index])) }
                 TopicDivider()
             }
         }
@@ -403,6 +413,8 @@ private fun TopicItem(
     navigateTo: (Screen) -> Unit,
     itemTitle: String,
     selected: Boolean,
+    itemIndex: Int,
+    onCourseClicked: (Int, String) -> Unit,
     onToggle: () -> Unit
 ) {
     val image = ImageBitmap.imageResource(R.drawable.placeholder_1_1)
@@ -415,9 +427,11 @@ private fun TopicItem(
                     onValueChange = { onToggle() }
                 )
                 .clickable { // TODO Исправить на нормально
-                    if (itemTitle == "Курс молодого бойца" || itemTitle == "КМБ") {
+                    onCourseClicked(itemIndex, itemTitle)
+//                    val z = 2
+//                    if (itemTitle == "Курс молодого бойца" || itemTitle == "КМБ") {
                         navigateTo(Screen.CourseContent)
-                    }
+//                    }
                 }
                 .padding(horizontal = 16.dp)
         ) {
@@ -470,148 +484,148 @@ private fun TopicDivider() {
         color = MaterialTheme.colors.surface.copy(alpha = 0.08f)
     )
 }
-
-@Preview("Interests screen")
-@Composable
-fun PreviewInterestsScreen() {
-    ThemedPreview {
-        InterestsScreen(
-            navigateTo = {},
-            coursesRepository = FakeCoursesRepository()
-        )
-    }
-}
-
-@Preview("Interests screen dark theme")
-@Composable
-fun PreviewInterestsScreenDark() {
-    ThemedPreview(darkTheme = true) {
-        val scaffoldState = rememberScaffoldState(
-            drawerState = rememberDrawerState(DrawerValue.Open)
-        )
-        InterestsScreen(
-            navigateTo = {},
-            scaffoldState = scaffoldState,
-            coursesRepository = FakeCoursesRepository()
-        )
-    }
-}
-
-@Preview("Interests screen drawer open")
-@Composable
-private fun PreviewDrawerOpen() {
-    ThemedPreview {
-        val scaffoldState = rememberScaffoldState(
-            drawerState = rememberDrawerState(DrawerValue.Open)
-        )
-        InterestsScreen(
-            navigateTo = {},
-            scaffoldState = scaffoldState,
-            coursesRepository = FakeCoursesRepository()
-        )
-    }
-}
-
-@Preview("Interests screen drawer open dark theme")
-@Composable
-private fun PreviewDrawerOpenDark() {
-    ThemedPreview(darkTheme = true) {
-        val scaffoldState = rememberScaffoldState(
-            drawerState = rememberDrawerState(DrawerValue.Open)
-        )
-        InterestsScreen(
-            navigateTo = {},
-            scaffoldState = scaffoldState,
-            coursesRepository = FakeCoursesRepository()
-        )
-    }
-}
-
-@Preview("Interests screen topics tab")
-@Composable
-fun PreviewTopicsTab(tokenState: String) {
-    ThemedPreview {
-//        TopicList(loadFakeTopics(tokenState), setOf(), {})
-    }
-}
-
-@Preview("Interests screen topics tab dark theme")
-@Composable
-fun PreviewTopicsTabDark(tokenState: String) {
-    ThemedPreview(darkTheme = true) {
-//        TopicList(loadFakeTopics(tokenState), setOf(), {})
-    }
-}
-
-@Composable
-private fun loadFakeTopics(tokenState: String): CoursesMap {
-    val topics = runBlocking {
-        FakeCoursesRepository().getTopics(tokenState)
-    }
-    return (topics as Result.Success).data
-}
-
-@Preview("Interests screen people tab")
-@Composable
-fun PreviewPeopleTab(tokenState: String) {
-    ThemedPreview {
-//        PeopleList(loadFakePeople(tokenState), setOf(), { })
-    }
-}
-
-@Preview("Interests screen people tab dark theme")
-@Composable
-fun PreviewPeopleTabDark(tokenState: String) {
-    ThemedPreview(darkTheme = true) {
-//        PeopleList(loadFakePeople(tokenState), setOf(), { })
-    }
-}
-
-@Composable
-private fun loadFakePeople(tokenState: String): List<String> {
-    val people = runBlocking {
-        FakeCoursesRepository().getPeople(tokenState)
-    }
-
-    return (people as Result.Success).data
-}
-
-@Preview("Interests screen publications tab")
-@Composable
-fun PreviewPublicationsTab() {
-    ThemedPreview {
-//        PublicationList(loadFakePublications(), setOf(), { })
-    }
-}
-
-@Preview("Interests screen publications tab dark theme")
-@Composable
-fun PreviewPublicationsTabDark() {
-    ThemedPreview(darkTheme = true) {
-//        PublicationList(loadFakePublications(), setOf(), { })
-    }
-}
-
-@Composable
-private fun loadFakePublications(): List<String> {
-    val publications = runBlocking {
-        FakeCoursesRepository().getPublications()
-    }
-    return (publications as Result.Success).data
-}
-
-@Preview("Interests screen tab with topics")
-@Composable
-fun PreviewTabWithTopics() {
-    ThemedPreview {
-//        TabWithTopics(topics = listOf("Hello", "Compose"), selectedTopics = setOf()) {}
-    }
-}
-
-@Preview("Interests screen tab with topics dark theme")
-@Composable
-fun PreviewTabWithTopicsDark() {
-    ThemedPreview(darkTheme = true) {
-//        TabWithTopics(topics = listOf("Hello", "Compose"), selectedTopics = setOf()) {}
-    }
-}
+//
+//@Preview("Interests screen")
+//@Composable
+//fun PreviewInterestsScreen() {
+//    ThemedPreview {
+//        InterestsScreen(
+//            navigateTo = {},
+//            coursesRepository = FakeCoursesRepository()
+//        )
+//    }
+//}
+//
+//@Preview("Interests screen dark theme")
+//@Composable
+//fun PreviewInterestsScreenDark() {
+//    ThemedPreview(darkTheme = true) {
+//        val scaffoldState = rememberScaffoldState(
+//            drawerState = rememberDrawerState(DrawerValue.Open)
+//        )
+//        InterestsScreen(
+//            navigateTo = {},
+//            scaffoldState = scaffoldState,
+//            coursesRepository = FakeCoursesRepository()
+//        )
+//    }
+//}
+//
+//@Preview("Interests screen drawer open")
+//@Composable
+//private fun PreviewDrawerOpen() {
+//    ThemedPreview {
+//        val scaffoldState = rememberScaffoldState(
+//            drawerState = rememberDrawerState(DrawerValue.Open)
+//        )
+//        InterestsScreen(
+//            navigateTo = {},
+//            scaffoldState = scaffoldState,
+//            coursesRepository = FakeCoursesRepository()
+//        )
+//    }
+//}
+//
+//@Preview("Interests screen drawer open dark theme")
+//@Composable
+//private fun PreviewDrawerOpenDark() {
+//    ThemedPreview(darkTheme = true) {
+//        val scaffoldState = rememberScaffoldState(
+//            drawerState = rememberDrawerState(DrawerValue.Open)
+//        )
+//        InterestsScreen(
+//            navigateTo = {},
+//            scaffoldState = scaffoldState,
+//            coursesRepository = FakeCoursesRepository()
+//        )
+//    }
+//}
+//
+//@Preview("Interests screen topics tab")
+//@Composable
+//fun PreviewTopicsTab(tokenState: String) {
+//    ThemedPreview {
+////        TopicList(loadFakeTopics(tokenState), setOf(), {})
+//    }
+//}
+//
+//@Preview("Interests screen topics tab dark theme")
+//@Composable
+//fun PreviewTopicsTabDark(tokenState: String) {
+//    ThemedPreview(darkTheme = true) {
+////        TopicList(loadFakeTopics(tokenState), setOf(), {})
+//    }
+//}
+//
+//@Composable
+//private fun loadFakeTopics(tokenState: String): CoursesMap {
+//    val topics = runBlocking {
+//        FakeCoursesRepository().getTopics(tokenState)
+//    }
+//    return (topics as Result.Success).data
+//}
+//
+//@Preview("Interests screen people tab")
+//@Composable
+//fun PreviewPeopleTab(tokenState: String) {
+//    ThemedPreview {
+////        PeopleList(loadFakePeople(tokenState), setOf(), { })
+//    }
+//}
+//
+//@Preview("Interests screen people tab dark theme")
+//@Composable
+//fun PreviewPeopleTabDark(tokenState: String) {
+//    ThemedPreview(darkTheme = true) {
+////        PeopleList(loadFakePeople(tokenState), setOf(), { })
+//    }
+//}
+//
+//@Composable
+//private fun loadFakePeople(tokenState: String): List<String> {
+//    val people = runBlocking {
+//        FakeCoursesRepository().getPeople(tokenState)
+//    }
+//
+//    return (people as Result.Success).data
+//}
+//
+//@Preview("Interests screen publications tab")
+//@Composable
+//fun PreviewPublicationsTab() {
+//    ThemedPreview {
+////        PublicationList(loadFakePublications(), setOf(), { })
+//    }
+//}
+//
+//@Preview("Interests screen publications tab dark theme")
+//@Composable
+//fun PreviewPublicationsTabDark() {
+//    ThemedPreview(darkTheme = true) {
+////        PublicationList(loadFakePublications(), setOf(), { })
+//    }
+//}
+//
+//@Composable
+//private fun loadFakePublications(): List<String> {
+//    val publications = runBlocking {
+//        FakeCoursesRepository().getPublications()
+//    }
+//    return (publications as Result.Success).data
+//}
+//
+//@Preview("Interests screen tab with topics")
+//@Composable
+//fun PreviewTabWithTopics() {
+//    ThemedPreview {
+////        TabWithTopics(topics = listOf("Hello", "Compose"), selectedTopics = setOf()) {}
+//    }
+//}
+//
+//@Preview("Interests screen tab with topics dark theme")
+//@Composable
+//fun PreviewTabWithTopicsDark() {
+//    ThemedPreview(darkTheme = true) {
+////        TabWithTopics(topics = listOf("Hello", "Compose"), selectedTopics = setOf()) {}
+//    }
+//}

@@ -93,16 +93,16 @@ class FakeCoursesRepository : CoursesRepository {
         return Result.Success(topicMap)
     }
 
-    override suspend fun getPeople(token: String): Result<List<String>> {
+    override suspend fun getPeople(token: String): Result<List<Pair<String, Int>>> {
         val apiclient = MoodleApi()
         val data = apiclient.getCurrentCourses(token)
 
         val coursesList = data?.courses?.toMutableList()
-        val topicList: MutableList<String> = ArrayList()
+        val topicList: MutableList<Pair<String, Int>> = ArrayList()
 
         if (coursesList != null) {
             for (i in coursesList) {
-                topicList.add(i.fullname.toString())
+                topicList.add(Pair(i.fullname.toString(), i.id ?: -1))
             }
         }
         Timber.d(topicList.toString())

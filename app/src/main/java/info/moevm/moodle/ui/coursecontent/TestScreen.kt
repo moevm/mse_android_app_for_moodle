@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberImeNestedScrollConnection
-import info.moevm.moodle.data.courses.CoursesManager
+import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescreen.*
@@ -39,20 +39,20 @@ import java.lang.Math.random
 @OptIn(ExperimentalAnimatedInsets::class)
 @Composable
 fun TestScreen(
-    coursesManager: CoursesManager,
+    courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
-    if (coursesManager.requiredMoveLessonIndexForward) {
-        coursesManager.requiredMoveLessonIndexForward = false
-        coursesManager.moveLessonIndex(1)
-    } else if (coursesManager.requiredMoveLessonIndexBack) {
-        coursesManager.requiredMoveLessonIndexBack = false
-        coursesManager.moveLessonIndex(-1)
+    if (courseManager.requiredMoveLessonIndexForward) {
+        courseManager.requiredMoveLessonIndexForward = false
+        courseManager.moveLessonIndex(1)
+    } else if (courseManager.requiredMoveLessonIndexBack) {
+        courseManager.requiredMoveLessonIndexBack = false
+        courseManager.moveLessonIndex(-1)
     }
-    val lessonContent = coursesManager.getTestLessonContent()
+    val lessonContent = courseManager.getTestLessonContent()
     val taskContent =
-        lessonContent?.taskContent?.get(coursesManager.getAttemptKey().value)?.second?.get(
-            coursesManager.getTaskContentItemIndexState().value
+        lessonContent?.taskContent?.get(courseManager.getAttemptKey().value)?.second?.get(
+            courseManager.getTaskContentItemIndexState().value
         ) as TestTaskContentItem?
     val taskState: MutableState<TaskStatus?> =
         remember { mutableStateOf(TaskStatus.NONE) }
@@ -74,10 +74,10 @@ fun TestScreen(
                     Spacer(Modifier.height(12.dp))
                 }
                 BottomNavigatorWithChecker(
-                    coursesManager = coursesManager,
+                    courseManager = courseManager,
                     taskState = taskState,
-                    taskContentItemSize = coursesManager.getTestLessonContent()?.taskContent?.get(
-                        coursesManager.getAttemptKey().value
+                    taskContentItemSize = courseManager.getTestLessonContent()?.taskContent?.get(
+                        courseManager.getAttemptKey().value
                     )?.second?.size ?: 1,
                     navigateTo = navigateTo
                 )
@@ -206,17 +206,17 @@ fun TestScreen(
 
 @Composable
 fun BottomNavigatorWithChecker(
-    coursesManager: CoursesManager,
+    courseManager: CourseManager,
     taskState: MutableState<TaskStatus?>,
     taskContentItemSize: Int,
     navigateTo: (Screen) -> Unit
 ) {
     // TODO добавить изменение иконок при проверке
-    val (iconBack, textBack) = when (coursesManager.getTaskContentItemIndexState().value) {
+    val (iconBack, textBack) = when (courseManager.getTaskContentItemIndexState().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
     }
-    val (iconForward, textForward) = when (coursesManager.getTaskContentItemIndexState().value) {
+    val (iconForward, textForward) = when (courseManager.getTaskContentItemIndexState().value) {
         taskContentItemSize - 1 -> Pair(Icons.Filled.Task, "Завершить")
         else -> Pair(Icons.Filled.ChevronRight, "Далее")
     }
@@ -231,16 +231,16 @@ fun BottomNavigatorWithChecker(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-                if (coursesManager.getTaskContentItemIndexState().value == 0) {
-                    coursesManager.requiredMoveLessonIndexBack = true
-                    when (coursesManager.getPrevLessonType()) {
-                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
-                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                if (courseManager.getTaskContentItemIndexState().value == 0) {
+                    courseManager.requiredMoveLessonIndexBack = true
+                    when (courseManager.getPrevLessonType()) {
+                        TaskType.QUIZ -> navigateTo(Screen.PreviewTest)
+                        TaskType.LESSON -> navigateTo(Screen.Article)
                         TaskType.NONE -> {
                         }
                     }
                 } else
-                    coursesManager.moveTaskIndex(-1)
+                    courseManager.moveTaskIndex(-1)
             }, // FIXME исправить на нормально
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
@@ -282,16 +282,16 @@ fun BottomNavigatorWithChecker(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 2,
             onClick = {
-                if (coursesManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
-                    coursesManager.requiredMoveLessonIndexForward = true
-                    when (coursesManager.getNextLessonType()) {
-                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
-                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                if (courseManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
+                    courseManager.requiredMoveLessonIndexForward = true
+                    when (courseManager.getNextLessonType()) {
+                        TaskType.QUIZ -> navigateTo(Screen.PreviewTest)
+                        TaskType.LESSON -> navigateTo(Screen.Article)
                         TaskType.NONE -> {
                         }
                     }
                 } else
-                    coursesManager.moveTaskIndex(1)
+                    courseManager.moveTaskIndex(1)
             },
             icon = {
                 Icon(

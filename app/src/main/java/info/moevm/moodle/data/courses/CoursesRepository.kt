@@ -18,7 +18,7 @@ interface CoursesRepository {
     /**
      * Get list of people.
      */
-    suspend fun getPeople(token: String): Result<List<String>>
+    suspend fun getPeople(token: String): Result<List<Pair<String, Int>>>
 
     /**
      * Get list of publications.
