@@ -2,19 +2,24 @@ package info.moevm.moodle.data.courses
 
 import androidx.compose.runtime.MutableState
 import info.moevm.moodle.api.MoodleApi
+import info.moevm.moodle.model.CurrentCourses
 import info.moevm.moodle.ui.coursescreen.*
 import kotlinx.coroutines.*
 import timber.log.Timber
 
+
+
 class CoursesManager(
-//    private val token: String, -- позже нужно добавить
+    private var token: String,
     private val moodleApi: MoodleApi,
-    private val courseName: String,
+    private val courseIndex: MutableState<Int>,
     private val courseContentItemIndex: MutableState<Int>,
     private val lessonContentItemIndex: MutableState<Int>,
     private val taskContentItemIndex: MutableState<Int>,
     private val testAttemptKey: MutableState<String>,
 ) {
+//    private var token: String // -- позже нужно добавить
+    private val courseName: String = ""
     private var courseData: List<CourseContentItem>? = null
     private var coursesLoaded: Boolean = false
     private var articleLessonContent: ArticleContentItems? = null
@@ -42,12 +47,31 @@ class CoursesManager(
         }
     }
 
-    fun receiveFullCoursesData() {
+    fun receiveCurrentCourseTitles(): CurrentCourses? {
+        var data: CurrentCourses? = null
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                courseData = moodleApi.getFakeCourses(courseName)
-                coursesLoaded = true
+                if (token != "") {
+                    data = moodleApi.getCurrentCourses(token)
+                }
             }
+        }
+        return data
+    }
+
+    fun receiveCourseContentData(/*token: String,*/ courseId: String) {
+        var data: List<CourseContentData>? = null
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                data = moodleApi.getCourseContent(token, courseId)
+            }
+//            withContext(Dispatchers.IO) {
+//                if (token != "") {
+//                    val courseContentData = moodleApi.getCourseContent(token, courseId)
+//                }
+//                courseData = moodleApi.getFakeCourses(courseName)
+//                coursesLoaded = true
+//            }
             withContext(Dispatchers.Main) {
                 changeLessonItem()
             }
@@ -84,7 +108,9 @@ class CoursesManager(
     }
 
     fun setAttemptKey(newTestAttemptKey: String) {
-        if (testLessonContent != null && testLessonContent?.taskContent.orEmpty().contains(newTestAttemptKey)) {
+        if (testLessonContent != null && testLessonContent?.taskContent.orEmpty()
+                .contains(newTestAttemptKey)
+        ) {
             testAttemptKey.value = newTestAttemptKey
             taskContentItemIndex.value = 0
         }
@@ -93,8 +119,12 @@ class CoursesManager(
 
     fun moveLessonIndex(delta: Int = 1) {
         if (0 <= lessonContentItemIndex.value + delta &&
-            lessonContentItemIndex.value + delta < courseData?.get(courseContentItemIndex.value)?.lessonContent?.size ?: 0 &&
-            courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(lessonContentItemIndex.value + delta) != null
+            lessonContentItemIndex.value + delta < courseData?.get(
+                courseContentItemIndex.value
+            )?.lessonContent?.size ?: 0 &&
+            courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(
+                lessonContentItemIndex.value + delta
+            ) != null
         ) {
             lessonContentItemIndex.value += delta
             changeLessonItem()
@@ -107,7 +137,9 @@ class CoursesManager(
     fun setLessonIndex(newIndex: Int) {
         if (0 <= newIndex &&
             newIndex < courseData?.get(courseContentItemIndex.value)?.lessonContent?.size ?: 0 &&
-            courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(newIndex) != null
+            courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(
+                newIndex
+            ) != null
         ) {
             lessonContentItemIndex.value = newIndex
             changeLessonItem()
@@ -127,6 +159,11 @@ class CoursesManager(
     }
 
     fun setCourseIndex(newIndex: Int) {
+        courseIndex.value = newIndex
+        Timber.i("courseIndex is $newIndex")
+    }
+
+    fun setCourseContentIndex(newIndex: Int) {
         if (0 <= newIndex && newIndex < courseData?.size ?: 0) {
             courseContentItemIndex.value = newIndex
             changeLessonItem()
@@ -143,12 +180,20 @@ class CoursesManager(
         lessonContentItemIndex: Int,
         taskContentItemIndex: Int
     ) {
-        setCourseIndex(courseContentItemIndex)
+        setCourseContentIndex(courseContentItemIndex)
         setLessonIndex(lessonContentItemIndex)
         setTaskIndex(taskContentItemIndex)
     }
 
     // Getters
+//    fun getCourseTitle(): String {
+//        return
+//    }
+
+    fun setToken(token: String) {
+        this.token = token
+    }
+
     fun getLessonsTitles(): List<String> {
         return courseData?.map { it.lessonTitle }.orEmpty()
     }
@@ -194,19 +239,25 @@ class CoursesManager(
 
     fun getTaskAttemptsCount(): Int {
         return (
-            courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(lessonContentItemIndex.value) as TestContentItems?
+            courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(
+                lessonContentItemIndex.value
+            ) as TestContentItems?
             )?.taskContent?.size ?: 0
     }
 
     fun getTaskTestsContentSize(): Int {
         return (
-            courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(lessonContentItemIndex.value) as TestContentItems?
+            courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(
+                lessonContentItemIndex.value
+            ) as TestContentItems?
             )?.taskContent?.get(testAttemptKey.value)?.second?.size ?: 0
     }
 
     fun getTaskArticlesContentSize(): Int {
         return (
-            courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(lessonContentItemIndex.value) as ArticleContentItems?
+            courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(
+                lessonContentItemIndex.value
+            ) as ArticleContentItems?
             )?.taskContent?.size ?: 0
     }
 
@@ -219,16 +270,22 @@ class CoursesManager(
 
     fun getNextLessonType(): TaskType {
         return if (
-            lessonContentItemIndex.value + 1 < (courseData?.get(courseContentItemIndex.value)?.lessonContent?.size ?: 0)
+            lessonContentItemIndex.value + 1 < (courseData?.get(
+                courseContentItemIndex.value
+            )?.lessonContent?.size ?: 0)
         )
-            (courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(lessonContentItemIndex.value + 1)?.taskType ?: TaskType.NONE)
+            (courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(
+                lessonContentItemIndex.value + 1
+            )?.taskType ?: TaskType.NONE)
         else
             TaskType.NONE
     }
 
     fun getPrevLessonType(): TaskType {
         return if (0 <= lessonContentItemIndex.value - 1)
-            (courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(lessonContentItemIndex.value - 1)?.taskType ?: TaskType.NONE)
+            (courseData?.get(courseContentItemIndex.value)?.lessonContent?.get(
+                lessonContentItemIndex.value - 1
+            )?.taskType ?: TaskType.NONE)
         else
             TaskType.NONE
     }
