@@ -47,7 +47,8 @@ fun AuthorAndReadTime(
 
 @Composable
 fun PostImage(post: Post, modifier: Modifier = Modifier) {
-    val image = post.imageThumb ?: ImageBitmap.imageResource(R.drawable.placeholder_1_1)
+    val image =
+        post.imageThumb ?: ImageBitmap.imageResource(R.drawable.placeholder_1_1)
     Image(
         bitmap = image,
         contentDescription = null,
@@ -73,7 +74,12 @@ fun PostCardSimple(
 ) {
     Row(
         modifier = Modifier
-            .clickable(onClick = { navigateTo(Screen.FakeArticle(post.id)) })
+            .clickable(
+                onClick = {
+                    if (post.title == "Курс молодого бойца") // FIXME исправить на нормальное переключение
+                        navigateTo(Screen.CourseContent)
+                }
+            )
             .padding(16.dp)
     ) {
         PostImage(post, Modifier.padding(end = 16.dp))
@@ -92,7 +98,13 @@ fun PostCardSimple(
 fun PostCardHistory(post: Post, navigateTo: (Screen) -> Unit) {
     Row(
         Modifier
-//            .clickable(onClick = { navigateTo(Screen.Article(post.id)) })
+            .clickable(
+                onClick = {
+//                navigateTo(Screen.Article(post.id))
+                    if (post.title == "Курс молодого бойца") // FIXME исправить на нормальное переключение
+                        navigateTo(Screen.CourseContent)
+                }
+            )
             .padding(16.dp)
     ) {
         PostImage(
