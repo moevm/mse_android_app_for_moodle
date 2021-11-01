@@ -114,6 +114,10 @@ dependencies {
     androidTestImplementation Libs.AndroidX.Test.Ext.junit
     androidTestImplementation Libs.AndroidX.Compose.uiTest
 
+    //для смещения элементов вместе с клавиатурой
+    implementation "com.google.accompanist:accompanist-insets:0.16.0"
+
+
     // rerofit2
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'

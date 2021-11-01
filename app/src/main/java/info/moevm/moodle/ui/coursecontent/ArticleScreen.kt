@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui.coursecontent
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,25 +17,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
+import info.moevm.moodle.ui.coursescreen.ArticleContentItems
+import info.moevm.moodle.ui.coursescreen.ArticleTaskContentItem
 import info.moevm.moodle.ui.coursescreen.CourseContentItem
-import info.moevm.moodle.ui.coursescreen.CourseMapData
 
 @Composable
 fun ArticleScreen(
-    courseName: String,
-    courseData: CourseMapData,
+    courseData: List<CourseContentItem?>,
     courseContentItemIndex: MutableState<Int>,
     lessonContentItemIndex: MutableState<Int>,
     taskContentItemIndex: MutableState<Int>,
     navigateTo: (Screen) -> Unit
 ) {
-    val taskContent =
-        courseData[courseName]?.get(courseContentItemIndex.value)?.lessonContent?.get(
+    val lessonContent =
+        courseData[courseContentItemIndex.value]?.lessonContent?.get(
             lessonContentItemIndex.value
-        )?.taskContent?.get(taskContentItemIndex.value)
+        ) as ArticleContentItems?
+    val taskContent =
+        lessonContent?.taskContent?.get(taskContentItemIndex.value) as ArticleTaskContentItem?
     val scrollState = rememberScrollState()
     // FIXME моргание старого экрана при возвращении через "верхний" назад
-    // FIXME исправить наложение bottomBar поверх элементов курса
     Scaffold(
         topBar = {
             ArticleScreenTopBar(
@@ -46,22 +45,37 @@ fun ArticleScreen(
         },
         bottomBar = {
             ArticleScreenBottomNavigator(
-                courseData = courseData[courseName].orEmpty(),
+                courseData = courseData,
                 courseContentItemIndex = courseContentItemIndex,
                 lessonContentItemIndex = lessonContentItemIndex,
                 taskContentItemIndex = taskContentItemIndex,
-                taskContentItemSize = courseData[courseName]!![courseContentItemIndex.value].lessonContent[lessonContentItemIndex.value].taskContent.size
+                taskContentItemSize = lessonContent?.taskContent?.size ?: 1
             )
         }
     ) {
-        if (taskContent == null) {
-            Toast.makeText(
-                LocalContext.current,
-                "Произошла ошибка при загрузке данных",
-                Toast.LENGTH_SHORT
-            ).show()
-            navigateTo(Screen.CourseContent)
-            return@Scaffold // чтобы не использовать '?'
+        if (lessonContent == null || taskContent == null) {
+            BoxWithConstraints(Modifier.fillMaxSize()) {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(20.dp),
+                    text = "Ошибка загрузки данных"
+                )
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 80.dp)
+                        .size(60.dp),
+                    onClick = { /*TODO*/ } // Повторная загрузка
+                ) {
+                    Icon(
+                        modifier = Modifier.size(42.dp),
+                        imageVector = Icons.Filled.Refresh,
+                        contentDescription = null
+                    )
+                }
+            }
+            return@Scaffold
         }
         Column(
             modifier = Modifier
@@ -71,30 +85,22 @@ fun ArticleScreen(
                 .padding(bottom = 70.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier.padding(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = taskContent.taskTitle,
-                    style = MaterialTheme.typography.h6,
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = taskContent.taskTitle,
+                style = MaterialTheme.typography.h6,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                text = taskContent.taskMark,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    color = Color(0f, 0f, 0f, 0.4f),
                     textAlign = TextAlign.Center
                 )
-            }
-            Column(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = taskContent.taskMark,
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        color = Color(0f, 0f, 0f, 0.4f),
-                        textAlign = TextAlign.Center
-                    )
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-            }
+            )
+            Spacer(modifier = Modifier.height(10.dp))
             taskContent.taskContent()
         }
     }
@@ -119,7 +125,7 @@ fun ArticleScreenTopBar(
 
 @Composable
 fun ArticleScreenBottomNavigator(
-    courseData: List<CourseContentItem>,
+    courseData: List<CourseContentItem?>,
     courseContentItemIndex: MutableState<Int>,
     lessonContentItemIndex: MutableState<Int>,
     taskContentItemIndex: MutableState<Int>,
@@ -146,7 +152,7 @@ fun ArticleScreenBottomNavigator(
             label = { Text(textBack) }
         )
         BottomNavigationItem( // Вперёд
-            selected = selectedItem == 0,
+            selected = selectedItem == 1,
             onClick = {
                 if (taskContentItemIndex.value + 1 < taskContentItemSize) {
                     taskContentItemIndex.value++
@@ -171,8 +177,7 @@ fun ArticleScreenPreview() {
     val taskContentItemIndex = remember { mutableStateOf(0) }
     val content = exampleCourseContent()
     ArticleScreen(
-        courseName = content.keys.first(),
-        courseData = content,
+        courseData = content.values.first(),
         courseContentItemIndex = courseContentItemIndex,
         lessonContentItemIndex = lessonContentItemIndex,
         taskContentItemIndex = taskContentItemIndex,
