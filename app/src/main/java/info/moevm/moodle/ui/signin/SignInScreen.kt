@@ -102,7 +102,7 @@ fun SignInScreen(
 //                            onSignInSubmitted = { email, password ->
 //                                SignInEvent.SignIn(email, password)
 //                            }
-                        onSignInSubmitted = navigateTo,
+                        navigateTo = navigateTo,
                         fullNameMoodleUser = fullNameMoodleUser,
                         cityMoodleUser = cityMoodleUser,
                         countryMoodleUser = countryMoodleUser
@@ -164,7 +164,7 @@ fun SignInSignUpTopAppBar(
 
 @Composable
 fun SignInContent(
-    onSignInSubmitted: (Screen) -> Unit,
+    navigateTo: (Screen) -> Unit,
     fullNameMoodleUser: MutableLiveData<String>,
     cityMoodleUser: MutableLiveData<String>,
     countryMoodleUser: MutableLiveData<String>
@@ -191,83 +191,52 @@ fun SignInContent(
     lateinit var tokenState: String
     lateinit var loginState: String
 
-    fun checkToken(token: String) {
-        val answ = apiclient.checkToken(token)
-        answ.observe(
-            lifeSO!!,
-            {
-                Timber.tag("Check_token").i("checkLogIn was called with answ: ${answ.value}")
-                if (answ.value?.errorcode != "invalidtoken") {
-                    showMessage(context, "already login")
-                    onSignInSubmitted(Screen.Home)
-                }
-                // else - остаемся
-            }
-        )
-    }
-
-    fun checkLogIn() {
-        Timber.tag("Check_token").i("checkLogIn was called")
-        dataStore.tokenFlow.asLiveData().observe(
-            lifeSO!!,
-            {
-                tokenState = it
-                if (tokenState != "") {
-                    checkToken(tokenState)
-                }
-            }
-        )
-    }
-
     fun setLoginName(token: String, userName: String) {
         val answ = apiclient.getMoodleUserInfo(token, userName)
         answ.observe(
-            lifeSO!!,
-            {
-                Timber.tag("GET_user_info").i("GET value from Moodle: value: ${answ.value}")
-                val moodleProfile = answ.value?.get(0)
-                    ?: MoodleUser(
-                        0, context.resources.getString(R.string.user_name_placeholder),
-                        context.resources.getString(R.string.user_img_url_placeholder),
-                        context.resources.getString(R.string.user_city_placeholder),
-                        context.resources.getString(R.string.user_country_placeholder)
-                    )
-                GlobalScope.launch(Dispatchers.Main) {
-                    moodleProfileDataStore.addMoodleUser(
-                        moodleProfile.id,
-                        moodleProfile.fullname,
-                        moodleProfile.profileimageurl,
-                        moodleProfile.city,
-                        moodleProfile.country
-                    )
-                    fullNameMoodleUser.value = moodleProfile.fullname
-                    cityMoodleUser.value = moodleProfile.city
-                    countryMoodleUser.value = moodleProfile.country
-                }
+            lifeSO!!
+        ) {
+            Timber.tag("GET_user_info")
+                .i("GET value from Moodle: value: ${answ.value}")
+            val moodleProfile = answ.value?.get(0)
+                ?: MoodleUser(
+                    0,
+                    context.resources.getString(R.string.user_name_placeholder),
+                    context.resources.getString(R.string.user_img_url_placeholder),
+                    context.resources.getString(R.string.user_city_placeholder),
+                    context.resources.getString(R.string.user_country_placeholder)
+                )
+            GlobalScope.launch(Dispatchers.Main) {
+                moodleProfileDataStore.addMoodleUser(
+                    moodleProfile.id,
+                    moodleProfile.fullname,
+                    moodleProfile.profileimageurl,
+                    moodleProfile.city,
+                    moodleProfile.country
+                )
+                fullNameMoodleUser.value = moodleProfile.fullname
+                cityMoodleUser.value = moodleProfile.city
+                countryMoodleUser.value = moodleProfile.country
             }
-        )
+        }
     }
 
     fun checkLoginName() {
         Timber.tag("GET_user_info").i("checkLoginName was called")
         dataStore.loginFlow.asLiveData().observe(
-            lifeSO!!,
-            { itLogin ->
-                loginState = itLogin
-                dataStore.tokenFlow.asLiveData().observe(
-                    lifeSO,
-                    {
-                        tokenState = it
-                        if (loginState != "" && tokenState != "") {
-                            setLoginName(tokenState, loginState)
-                        }
-                    }
-                )
+            lifeSO!!
+        ) { itLogin ->
+            loginState = itLogin
+            dataStore.tokenFlow.asLiveData().observe(
+                lifeSO
+            ) {
+                tokenState = it
+                if (loginState != "" && tokenState != "") {
+                    setLoginName(tokenState, loginState)
+                }
             }
-        )
+        }
     }
-
-    checkLogIn()
 
     LocalContext.current as Activity
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -305,7 +274,7 @@ fun SignInContent(
                                     // TODO if
                                     dataStore.addUser(userName, userPassword, tokenState)
                                 }
-                                onSignInSubmitted(Screen.Home)
+                                navigateTo(Screen.Home)
                             }
                             data.value?.error != null -> {
                                 showMessage(context, message = context.resources.getString(R.string.wrong_login))
