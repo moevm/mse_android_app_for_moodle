@@ -2,12 +2,12 @@ package info.moevm.moodle.ui.coursecontent
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -17,19 +17,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.insets.ExperimentalAnimatedInsets
+import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.google.accompanist.insets.rememberImeNestedScrollConnection
 import info.moevm.moodle.data.courses.CoursesManager
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescreen.*
+import kotlinx.coroutines.launch
 import java.lang.Math.random
 
+@OptIn(ExperimentalAnimatedInsets::class)
 @Composable
 fun TestScreen(
     coursesManager: CoursesManager,
@@ -51,6 +58,7 @@ fun TestScreen(
         remember { mutableStateOf(TaskStatus.NONE) }
     taskState.value = taskContent?.taskContentStatus
 
+    val lazyListState = LazyListState(5)
     Scaffold(
         topBar = {
             TaskScreenTopBar(
@@ -58,16 +66,24 @@ fun TestScreen(
             )
         },
         bottomBar = {
-            BottomNavigatorWithChecker(
-                coursesManager = coursesManager,
-                taskState = taskState,
-                taskContentItemSize = coursesManager.getTestLessonContent()?.taskContent?.get(
-                    coursesManager.getAttemptKey().value
-                )?.second?.size ?: 1,
-                navigateTo = navigateTo
-            )
+            Column {
+                if (taskContent?.taskContentType == TaskContentType.TEST_ANSWER) {
+                    Surface {
+                        TestAnswer(taskAnswerType = taskContent.taskAnswerType, lazyListState = lazyListState)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                }
+                BottomNavigatorWithChecker(
+                    coursesManager = coursesManager,
+                    taskState = taskState,
+                    taskContentItemSize = coursesManager.getTestLessonContent()?.taskContent?.get(
+                        coursesManager.getAttemptKey().value
+                    )?.second?.size ?: 1,
+                    navigateTo = navigateTo
+                )
+            }
         }
-    ) {
+    ) { contentPadding ->
         // TODO Заблокировать отправку задания на проверку
         if (lessonContent == null || taskContent == null) {
             BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -93,78 +109,95 @@ fun TestScreen(
             }
             return@Scaffold
         }
-        val scrollState = rememberScrollState()
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(bottom = 70.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                modifier = Modifier.padding(
-                    top = 16.dp,
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 10.dp
-                ),
-                text = taskContent.taskTitle,
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 6.dp
-                ),
-                text =
-                when (taskContent.taskContentType) {
-                    TaskContentType.TEST_ONE_CHOICE -> "Выберите подходящий ответ из списка"
-                    TaskContentType.TEST_MULTI_CHOICE -> "Выберите все подходящие ответы из списка"
-                    TaskContentType.TEST_ANSWER -> "Введите ваш ответ на вопрос"
-                    TaskContentType.TEST_MATCH -> "Расположите элементы в правильном порядке"
-                    else -> "<error>"
-                },
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 4.dp
-                ),
-                text = taskContent.taskMark,
-                style = TextStyle(
-                    fontSize = 12.sp,
-                    color = Color(0f, 0f, 0f, 0.4f),
-                    textAlign = TextAlign.Center
-                )
-            )
-            Text(
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 12.dp
-                ),
-                text = if (taskContent.taskContentStatus == TaskStatus.DONE) "Выполнено" else "Не выполнено",
-                style = TextStyle(
-                    fontSize = 12.sp,
-                    color = Color(0f, 0f, 0f, 0.4f),
-                    textAlign = TextAlign.Center
-                )
-            )
-
-            taskContent.taskContent()
-
-            when (taskContent.taskContentType) {
-                TaskContentType.TEST_ONE_CHOICE -> TestOneChoice(taskAnswers = taskContent.taskAnswers)
-                TaskContentType.TEST_MULTI_CHOICE -> TestMultiChoice(taskAnswers = taskContent.taskAnswers)
-                TaskContentType.TEST_ANSWER -> TestAnswer(taskAnswerType = taskContent.taskAnswerType)
-                TaskContentType.TEST_MATCH -> TestMatch(
-                    taskAnswers = taskContent.taskAnswers,
-                    taskAdditionInfo = taskContent.taskAdditionInfo
-                )
-                else -> {
+        Column {
+            LazyColumn(
+                contentPadding = contentPadding,
+                state = lazyListState,
+                reverseLayout = true,
+                modifier = Modifier
+                    .nestedScroll(connection = rememberImeNestedScrollConnection())
+                    .padding(bottom = 12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
+                    when (taskContent.taskContentType) {
+                        TaskContentType.TEST_ONE_CHOICE -> TestOneChoice(
+                            taskAnswers = taskContent.taskAnswers
+                        )
+                        TaskContentType.TEST_MULTI_CHOICE -> TestMultiChoice(
+                            taskAnswers = taskContent.taskAnswers
+                        )
+                        //                TaskContentType.TEST_ANSWER -> TestAnswer(taskAnswerType = taskContent.taskAnswerType)
+                        TaskContentType.TEST_MATCH -> TestMatch(
+                            taskAnswers = taskContent.taskAnswers,
+                            taskAdditionInfo = taskContent.taskAdditionInfo
+                        )
+                        else -> {
+                        }
+                    }
+                }
+                item {
+                    taskContent.taskContent()
+                }
+                item {
+                    Text(
+                        modifier = Modifier.padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 12.dp
+                        ),
+                        text = if (taskContent.taskContentStatus == TaskStatus.DONE) "Выполнено" else "Не выполнено",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = Color(0f, 0f, 0f, 0.4f),
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+                item {
+                    Text(
+                        modifier = Modifier.padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 4.dp
+                        ),
+                        text = taskContent.taskMark,
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = Color(0f, 0f, 0f, 0.4f),
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+                item {
+                    Text(
+                        modifier = Modifier.padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 6.dp
+                        ),
+                        text =
+                        when (taskContent.taskContentType) {
+                            TaskContentType.TEST_ONE_CHOICE -> "Выберите подходящий ответ из списка"
+                            TaskContentType.TEST_MULTI_CHOICE -> "Выберите все подходящие ответы из списка"
+                            TaskContentType.TEST_ANSWER -> "Введите ваш ответ на вопрос"
+                            TaskContentType.TEST_MATCH -> "Расположите элементы в правильном порядке"
+                            else -> "<error>"
+                        },
+                        style = MaterialTheme.typography.h6
+                    )
+                }
+                item {
+                    Text(
+                        modifier = Modifier.padding(
+                            top = 16.dp,
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 10.dp
+                        ),
+                        text = taskContent.taskTitle,
+                        style = MaterialTheme.typography.h6
+                    )
                 }
             }
         }
@@ -203,7 +236,8 @@ fun BottomNavigatorWithChecker(
                     when (coursesManager.getPrevLessonType()) {
                         TaskType.TEST -> navigateTo(Screen.PreviewTest)
                         TaskType.TOPIC -> navigateTo(Screen.Article)
-                        TaskType.NONE -> {}
+                        TaskType.NONE -> {
+                        }
                     }
                 } else
                     coursesManager.moveTaskIndex(-1)
@@ -253,7 +287,8 @@ fun BottomNavigatorWithChecker(
                     when (coursesManager.getNextLessonType()) {
                         TaskType.TEST -> navigateTo(Screen.PreviewTest)
                         TaskType.TOPIC -> navigateTo(Screen.Article)
-                        TaskType.NONE -> {}
+                        TaskType.NONE -> {
+                        }
                     }
                 } else
                     coursesManager.moveTaskIndex(1)
@@ -398,14 +433,24 @@ fun TestDropdownMenuItem(
 
 @Composable
 fun TestAnswer(
-    taskAnswerType: TaskAnswerType
+    taskAnswerType: TaskAnswerType,
+    lazyListState: LazyListState
 ) {
     val stringState = remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
     Column(Modifier.fillMaxWidth()) {
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 26.dp, end = 26.dp),
+                .navigationBarsWithImePadding()
+                .padding(start = 26.dp, end = 26.dp)
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        coroutineScope.launch {
+                            lazyListState.animateScrollToItem(0)
+                        }
+                    }
+                },
             value = stringState.value,
             onValueChange = { stringState.value = it },
             placeholder = { Text("Ваш ответ", color = Color.LightGray) },
