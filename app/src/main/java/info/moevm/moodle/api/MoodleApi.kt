@@ -2,11 +2,13 @@ package info.moevm.moodle.api
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.model.*
 import info.moevm.moodle.model.APIVariables
 import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.model.MoodleUser
 import info.moevm.moodle.model.WrongToken
+import info.moevm.moodle.ui.coursescreen.CourseContentItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -156,4 +158,10 @@ class MoodleApi {
             })
         return data
     }
+
+    // Временно ---------------------------
+    fun getFakeCourses(courseName: String): List<CourseContentItem>? {
+        return exampleCourseContent()[courseName]
+    }
+    // -----------------------------------
 }

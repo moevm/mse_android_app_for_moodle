@@ -18,7 +18,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import info.moevm.moodle.api.DataStoreMoodleUser
+import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.data.AppContainer
+import info.moevm.moodle.data.courses.CoursesManager
 import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.data.posts.PostsRepository
@@ -28,7 +30,6 @@ import info.moevm.moodle.ui.components.StatisticsTopAppBar
 import info.moevm.moodle.ui.coursecontent.TestPreviewScreen
 import info.moevm.moodle.ui.coursecontent.TestScreen
 import info.moevm.moodle.ui.coursescreen.CourseContentScreen
-import info.moevm.moodle.ui.coursescreen.CourseMapData
 import info.moevm.moodle.ui.entersetup.EnterSetupScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
@@ -38,10 +39,7 @@ import info.moevm.moodle.ui.signin.SignInScreen
 import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import info.moevm.moodle.ui.user.UserScreen
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 @Composable
 fun MOEVMMoodleApp(appContainer: AppContainer) {
@@ -93,7 +91,8 @@ private fun AppContent(
         val cityMoodleUserString: String
         val countryMoodleUserString: String
         withContext(Dispatchers.IO) {
-            fullNameMoodleUserString = moodleProfileDataStore.getFullNameCurrent()
+            fullNameMoodleUserString =
+                moodleProfileDataStore.getFullNameCurrent()
             cityMoodleUserString = moodleProfileDataStore.getCityCurrent()
             countryMoodleUserString = moodleProfileDataStore.getCountryCurrent()
         }
@@ -102,16 +101,28 @@ private fun AppContent(
         countryMoodleUser.value = countryMoodleUserString
     }
 
-    var content: CourseMapData
+    var nameCourses: List<String>
     runBlocking {
         withContext(Dispatchers.IO) {
-            content = exampleCourseContent()
+            nameCourses =
+                exampleCourseContent().keys.toList() // TODO заменить на получение заголовков
         }
     }
+
     val courseContentItemIndex = remember { mutableStateOf(0) }
     val lessonContentItemIndex = remember { mutableStateOf(0) }
     val taskContentItemIndex = remember { mutableStateOf(0) }
     val testAttemptKey = remember { mutableStateOf("0") }
+
+    val coursesManager = CoursesManager(
+        moodleApi = MoodleApi(),
+        courseName = nameCourses.first(),
+        courseContentItemIndex = courseContentItemIndex,
+        lessonContentItemIndex = lessonContentItemIndex,
+        taskContentItemIndex = taskContentItemIndex,
+        testAttemptKey = testAttemptKey
+    )
+    coursesManager.receiveFullCoursesData()
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
@@ -123,41 +134,27 @@ private fun AppContent(
                 }
                 composable(ScreenName.TEST.name) {
                     TestScreen(
-                        courseData = content.values.first(),
-                        courseContentItemIndex = courseContentItemIndex,
-                        lessonContentItemIndex = lessonContentItemIndex,
-                        taskContentItemIndex = taskContentItemIndex,
-                        testAttemptKey = testAttemptKey,
+                        coursesManager = coursesManager,
                         navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.PREVIEW_TEST.name) {
                     TestPreviewScreen(
-                        courseData = content.values.first(),
-                        courseContentItemIndex = courseContentItemIndex,
-                        lessonContentItemIndex = lessonContentItemIndex,
-                        taskContentItemIndex = taskContentItemIndex,
-                        testAttemptKey = testAttemptKey,
+                        coursesManager = coursesManager,
                         navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.ARTICLE.name) {
                     info.moevm.moodle.ui.coursecontent.ArticleScreen(
-                        courseData = content.values.first(),
-                        courseContentItemIndex = courseContentItemIndex,
-                        lessonContentItemIndex = lessonContentItemIndex,
-                        taskContentItemIndex = taskContentItemIndex,
+                        coursesManager = coursesManager,
                         navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.COURSE_CONTENT.name) {
                     CourseContentScreen(
-                        CourseName = content.keys.first(),
-                        CourseMapData = content,
-                        CardsViewModel = CardsViewModel(content.values.toList()[0].map { it.lessonTitle }),
-                        courseContentItemIndex = courseContentItemIndex,
-                        lessonContentItemIndex = lessonContentItemIndex,
-                        taskContentItemIndex = taskContentItemIndex,
+                        courseName = nameCourses.first(),
+                        coursesManager = coursesManager,
+                        cardsViewModel = CardsViewModel(coursesManager.getLessonsTitles()),
                         navigateTo = actions.select
                     )
                 }
@@ -207,15 +204,22 @@ private fun AppContent(
                     )
                 }
                 composable(ScreenName.STATISTICS.name) {
-                    val allScreens = SettingsScreenForStatistics.values().toList()
-                    var currentScreen by rememberSaveable { mutableStateOf(SettingsScreenForStatistics.Overview) }
+                    val allScreens =
+                        SettingsScreenForStatistics.values().toList()
+                    var currentScreen by rememberSaveable {
+                        mutableStateOf(
+                            SettingsScreenForStatistics.Overview
+                        )
+                    }
                     val coroutineScope = rememberCoroutineScope()
                     Scaffold(
                         scaffoldState = scaffoldState,
                         topBar = {
                             StatisticsTopAppBar(
                                 allScreens = allScreens,
-                                onTabSelected = { screen -> currentScreen = screen },
+                                onTabSelected = { screen ->
+                                    currentScreen = screen
+                                },
                                 currentScreen = currentScreen,
                                 scaffoldState = scaffoldState
                             )
@@ -233,7 +237,11 @@ private fun AppContent(
                         }
                     ) { innerPadding ->
                         Box(Modifier.padding(innerPadding)) {
-                            currentScreen.Content(onScreenChange = { screen -> currentScreen = screen })
+                            currentScreen.Content(
+                                onScreenChange = { screen ->
+                                    currentScreen = screen
+                                }
+                            )
                         }
                     }
                 }
@@ -244,7 +252,7 @@ private fun AppContent(
                     )
                 }
                 composable(ScreenName.ADD.name) {
-                    Text("Unused")
+                    // Unused
                 }
             }
         }

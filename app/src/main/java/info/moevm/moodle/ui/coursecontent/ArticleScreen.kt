@@ -15,45 +15,46 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import info.moevm.moodle.data.courses.CoursesManager
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.coursescreen.ArticleContentItems
 import info.moevm.moodle.ui.coursescreen.ArticleTaskContentItem
-import info.moevm.moodle.ui.coursescreen.CourseContentItem
+import info.moevm.moodle.ui.coursescreen.TaskType
 
 @Composable
 fun ArticleScreen(
-    courseData: List<CourseContentItem?>,
-    courseContentItemIndex: MutableState<Int>,
-    lessonContentItemIndex: MutableState<Int>,
-    taskContentItemIndex: MutableState<Int>,
+    coursesManager: CoursesManager,
     navigateTo: (Screen) -> Unit
 ) {
-    val lessonContent =
-        courseData[courseContentItemIndex.value]?.lessonContent?.get(
-            lessonContentItemIndex.value
-        ) as ArticleContentItems?
+    if (coursesManager.requiredMoveLessonIndexForward) {
+        coursesManager.requiredMoveLessonIndexForward = false
+        coursesManager.moveLessonIndex(1)
+    } else if (coursesManager.requiredMoveLessonIndexBack) {
+        coursesManager.requiredMoveLessonIndexBack = false
+        coursesManager.moveLessonIndex(-1)
+    }
+
+    val lessonContent = coursesManager.getArticleLessonContent()
+
     val taskContent =
-        lessonContent?.taskContent?.get(taskContentItemIndex.value) as ArticleTaskContentItem?
+        lessonContent?.taskContent?.get(coursesManager.getTaskContentItemIndexState().value) as ArticleTaskContentItem?
     val scrollState = rememberScrollState()
     // FIXME моргание старого экрана при возвращении через "верхний" назад
     Scaffold(
         topBar = {
-            ArticleScreenTopBar(
+            TaskScreenTopBar(
                 onBack = { navigateTo(Screen.CourseContent) }
             )
         },
         bottomBar = {
-            ArticleScreenBottomNavigator(
-                courseData = courseData,
-                courseContentItemIndex = courseContentItemIndex,
-                lessonContentItemIndex = lessonContentItemIndex,
-                taskContentItemIndex = taskContentItemIndex,
-                taskContentItemSize = lessonContent?.taskContent?.size ?: 1
+            TaskBottomNavigator(
+                coursesManager = coursesManager,
+                taskContentItemSize = lessonContent?.taskContent?.size ?: 1,
+                navigateTo = navigateTo
             )
         }
     ) {
-        if (lessonContent == null || taskContent == null) {
+        if (lessonContent == null || taskContent == null) { // FIXME исправить появление Ошибки при перезоде между статьёй и тестом
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 Text(
                     modifier = Modifier
@@ -77,6 +78,7 @@ fun ArticleScreen(
             }
             return@Scaffold
         }
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -107,7 +109,7 @@ fun ArticleScreen(
 }
 
 @Composable
-fun ArticleScreenTopBar(
+fun TaskScreenTopBar(
     onBack: () -> Unit
 ) {
     TopAppBar(
@@ -124,18 +126,16 @@ fun ArticleScreenTopBar(
 }
 
 @Composable
-fun ArticleScreenBottomNavigator(
-    courseData: List<CourseContentItem?>,
-    courseContentItemIndex: MutableState<Int>,
-    lessonContentItemIndex: MutableState<Int>,
-    taskContentItemIndex: MutableState<Int>,
-    taskContentItemSize: Int
+fun TaskBottomNavigator(
+    coursesManager: CoursesManager,
+    taskContentItemSize: Int,
+    navigateTo: (Screen) -> Unit
 ) {
-    val (iconBack, textBack) = when (taskContentItemIndex.value) {
+    val (iconBack, textBack) = when (coursesManager.getTaskContentItemIndexState().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
     }
-    val (iconForward, textForward) = when (taskContentItemIndex.value) {
+    val (iconForward, textForward) = when (coursesManager.getTaskContentItemIndexState().value) {
         taskContentItemSize - 1 -> Pair(Icons.Filled.Task, "Завершить")
         else -> Pair(Icons.Filled.ChevronRight, "Далее")
     }
@@ -144,9 +144,15 @@ fun ArticleScreenBottomNavigator(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-                if (taskContentItemIndex.value - 1 >= 0) {
-                    taskContentItemIndex.value--
-                }
+                if (coursesManager.getTaskContentItemIndexState().value == 0) {
+                    coursesManager.requiredMoveLessonIndexBack = true
+                    when (coursesManager.getPrevLessonType()) {
+                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
+                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                        TaskType.NONE -> {}
+                    }
+                } else
+                    coursesManager.moveTaskIndex(-1)
             }, // FIXME исправить на нормально
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
@@ -154,9 +160,15 @@ fun ArticleScreenBottomNavigator(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 1,
             onClick = {
-                if (taskContentItemIndex.value + 1 < taskContentItemSize) {
-                    taskContentItemIndex.value++
-                }
+                if (coursesManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
+                    coursesManager.requiredMoveLessonIndexForward = true
+                    when (coursesManager.getNextLessonType()) {
+                        TaskType.TEST -> navigateTo(Screen.PreviewTest)
+                        TaskType.TOPIC -> navigateTo(Screen.Article)
+                        TaskType.NONE -> {}
+                    }
+                } else
+                    coursesManager.moveTaskIndex(1)
             }, // FIXME исправить на нормально
             icon = {
                 Icon(
@@ -176,23 +188,23 @@ fun ArticleScreenPreview() {
     val lessonContentItemIndex = remember { mutableStateOf(0) }
     val taskContentItemIndex = remember { mutableStateOf(0) }
     val content = exampleCourseContent()
-    ArticleScreen(
-        courseData = content.values.first(),
-        courseContentItemIndex = courseContentItemIndex,
-        lessonContentItemIndex = lessonContentItemIndex,
-        taskContentItemIndex = taskContentItemIndex,
-        navigateTo = { }
-    )
+//    ArticleScreen(
+//        courseData = content.values.first(),
+//        courseContentItemIndex = courseContentItemIndex,
+//        lessonContentItemIndex = lessonContentItemIndex,
+//        taskContentItemIndex = taskContentItemIndex,
+//        navigateTo = { }
+//    )
 }
 
 @Preview
 @Composable
 fun ArticleScreenBottomNavigatorPreview() {
-    ArticleScreenBottomNavigator(
-        listOf(),
-        remember { mutableStateOf(0) },
-        remember { mutableStateOf(0) },
-        remember { mutableStateOf(0) },
-        5
-    )
+//    ArticleScreenBottomNavigator(
+//        listOf(),
+//        remember { mutableStateOf(0) },
+//        remember { mutableStateOf(0) },
+//        remember { mutableStateOf(0) },
+//        5
+//    )
 }
