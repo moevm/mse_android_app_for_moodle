@@ -3,13 +3,14 @@ package info.moevm.moodle.api
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import info.moevm.moodle.data.courses.CourseMoodleContentData
+import info.moevm.moodle.data.courses.LessonPages
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.model.*
 import info.moevm.moodle.model.APIVariables
 import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.model.MoodleUser
 import info.moevm.moodle.model.WrongToken
-import info.moevm.moodle.ui.coursescreen.CourseContentItem
+import info.moevm.moodle.ui.coursescontent.CourseContentItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -186,6 +187,33 @@ class MoodleApi {
         Timber.d("answer is received")
         return data
     }
+
+    fun getLessonPages(token: String, lessonId: String): LessonPages? {
+        var data: LessonPages? = null
+        GlobalScope.launch(Dispatchers.IO){
+            try {
+                val response = api.getLessonPages(token, APIVariables.MOD_LESSON_GET_PAGES.value, lessonId, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
+                if (response.isSuccessful) {
+                    Timber.d("get response " + response.body())
+                    data = response.body()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    val z = e.message
+                    Timber.d("fatal eroor")
+                }
+            }
+        }
+        // WORK IN PROGRESS
+        val time = System.currentTimeMillis()
+        while (data == null) {
+            if (System.currentTimeMillis() - time > 1000)
+                break
+        }
+        Timber.d("answer is received")
+        return data
+    }
+
 
     // Временно ---------------------------
     fun getFakeCourses(courseName: String): List<CourseContentItem>? {

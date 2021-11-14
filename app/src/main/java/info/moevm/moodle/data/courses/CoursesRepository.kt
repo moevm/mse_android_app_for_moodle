@@ -3,7 +3,7 @@ package info.moevm.moodle.data.courses
 import info.moevm.moodle.data.Result
 import kotlinx.coroutines.flow.Flow
 
-typealias CoursesMap = Map<String, List<String>>
+typealias CoursesMap = Map<String, List<Pair<String, Int>>>
 
 /**
  * Interface to the Interests data layer.

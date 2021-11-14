@@ -23,12 +23,11 @@ import info.moevm.moodle.data.AppContainer
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.posts.PostsRepository
-import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.article.ArticleScreen
 import info.moevm.moodle.ui.components.StatisticsTopAppBar
-import info.moevm.moodle.ui.coursecontent.TestPreviewScreen
-import info.moevm.moodle.ui.coursecontent.TestScreen
-import info.moevm.moodle.ui.coursescreen.CourseContentScreen
+import info.moevm.moodle.ui.lessoncontent.TestPreviewScreen
+import info.moevm.moodle.ui.lessoncontent.TestScreen
+import info.moevm.moodle.ui.coursescontent.CourseContentScreen
 import info.moevm.moodle.ui.entersetup.EnterSetupScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
@@ -100,7 +99,6 @@ private fun AppContent(
         countryMoodleUser.value = countryMoodleUserString
     }
 
-    var nameCourses: List<String>
 //    runBlocking {
 //        withContext(Dispatchers.IO) {
 //            nameCourses =
@@ -108,18 +106,18 @@ private fun AppContent(
 //        }
 //    }
     val courseId = remember { mutableStateOf(0) }
-    val courseContentItemIndex = remember { mutableStateOf(0) }
-    val lessonContentItemIndex = remember { mutableStateOf(0) }
-    val taskContentItemIndex = remember { mutableStateOf(0) }
+    val categoryLessonItemIndex = remember { mutableStateOf(0) }
+    val lessonItemIndex = remember { mutableStateOf(0) }
+    val taskItemIndex = remember { mutableStateOf(0) }
     val testAttemptKey = remember { mutableStateOf("0") }
 
     val courseManager = CourseManager(
         token = "", // инициализируется после входа в аккаунт в PreviewScreen
         moodleApi = MoodleApi(),
         courseId = courseId,
-        courseContentItemIndex = courseContentItemIndex,
-        lessonContentItemIndex = lessonContentItemIndex,
-        taskContentItemIndex = taskContentItemIndex,
+        categoryLessonItemIndex = categoryLessonItemIndex,
+        lessonItemIndex = lessonItemIndex,
+        taskItemIndex = taskItemIndex,
         testAttemptKey = testAttemptKey
     )
 
@@ -145,7 +143,7 @@ private fun AppContent(
                     )
                 }
                 composable(ScreenName.ARTICLE.name) {
-                    info.moevm.moodle.ui.coursecontent.ArticleScreen(
+                    info.moevm.moodle.ui.lessoncontent.ArticleScreen(
                         courseManager = courseManager,
                         navigateTo = actions.select
                     )

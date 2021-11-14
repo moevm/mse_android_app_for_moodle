@@ -1,9 +1,19 @@
 package info.moevm.moodle.data.courses
 
+import android.annotation.SuppressLint
+import android.webkit.WebView
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.model.CurrentCourses
-import info.moevm.moodle.ui.coursescreen.*
+import info.moevm.moodle.ui.coursescontent.*
 import kotlinx.coroutines.*
 import timber.log.Timber
 
@@ -11,68 +21,55 @@ class CourseManager(
     private var token: String,
     private val moodleApi: MoodleApi,
     private val courseId: MutableState<Int>, // id курса
-    private val courseContentItemIndex: MutableState<Int>, // index категории курса
-    private val lessonContentItemIndex: MutableState<Int>, // index урока в категории
-    private val taskContentItemIndex: MutableState<Int>, // index занятия в уроке
-    private val testAttemptKey: MutableState<String>, // index попытки
+    private val categoryLessonItemIndex: MutableState<Int>, // index категории в курсе
+    private val lessonItemIndex: MutableState<Int>, // index урока в категории
+    private val taskItemIndex: MutableState<Int>, // index занятия в уроке
+    private val testAttemptKey: MutableState<String> // index попытки
 ) {
     private var courseName: String = ""
     private var courseContentData: List<CourseMoodleContentData>? = null
-    private var coursesLoaded: Boolean = false
-    private var articleLessonContent: ArticleContentItems? = null
-    private var testLessonContent: TestContentItems? = null
+
+    private var articleLesson: ArticleTaskContentItem? = null
+    private var lessonPages: LessonPages? = null
+    private var testLessonContent: TestContentItems? = null // TODO: убрать
 
     var requiredMoveLessonIndexForward: Boolean = false
     var requiredMoveLessonIndexBack: Boolean = false
 
-    private fun changeLessonItem() {
-        if (courseContentData?.get(courseContentItemIndex.value)?.modules?.get(lessonContentItemIndex.value)?.modname == TaskType.LESSON.value) {
-            articleLessonContent = ArticleContentItems(
-                TaskType.LESSON,
-                courseContentData?.get(courseContentItemIndex.value)?.modules?.get(lessonContentItemIndex.value)?.name ?: "",
-                when (courseContentData?.get(courseContentItemIndex.value)?.modules?.get(lessonContentItemIndex.value)?.completiondata?.state) {
-                    TaskStatus.DONE.value -> TaskStatus.DONE
-                    TaskStatus.WORKING.value -> TaskStatus.WORKING
-                    else -> TaskStatus.NONE
+    @SuppressLint("SetJavaScriptEnabled")
+    @Composable
+    private fun BuildLessonContent(content: String?) { // TODO добавить обработку строки для удаления лишних '/'
+        Box( // TODO добавить поддержку полноэкранного режима для видео
+            modifier = Modifier.padding(10.dp)
+        ) {
+            AndroidView(factory = { context ->
+                WebView(context).apply {
+                    this.settings.javaScriptEnabled = true
+                    this.loadData(content ?: "<p>Ошибка загрузки</p>", "text/html", "utf-8")
                 }
-            )
-        } else if (courseContentData?.get(courseContentItemIndex.value)?.modules?.get(lessonContentItemIndex.value)?.modname == TaskType.QUIZ.value) {
-            testLessonContent = TestContentItems(
-                TaskType.QUIZ,
-                courseContentData?.get(courseContentItemIndex.value)?.modules?.get(lessonContentItemIndex.value)?.name ?: "",
-                when (courseContentData?.get(courseContentItemIndex.value)?.modules?.get(lessonContentItemIndex.value)?.completiondata?.state) {
-                    TaskStatus.DONE.value -> TaskStatus.DONE
-                    TaskStatus.WORKING.value -> TaskStatus.WORKING
-                    else -> TaskStatus.NONE
-                },
-                hashMapOf()
-            )
-        } else {} /// ?????????????????
+            })
+        }
+    }
 
-
-
-
-
-//        val lessonContent =
-//            courseContentData?.get(courseContentItemIndex.value)?.lessonContent?.get(
-//                lessonContentItemIndex.value
-//            )
-//        val lessonContent =
-//            courseContentData?.get(courseContentItemIndex.value)?.modules?.get(
-//                lessonContentItemIndex.value
-//            )
-//        when (lessonContent?.modname) {
-//            TaskType.TOPIC.value -> { // TODO: починить
-////                articleLessonContent = lessonContent as ArticleContentItems
-////                testLessonContent = null
-//            }
-//            TaskType.TEST.value -> {
-////                articleLessonContent = null
-////                testLessonContent = lessonContent as TestContentItems
-//            }
-//            else -> {
-//            }
-//        }
+    fun changeLessonItem() {
+        when (courseContentData?.getOrNull(categoryLessonItemIndex.value)?.modules?.getOrNull(lessonItemIndex.value)?.modname ?: "") {
+            TaskType.LESSON.value -> { // TODO: починить
+                articleLesson = ArticleTaskContentItem(
+                    lessonPages?.pages?.getOrNull(taskItemIndex.value)?.page?.title ?: "Ошибка загрузки",
+                    TaskContentType.ARTICLE,
+                    "",
+                    TaskStatus.WORKING,
+                    { BuildLessonContent(lessonPages?.pages?.getOrNull(taskItemIndex.value)?.page?.contents) }
+                )
+                testLessonContent = null
+            }
+            TaskType.QUIZ.value -> {
+//                articleLessonContent = null
+//                testLessonContent = lessonContent as TestContentItems
+            }
+            else -> {
+            }
+        }
     }
 
     fun receiveCurrentCourseTitles(): CurrentCourses? {
@@ -87,7 +84,7 @@ class CourseManager(
         return data
     }
 
-    fun receiveCourseContentData(/*token: String,*/ courseId: String) { // считывает содержимое одного курса
+    fun receiveCourseContentData(courseId: String) { // считывает содержимое одного курса
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 courseContentData = moodleApi.getCourseContent(token, courseId)
@@ -95,83 +92,70 @@ class CourseManager(
         }
     }
 
-    // Setters
-    fun moveTaskIndex(delta: Int = 1) {
-        if (articleLessonContent != null) {
-            if (0 <= taskContentItemIndex.value + delta && taskContentItemIndex.value + delta < articleLessonContent?.taskContent?.size ?: 0)
-                taskContentItemIndex.value += delta
-        } else if (testLessonContent != null) {
-            if (0 <= taskContentItemIndex.value + delta && taskContentItemIndex.value + delta < testLessonContent?.taskContent?.get(
-                    testAttemptKey.value
-                )?.second?.size ?: 0
-            )
-                taskContentItemIndex.value += delta
+    fun loadLessonPages(lessonId: Int) {
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                lessonPages = moodleApi.getLessonPages(token, lessonId.toString())
+            }
         }
-        Timber.i("taskContentItemIndex: ${taskContentItemIndex.value}")
+        val time = System.currentTimeMillis() // TODO заменить
+        while (true) {
+            if (System.currentTimeMillis() - time > 300)
+                break
+        }
+    }
+
+    fun getLessonPage(pageIndex: Int) : LessonPage? {
+        return lessonPages?.pages?.getOrNull(pageIndex)?.page
+    }
+
+//     Setters
+    fun moveTaskIndex(delta: Int = 1) {
+        setTaskIndex(taskItemIndex.value + delta)
     }
 
     fun setTaskIndex(newIndex: Int) {
-        if (articleLessonContent != null) {
-            if (0 <= newIndex && newIndex < articleLessonContent?.taskContent?.size ?: 0)
-                taskContentItemIndex.value = newIndex
+        if (articleLesson != null) {
+            if (0 <= newIndex && newIndex < lessonPages?.pages?.size ?: 0)
+                taskItemIndex.value = newIndex
         } else if (testLessonContent != null) {
-            if (0 <= newIndex && newIndex < testLessonContent?.taskContent?.get(
-                    testAttemptKey.value
-                )?.second?.size ?: 0
-            )
-                taskContentItemIndex.value = newIndex
+//            if (0 <= newIndex && newIndex < testLessonContent?.taskContent?.get(
+//                    testAttemptKey.value
+//                )?.second?.size ?: 0
+//            )
+//                taskContentItemIndex.value = newIndex
         }
-        Timber.i("taskContentItemIndex: ${taskContentItemIndex.value}")
+        Timber.i("taskContentItemIndex: ${taskItemIndex.value}")
     }
 
     fun setAttemptKey(newTestAttemptKey: String) {
-        if (testLessonContent != null && testLessonContent?.taskContent.orEmpty()
-                .contains(newTestAttemptKey)
-        ) {
-            testAttemptKey.value = newTestAttemptKey
-            taskContentItemIndex.value = 0
-        }
-        Timber.i("testAttemptKey: ${testAttemptKey.value}")
+//        if (testLessonContent != null && testLessonContent?.taskContent.orEmpty()
+//                .contains(newTestAttemptKey)
+//        ) {
+//            testAttemptKey.value = newTestAttemptKey
+//            taskContentItemIndex.value = 0
+//        }
+//        Timber.i("testAttemptKey: ${testAttemptKey.value}")
     }
 
     fun moveLessonIndex(delta: Int = 1) {
-//        if (0 <= lessonContentItemIndex.value + delta &&
-//            lessonContentItemIndex.value + delta < courseContentData?.get(
-//                courseContentItemIndex.value
-//            )?.lessonContent?.size ?: 0 &&
-//            courseContentData?.get(courseContentItemIndex.value)?.lessonContent?.get(
-//                lessonContentItemIndex.value + delta
-//            ) != null
-//        ) {
-//            lessonContentItemIndex.value += delta
-//            changeLessonItem()
-//            taskContentItemIndex.value = 0
-//        }
-//        Timber.i("lessonContentItemIndex: ${lessonContentItemIndex.value}")
-//        Timber.i("taskContentItemIndex: ${taskContentItemIndex.value}")
+        setLessonIndex(lessonItemIndex.value + delta)
     }
 
     fun setLessonIndex(newIndex: Int) {
-//        if (0 <= newIndex &&
-//            newIndex < courseContentData?.get(courseContentItemIndex.value)?.lessonContent?.size ?: 0 &&
-//            courseContentData?.get(courseContentItemIndex.value)?.lessonContent?.get(
-//                newIndex
-//            ) != null
-//        ) {
-//            lessonContentItemIndex.value = newIndex
-//            changeLessonItem()
-//            taskContentItemIndex.value = 0
-//        }
-//        Timber.i("lessonContentItemIndex: ${lessonContentItemIndex.value}")
-//        Timber.i("taskContentItemIndex: ${taskContentItemIndex.value}")
+        if (0 <= newIndex && newIndex < courseContentData?.getOrNull(categoryLessonItemIndex.value)?.modules?.size ?: 0 &&
+            courseContentData?.getOrNull(categoryLessonItemIndex.value)?.modules?.getOrNull(newIndex) != null
+        ) {
+            lessonItemIndex.value = newIndex
+        }
+        Timber.i("lessonContentItemIndex: ${lessonItemIndex.value}")
     }
 
-    fun moveCourseIndex(delta: Int = 1) {
-        if (0 <= courseContentItemIndex.value + delta && courseContentItemIndex.value + delta < courseContentData?.size ?: 0) {
-            courseContentItemIndex.value += delta
-            changeLessonItem()
-            lessonContentItemIndex.value = 0
-            taskContentItemIndex.value = 0
+    fun setCategoryLessonIndex(newIndex: Int) {
+        if (0 <= categoryLessonItemIndex.value && categoryLessonItemIndex.value < courseContentData?.size ?: 0) {
+            categoryLessonItemIndex.value = newIndex
+            lessonItemIndex.value = 0
+            taskItemIndex.value = 0
         }
     }
 
@@ -184,15 +168,15 @@ class CourseManager(
     }
 
     fun setCourseContentIndex(newIndex: Int) {
-        if (0 <= newIndex && newIndex < courseContentData?.size ?: 0) {
-            courseContentItemIndex.value = newIndex
-            changeLessonItem()
-            lessonContentItemIndex.value = 0
-            taskContentItemIndex.value = 0
-        }
-        Timber.i("courseContentItemIndex: ${courseContentItemIndex.value}")
-        Timber.i("lessonContentItemIndex: ${lessonContentItemIndex.value}")
-        Timber.i("taskContentItemIndex: ${taskContentItemIndex.value}")
+//        if (0 <= newIndex && newIndex < courseContentData?.size ?: 0) {
+//            courseContentItemIndex.value = newIndex
+//            changeLessonItem()
+//            lessonContentItemIndex.value = 0
+//            taskContentItemIndex.value = 0
+//        }
+//        Timber.i("courseContentItemIndex: ${courseContentItemIndex.value}")
+//        Timber.i("lessonContentItemIndex: ${lessonContentItemIndex.value}")
+//        Timber.i("taskContentItemIndex: ${taskContentItemIndex.value}")
     }
 
     fun setIndexes(
@@ -200,9 +184,9 @@ class CourseManager(
         lessonContentItemIndex: Int,
         taskContentItemIndex: Int
     ) {
-        setCourseContentIndex(courseContentItemIndex)
-        setLessonIndex(lessonContentItemIndex)
-        setTaskIndex(taskContentItemIndex)
+//        setCourseContentIndex(courseContentItemIndex)
+//        setLessonIndex(lessonContentItemIndex)
+//        setTaskIndex(taskContentItemIndex)
     }
 
     // Getters
@@ -230,44 +214,50 @@ class CourseManager(
 
     fun getLessonsContents(index: Int? = null): List<CourseModule>? {
 //        return listOf()
-            return courseContentData?.get(index?: 0)?.modules?.toList()
+            return courseContentData?.getOrNull(index?: -1)?.modules?.toList()
 //        return courseContentData?.get(
 //            index ?: courseContentItemIndex.value
 //        )?.lessonContent.orEmpty()
     }
+    fun getLessonsItemInstanceId(indexCategory: Int?, indexLesson: Int?) : Int? {
+        return courseContentData?.getOrNull(indexCategory?: -1)?.modules?.getOrNull(indexLesson?: -1)?.instance
+    }
+
+
+
+
+
 
     fun getTestLessonContent(): TestContentItems? {
         return testLessonContent
     }
 
-    fun getArticleLessonContent(): ArticleContentItems? {
-        return articleLessonContent
+    fun getArticleLessonContentItem(): ArticleTaskContentItem? {
+        return articleLesson
     }
 
-    fun getCourseContentItemIndexState(): MutableState<Int> {
-        return courseContentItemIndex
-    }
+//    fun getCourseContentItemIndexState(): MutableState<Int> {
+//        return courseContentItemIndex
+//    }
 
     fun getLessonContentItemIndex(): MutableState<Int> {
-        return lessonContentItemIndex
+        return /*lessonContentItemIndex*/ mutableStateOf(0)
     }
 
     fun getTaskContentItemIndexState(): MutableState<Int> {
-        return taskContentItemIndex
+        return /* taskContentItemIndex */ mutableStateOf(0)
     }
 
     fun getAttemptKey(): MutableState<String> {
-        return testAttemptKey
+        return /* testAttemptKey */ mutableStateOf("0")
     }
 
-    fun getCoursesContentSize(): Int {
+    fun getCategoryLessonSize(): Int {
         return courseContentData?.size ?: 0
     }
 
     fun getLessonContentSize(): Int {
-        return 0
-//        return courseContentData?.get(courseContentItemIndex.value)?.lessonContent?.size
-//            ?: 0
+        return courseContentData?.getOrNull(categoryLessonItemIndex.value)?.modules?.size ?: 0
     }
 
     fun getTaskAttemptsCount(): Int {
@@ -282,7 +272,6 @@ class CourseManager(
 
     fun getTaskTestsContentSize(): Int {
         return 0
-
 //        return (
 //            courseContentData?.get(courseContentItemIndex.value)?.lessonContent?.get(
 //                lessonContentItemIndex.value
@@ -291,7 +280,8 @@ class CourseManager(
     }
 
     fun getTaskArticlesContentSize(): Int {
-        return 0
+        return lessonPages?.pages?.size ?: 0
+
 
 //        return (
 //            courseContentData?.get(courseContentItemIndex.value)?.lessonContent?.get(
@@ -300,11 +290,12 @@ class CourseManager(
 //            )?.taskContent?.size ?: 0
     }
 
-    fun getTaskType(): TaskType {
-        return if (articleLessonContent != null)
-            TaskType.LESSON
-        else
-            TaskType.QUIZ
+    fun getTaskType(indexCategory: Int?, indexLesson: Int?): TaskType {
+        return when (courseContentData?.getOrNull(indexCategory ?: -1)?.modules?.getOrNull(indexLesson ?: -1)?.modname ?: "") {
+            TaskType.LESSON.value -> TaskType.LESSON
+            TaskType.QUIZ.value -> TaskType.QUIZ
+            else -> TaskType.NONE
+        }
     }
 
     fun getNextLessonType(): TaskType {

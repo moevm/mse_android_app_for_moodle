@@ -1,4 +1,4 @@
-package info.moevm.moodle.ui.coursescreen
+package info.moevm.moodle.ui.coursescontent
 
 import androidx.compose.runtime.Composable
 import info.moevm.moodle.R
@@ -41,7 +41,7 @@ data class TestContentItems(
     override val taskType: TaskType,
     override val taskTitle: String,
     override val taskStatus: TaskStatus,
-//    val taskMark: String,
+    val taskMark: String,
     val taskContent: HashMap<String, Pair<AttemptData, List<TaskContentItem?>>>
 ) : LessonContentItem(
     taskType, taskTitle, taskStatus

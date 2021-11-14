@@ -1,4 +1,4 @@
-package info.moevm.moodle.ui.coursescreen
+package info.moevm.moodle.ui.coursescontent
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -38,15 +38,11 @@ fun CourseContentScreen(
 //    cardsViewModel: CardsViewModel,
     navigateTo: (Screen) -> Unit
 ) {
-    courseManager.getTaskContentItemIndexState().value = 0
-    val titles = courseManager.getLessonsTitles()
-    if (titles == null) {
-        val z = 2
-        return
-    }
+//    courseManager.getTaskContentItemIndexState().value = 0
+    val titles = courseManager.getLessonsTitles() ?: return
+//    return  TODO: исправить на вывод ошибки
 
 
-//    return // TODO: исправить на вывод ошибки
     val cardsViewModel = CardsViewModel(titles)
     val cards = cardsViewModel.cards.collectAsState()
     val expandedCardIds = cardsViewModel.expandedCardIdsList.collectAsState()
@@ -56,7 +52,7 @@ fun CourseContentScreen(
                 modifier = Modifier.testTag("topAppBarInterests"),
                 title = {
                     Text(
-                        fontSize = 15.sp, // TODO: заменить на нормальный подбор?
+                        fontSize = 15.sp,
                         text = courseManager.getCourseName()
                     )
                 },
@@ -101,7 +97,7 @@ fun CourseContentScreen(
                                         else -> TaskStatus.NONE
                                     }
                                                                 },
-                                lessonId = index,
+                                categoryLessonIndex = index,
                                 courseManager = courseManager,
                                 navigateTo = navigateTo
                             )
@@ -127,7 +123,7 @@ fun CardItems(
     tasksTitles: List<String>,
     tasksStatus: List<TaskStatus>,
     courseManager: CourseManager,
-    lessonId: Int,
+    categoryLessonIndex: Int,
     navigateTo: (Screen) -> Unit
 ) {
     try {
@@ -140,15 +136,18 @@ fun CardItems(
     }
     Column {
         for (i in tasksType.indices) {
-            CardItem(
-                taskType = tasksType[i],
-                taskTitle = tasksTitles[i],
-                taskStatus = tasksStatus[i],
-                courseManager = courseManager,
-                courseId = lessonId,
-                lessonId = i,
-                navigateTo = navigateTo
-            )
+            if (courseManager.getLessonsItemInstanceId(categoryLessonIndex, i) != null) {
+                CardItem(
+                    taskType = tasksType[i],
+                    taskTitle = tasksTitles[i],
+                    taskStatus = tasksStatus[i],
+                    courseManager = courseManager,
+                    categoryLessonIndex = categoryLessonIndex,
+                    lessonIndex = i,
+                    lessonId = courseManager.getLessonsItemInstanceId(categoryLessonIndex, i)!!,
+                    navigateTo = navigateTo
+                )
+            }
         }
     }
 }
@@ -159,7 +158,8 @@ fun CardItem(
     taskTitle: String,
     taskStatus: TaskStatus,
     courseManager: CourseManager,
-    courseId: Int,
+    categoryLessonIndex: Int,
+    lessonIndex: Int,
     lessonId: Int,
     navigateTo: (Screen) -> Unit
 ) {
@@ -170,6 +170,20 @@ fun CardItem(
         val boxScope = this
         Column(
             Modifier.clickable {
+                // загрузка данных
+                when (taskType) {
+                    TaskType.LESSON ->{
+                        courseManager.loadLessonPages(lessonId)
+                        courseManager.setCategoryLessonIndex(categoryLessonIndex)
+                        courseManager.setLessonIndex(lessonIndex)
+                        courseManager.setTaskIndex(0)
+                        courseManager.changeLessonItem()
+                        navigateTo(Screen.Article)
+                    }
+                    else -> ""
+                }
+
+                val z = taskType.value
 //                courseManager.setCourseContentIndex(courseId)
 //                courseManager.setLessonIndex(lessonId)
 //                when (taskType) {

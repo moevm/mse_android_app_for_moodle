@@ -1,4 +1,4 @@
-package info.moevm.moodle.ui.coursecontent
+package info.moevm.moodle.ui.lessoncontent
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,14 +11,12 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.coursescreen.*
+import info.moevm.moodle.ui.coursescontent.*
 
 @Composable
 fun TestPreviewScreen(

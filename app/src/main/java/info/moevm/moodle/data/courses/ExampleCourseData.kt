@@ -8,8 +8,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
 import info.moevm.moodle.R
-import info.moevm.moodle.ui.coursecontent.TestTaskTitle
-import info.moevm.moodle.ui.coursescreen.*
+import info.moevm.moodle.ui.lessoncontent.TestTaskTitle
+import info.moevm.moodle.ui.coursescontent.*
 
 fun exampleCourseContent(): CourseMapData {
     return mapOf(

@@ -71,17 +71,17 @@ class FakeCoursesRepository : CoursesRepository {
         val data = apiclient.getCourses(token)
 
         val coursesList = data?.courses?.toMutableList()
-        val topicMap: MutableMap<String, List<String>> = HashMap<String, List<String>>()
+        val topicMap: MutableMap<String, List<Pair<String, Int>>> = HashMap<String, List<Pair<String, Int>>>()
 
         if (coursesList != null) {
             for (i in coursesList) {
                 topicMap.put(i.categoryname.toString(), emptyList())
             }
             for (i in topicMap) {
-                val topicList: MutableList<String> = ArrayList()
+                val topicList: MutableList<Pair<String, Int>> = ArrayList()
                 for (j in coursesList) {
                     if (i.key == j.categoryname.toString()) {
-                        topicList.add(j.shortname.toString())
+                        topicList.add(Pair(j.shortname.toString(), j.id ?: -1))
                     }
                 }
                 topicMap.put(i.key, topicList)

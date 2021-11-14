@@ -243,6 +243,7 @@ enum class APIVariables(var value: String) {
     USER_PREFERENCES_NAME("user_data_store"),
 // const val MOODLE = "https://10.0.2.2:1010"   need for local server
     MOD_ASSIGN_GET_ASSIGMENTS("mod_assign_get_assignments"),
+    MOD_LESSON_GET_PAGES("mod_lesson_get_pages"),
     CORE_COURSE_GET_COURSES_BY_FIELD("core_course_get_courses_by_field"),
     CORE_USER_GET_USERS_BY_FIELD("core_user_get_users_by_field"),
     CORE_COURSE_GET_CONTENTS("core_course_get_contents")

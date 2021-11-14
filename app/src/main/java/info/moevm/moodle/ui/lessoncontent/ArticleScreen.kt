@@ -1,4 +1,4 @@
-package info.moevm.moodle.ui.coursecontent
+package info.moevm.moodle.ui.lessoncontent
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.sp
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.coursescreen.ArticleTaskContentItem
-import info.moevm.moodle.ui.coursescreen.TaskType
+import info.moevm.moodle.ui.coursescontent.ArticleTaskContentItem
+import info.moevm.moodle.ui.coursescontent.TaskType
 
 @Composable
 fun ArticleScreen(
@@ -34,10 +34,10 @@ fun ArticleScreen(
         courseManager.moveLessonIndex(-1)
     }
 
-    val lessonContent = courseManager.getArticleLessonContent()
+//    val lessonContent = courseManager.getArticleLessonContentItem()
 
-    val taskContent =
-        lessonContent?.taskContent?.get(courseManager.getTaskContentItemIndexState().value) as ArticleTaskContentItem?
+    val taskContent = courseManager.getArticleLessonContentItem()
+//        lessonContent?.taskContent?.get(courseManager.getTaskContentItemIndexState().value) as ArticleTaskContentItem?
     val scrollState = rememberScrollState()
     // FIXME моргание старого экрана при возвращении через "верхний" назад
     Scaffold(
@@ -49,12 +49,12 @@ fun ArticleScreen(
         bottomBar = {
             TaskBottomNavigator(
                 courseManager = courseManager,
-                taskContentItemSize = lessonContent?.taskContent?.size ?: 1,
+                taskContentItemSize = courseManager.getTaskArticlesContentSize(),
                 navigateTo = navigateTo
             )
         }
     ) {
-        if (lessonContent == null || taskContent == null) { // FIXME исправить появление Ошибки при перезоде между статьёй и тестом
+        if (taskContent == null) { // FIXME исправить появление Ошибки при перезоде между статьёй и тестом
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 Text(
                     modifier = Modifier

@@ -1,4 +1,4 @@
-package info.moevm.moodle.ui.coursecontent
+package info.moevm.moodle.ui.lessoncontent
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -32,7 +32,7 @@ import com.google.accompanist.insets.rememberImeNestedScrollConnection
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.coursescreen.*
+import info.moevm.moodle.ui.coursescontent.*
 import kotlinx.coroutines.launch
 import java.lang.Math.random
 

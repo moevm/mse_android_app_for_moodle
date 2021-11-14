@@ -128,7 +128,7 @@ fun InterestsScreen(
         val onPeopleSelect: (String) -> Unit = {
             coroutineScope.launch { coursesRepository.togglePersonSelected(it) }
         }
-        val data = people.value.data ?: return@TabContent //List<String>
+        val data = people.value.data ?: return@TabContent //List<Pair<String, Int>>  -->  title + id
 
         PeopleList(navigateTo, data, selectedPeople, onPeopleSelect, changeCourse)
     }
@@ -348,7 +348,7 @@ private fun TabWithTopics(
                 navigateTo = navigateTo,
                 itemTitle = topics[index].first,
                 selected = selectedTopics.contains(topics[index].first),
-                itemIndex = topics[index].second, // TODO: заменить на id курсов
+                itemIndex = topics[index].second,
                 onCourseClicked = onCourseClicked
             ) { onTopicSelect(topics[index].first) }
             TopicDivider()
@@ -384,16 +384,16 @@ private fun TabWithSections(
             for(index in topics.indices) {
                 TopicItem(
                     navigateTo = navigateTo,
-                    itemTitle = topics[index],
+                    itemTitle = topics[index].first,
                     selected = selectedTopics.contains(
                         TopicSelection(
                             section,
-                            topics[index]
+                            topics[index].first
                         )
                     ),
-                    itemIndex = index, // TODO: заменить на id курсов
+                    itemIndex = topics[index].second,
                     onCourseClicked = onCourseClicked
-                ) { onTopicSelect(TopicSelection(section, topics[index])) }
+                ) { onTopicSelect(TopicSelection(section, topics[index].first)) }
                 TopicDivider()
             }
         }
