@@ -1,7 +1,6 @@
 package info.moevm.moodle.api
 
-import info.moevm.moodle.data.courses.CourseMoodleContentData
-import info.moevm.moodle.data.courses.LessonPages
+import info.moevm.moodle.data.courses.*
 import info.moevm.moodle.model.*
 import retrofit2.Call
 import retrofit2.http.GET
@@ -34,9 +33,24 @@ interface ApiRequests {
      */
 
     @GET("/webservice/rest/server.php")
-    fun getLessonPages(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("lessonid") lessonId: String, @Query("moodlewsrestformat") moodlewsRestFormat: String) : Call<LessonPages?>
+    fun getLessonPages(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("lessonid") lessonId: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<LessonPages?>
 
 //    @GET("/webservice/rest/server.php")
 //    fun getLessonPage(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("lessonid") lessonId: String, @Query("pageid") pageId: String, @Query("moodlewsrestformat") moodlewsRestFormat: String)
 
+    /**
+     * Get tests content
+     */
+
+    @GET("/webservice/rest/server.php")
+    fun getQuizAttempts(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("quizid") quizid: String, @Query("status") status: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizAttempts?>
+
+    @GET("/webservice/rest/server.php")
+    fun startNewAttempt(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("quizid") quizid: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizAttempts?>
+
+    @GET("/webservice/rest/server.php")
+    fun getQuizInProgress(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("attemptid") attemptid: String, @Query("page") page: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizInProgress?>
+
+    @GET("/webservice/rest/server.php")
+    fun getQuizFinished(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("attemptid") attemptid: String, @Query("page") page: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizFinished?>
 }

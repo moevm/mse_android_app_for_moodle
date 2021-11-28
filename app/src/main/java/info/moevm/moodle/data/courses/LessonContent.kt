@@ -1,6 +1,5 @@
 package info.moevm.moodle.data.courses
 
-
 data class LessonContent(
     val lesson: Lesson?,
     val warnings: List<WarningItem>?
@@ -92,7 +91,6 @@ data class Lesson(
     val mediafiles: List<MediaFiles>?,
 )
 
-
 /**
 filename: String?           Необязательно  File name.
 filepath: String?           Необязательно  File path.
@@ -113,7 +111,6 @@ data class IntroFiles( // дубликат Files в Post.kt
     val isexternalfile: Int?,
     val repositorytype: String?
 )
-
 
 /**
 filename : String?          Необязательно  File name.
@@ -137,7 +134,6 @@ data class MediaFiles(
 
 )
 
-
 /**
 item : String?                         Необязательно   item
 itemid : Int?                          Необязательно   item id
@@ -145,8 +141,8 @@ warningcode : String?                                  the warning code can be u
 message : String?                                      untranslated english message to explain the warning
  */
 data class WarningItem(
-    val item : String?,
-    val itemid : Int?,
-    val warningcode : String?,
-    val message : String?
+    val item: String?,
+    val itemid: Int?,
+    val warningcode: String?,
+    val message: String?
 )

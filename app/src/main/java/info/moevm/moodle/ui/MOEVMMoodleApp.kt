@@ -25,12 +25,12 @@ import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.posts.PostsRepository
 import info.moevm.moodle.ui.article.ArticleScreen
 import info.moevm.moodle.ui.components.StatisticsTopAppBar
-import info.moevm.moodle.ui.lessoncontent.TestPreviewScreen
-import info.moevm.moodle.ui.lessoncontent.TestScreen
 import info.moevm.moodle.ui.coursescontent.CourseContentScreen
 import info.moevm.moodle.ui.entersetup.EnterSetupScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
+import info.moevm.moodle.ui.lessoncontent.TestPreviewScreen
+import info.moevm.moodle.ui.lessoncontent.TestScreen
 import info.moevm.moodle.ui.settings.SettingsScreen
 import info.moevm.moodle.ui.signin.PreviewScreen
 import info.moevm.moodle.ui.signin.SignInScreen
@@ -99,17 +99,11 @@ private fun AppContent(
         countryMoodleUser.value = countryMoodleUserString
     }
 
-//    runBlocking {
-//        withContext(Dispatchers.IO) {
-//            nameCourses =
-//                exampleCourseContent().keys.toList() // TODO заменить на получение заголовков
-//        }
-//    }
     val courseId = remember { mutableStateOf(0) }
     val categoryLessonItemIndex = remember { mutableStateOf(0) }
     val lessonItemIndex = remember { mutableStateOf(0) }
     val taskItemIndex = remember { mutableStateOf(0) }
-    val testAttemptKey = remember { mutableStateOf("0") }
+    val testAttemptKey = remember { mutableStateOf(0) }
 
     val courseManager = CourseManager(
         token = "", // инициализируется после входа в аккаунт в PreviewScreen

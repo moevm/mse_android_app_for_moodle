@@ -7,75 +7,74 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import info.moevm.moodle.data.courses.Attempt
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescontent.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun TestPreviewScreen(
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
-    if (courseManager.requiredMoveLessonIndexForward) {
-        courseManager.requiredMoveLessonIndexForward = false
-        courseManager.moveLessonIndex(1)
-    } else if (courseManager.requiredMoveLessonIndexBack) {
-        courseManager.requiredMoveLessonIndexBack = false
-        courseManager.moveLessonIndex(-1)
-    }
-
-    val lessonContent = courseManager.getTestLessonContent()
-    val mapAttempts =
-        remember { mutableStateMapOf<String, Pair<AttemptData, List<TaskContentItem?>>>() }
-    mapAttempts.putAll(lessonContent?.taskContent.orEmpty())
-    val taskContentItemSize =
-        courseManager.getTestLessonContent()?.taskContent?.get(
-            courseManager.getAttemptKey().value
-        )?.second?.size ?: 1
+    // TODO проверить работу добавления новой попытки
+    val attemptContent = courseManager.getQuizAttemptContent()
+    val attemptsState: SnapshotStateList<Attempt?> = remember { mutableStateListOf() }
+    if (attemptContent?.attempts != null)
+        attemptsState.addAll(attemptContent.attempts)
+    val badNewAttemptState = remember { mutableStateOf(false) } // если мы хотим начать новую попытку до
+    val scaffoldState = rememberScaffoldState()
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = { TestPreviewScreenTopBar { navigateTo(Screen.CourseContent) } },
         bottomBar = {
             BottomNavigatorWithAttempt(
-                mapAttempts = mapAttempts,
+                attemptsState = attemptsState,
+                newAttemptState = badNewAttemptState,
                 courseManager = courseManager,
-                taskContentItemSize = taskContentItemSize,
                 navigateTo = navigateTo
             )
         }
     ) {
-        if (lessonContent == null) {
+        if (attemptContent == null) {
             return@Scaffold
         }
-        if (lessonContent.taskType == TaskType.NONE) {
-            BoxWithConstraints(Modifier.fillMaxSize()) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(20.dp),
-                    text = "Ошибка загрузки данных"
-                )
-                IconButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 80.dp)
-                        .size(60.dp),
-                    onClick = { /*TODO*/ }
-                ) {
-                    Icon(
-                        modifier = Modifier.size(42.dp),
-                        imageVector = Icons.Filled.Refresh,
-                        contentDescription = null
-                    )
-                }
-            }
-        }
+//        if (lessonContent.taskType == TaskType.NONE) {
+//            BoxWithConstraints(Modifier.fillMaxSize()) {
+//                Text(
+//                    modifier = Modifier
+//                        .align(Alignment.TopCenter)
+//                        .padding(20.dp),
+//                    text = "Ошибка загрузки данных"
+//                )
+//                IconButton(
+//                    modifier = Modifier
+//                        .align(Alignment.BottomCenter)
+//                        .padding(bottom = 80.dp)
+//                        .size(60.dp),
+//                    onClick = { /*TODO*/ }
+//                ) {
+//                    Icon(
+//                        modifier = Modifier.size(42.dp),
+//                        imageVector = Icons.Filled.Refresh,
+//                        contentDescription = null
+//                    )
+//                }
+//            }
+//        }
         val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
@@ -86,7 +85,7 @@ fun TestPreviewScreen(
         ) {
             Text(
                 modifier = Modifier.padding(16.dp),
-                text = lessonContent.taskTitle,
+                text = "Попытки",
                 style = MaterialTheme.typography.h6,
                 textAlign = TextAlign.Center
             )
@@ -135,14 +134,25 @@ fun TestPreviewScreen(
                         )
                     }
                 }
-                for (item in mapAttempts.values) {
+                var index = 1
+                for (item in attemptContent.attempts!!) {
                     AttemptsCard(
                         chosenAttempt = courseManager.getAttemptKey(),
-                        id = item.first.id,
-                        taskStatus = item.first.taskStatus,
-                        date = item.first.date,
+                        idAttempt = item?.id ?: -1,
+                        numberCard = index++,
+                        attemptStatus = item?.state ?: "Ошибка",
+                        // в дате убираем +2 часа
+                        date = SimpleDateFormat("dd.MM.yyyy HH:mm").format(Date((((item?.timefinish?.toLong() ?: 0L) - 2 * 60 * 60).coerceAtLeast(0L) * 1000))).toString(),
                         navigateTo = navigateTo
                     )
+                }
+                if (badNewAttemptState.value) {
+                    GlobalScope.launch {
+                        withContext(Dispatchers.Main) {
+                            scaffoldState.snackbarHostState.showSnackbar("Попытка уже была начата")
+                            badNewAttemptState.value = false
+                        }
+                    }
                 }
             }
         }
@@ -151,9 +161,10 @@ fun TestPreviewScreen(
 
 @Composable
 fun AttemptsCard(
-    chosenAttempt: MutableState<String>,
-    id: Int,
-    taskStatus: TaskStatus,
+    chosenAttempt: MutableState<Int>,
+    idAttempt: Int,
+    numberCard: Int,
+    attemptStatus: String,
     date: String,
     navigateTo: (Screen) -> Unit
 ) {
@@ -168,7 +179,7 @@ fun AttemptsCard(
                 Row(Modifier.fillMaxWidth()) {
                     Text(
                         modifier = Modifier.padding(top = 8.dp, start = 40.dp),
-                        text = id.toString()
+                        text = numberCard.toString()
                     )
                     Column(
                         Modifier
@@ -178,14 +189,14 @@ fun AttemptsCard(
                     ) {
                         Text(
                             modifier = Modifier.padding(top = 8.dp),
-                            text = when (taskStatus) {
-                                TaskStatus.DONE -> "Завершённые"
-                                TaskStatus.WORKING -> "В Процессе"
+                            text = when (attemptStatus) {
+                                AttemptStatus.FINISHED.value -> "Завершённые"
+                                AttemptStatus.IN_PROGRESS.value -> "В Процессе"
                                 else -> "error"
                             },
                             style = MaterialTheme.typography.body1
                         )
-                        if (taskStatus == TaskStatus.DONE) {
+                        if (attemptStatus == AttemptStatus.FINISHED.value) {
                             Text(
                                 modifier = Modifier.padding(top = 5.dp),
                                 text = date,
@@ -199,7 +210,7 @@ fun AttemptsCard(
                         .padding(end = 25.dp)
                         .align(Alignment.CenterEnd),
                     onClick = {
-                        chosenAttempt.value = id.toString()
+                        chosenAttempt.value = idAttempt
                         navigateTo(Screen.Test)
                     }
                 ) {
@@ -238,12 +249,12 @@ fun TestPreviewScreenTopBar(
 
 @Composable
 fun BottomNavigatorWithAttempt(
-    mapAttempts: SnapshotStateMap<String, Pair<AttemptData, List<TaskContentItem?>>>,
+    attemptsState: SnapshotStateList<Attempt?>,
+    newAttemptState: MutableState<Boolean>,
     courseManager: CourseManager,
-    taskContentItemSize: Int,
     navigateTo: (Screen) -> Unit
 ) {
-    val lessonContent = courseManager.getTestLessonContent()
+//    val lessonContent = courseManager.getQuizInProgressContent()
 
     val (iconBack, textBack) = when (courseManager.getLessonContentItemIndex().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
@@ -266,31 +277,39 @@ fun BottomNavigatorWithAttempt(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-                if (courseManager.getTaskContentItemIndexState().value == 0) {
-                    courseManager.requiredMoveLessonIndexBack = true
-                    when (courseManager.getPrevLessonType()) {
-                        TaskType.QUIZ -> navigateTo(Screen.PreviewTest)
-                        TaskType.LESSON -> navigateTo(Screen.Article)
-                        TaskType.NONE -> {}
-                    }
-                } else
-                    courseManager.moveTaskIndex(-1)
-            },
+//                if (courseManager.getTaskContentItemIndexState().value == 0) {
+//                    courseManager.requiredMoveLessonIndexBack = true
+//                    when (courseManager.getPrevLessonType()) {
+//                        TaskType.QUIZ -> navigateTo(Screen.PreviewQuiz)
+//                        TaskType.LESSON -> navigateTo(Screen.Article)
+//                        TaskType.NONE -> {}
+//                    }
+//                } else
+//                    courseManager.moveTaskIndex(-1)
+            }, // TODO сделать переход
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
         )
         BottomNavigationItem( // Новая попытка
             selected = selectedItem == 1,
             onClick = {
-                if (mapAttempts.values.last().first.taskStatus == TaskStatus.DONE) {
-                    mapAttempts[mapAttempts.size.toString()] =
-                        testData(mapAttempts.size)
-                    lessonContent?.taskContent?.put(
-                        lessonContent.taskContent.size.toString(),
-                        testData(lessonContent.taskContent.size)
-                    )
+                // FIXME Исправить метод добавления новой попытки
+                if (courseManager.startNewAttempt((courseManager.getQuizAttemptContent()?.attempts?.getOrNull(0)?.quiz ?: -1).toString())) {
+                    attemptsState.add(courseManager.getQuizAttemptContent()?.attempts?.last())
+                    newAttemptState.value = false
+                } else {
+                    newAttemptState.value = true
                 }
-            }, // FIXME исправить на нормально
+
+//                if (mapAttempts.values.last().first.taskStatus == TaskStatus.DONE) {
+//                    mapAttempts[mapAttempts.size.toString()] =
+//                        testData(mapAttempts.size)
+//                    lessonContent?.taskContent?.put(
+//                        lessonContent.taskContent.size.toString(),
+//                        testData(lessonContent.taskContent.size)
+//                    )
+//                }
+            },
             icon = {
                 Icon(
                     imageVector = iconAttempt,
@@ -302,16 +321,16 @@ fun BottomNavigatorWithAttempt(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 2,
             onClick = {
-                if (courseManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
-                    courseManager.requiredMoveLessonIndexForward = true
-                    when (courseManager.getNextLessonType()) {
-                        TaskType.QUIZ -> navigateTo(Screen.PreviewTest)
-                        TaskType.LESSON -> navigateTo(Screen.Article)
-                        TaskType.NONE -> {}
-                    }
-                } else
-                    courseManager.moveTaskIndex(1)
-            }, // FIXME исправить на нормально
+//                if (courseManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
+//                    courseManager.requiredMoveLessonIndexForward = true
+//                    when (courseManager.getNextLessonType()) {
+//                        TaskType.QUIZ -> navigateTo(Screen.PreviewQuiz)
+//                        TaskType.LESSON -> navigateTo(Screen.Article)
+//                        TaskType.NONE -> {}
+//                    }
+//                } else
+//                    courseManager.moveTaskIndex(1)
+            }, // TODO сделать переход
             icon = {
                 Icon(
                     imageVector = iconForward,
@@ -321,15 +340,4 @@ fun BottomNavigatorWithAttempt(
             label = { Text(textForward) }
         )
     }
-}
-
-fun testData(id: Int): Pair<AttemptData, List<TaskContentItem?>> {
-    return Pair(
-        AttemptData(
-            id,
-            "Отправлено 19.07.2021, 10:45",
-            TaskStatus.DONE
-        ),
-        listOf()
-    )
 }

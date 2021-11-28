@@ -1,5 +1,6 @@
 package info.moevm.moodle.ui.coursescontent
 
+import android.text.Html
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -33,15 +34,16 @@ import kotlin.IllegalArgumentException
 
 @Composable
 fun CourseContentScreen(
-//    courseName: String,
     courseManager: CourseManager,
-//    cardsViewModel: CardsViewModel,
     navigateTo: (Screen) -> Unit
 ) {
-//    courseManager.getTaskContentItemIndexState().value = 0
-    val titles = courseManager.getLessonsTitles() ?: return
 //    return  TODO: исправить на вывод ошибки
+    val titles = courseManager.getLessonsTitles() ?: return
 
+    val time = System.currentTimeMillis()
+    while (System.currentTimeMillis() - time < 250) { // FIXME: Даём время на удаление прошлого содержимого, исправить
+        Timber.i("content TimeOut 250ms")
+    }
 
     val cardsViewModel = CardsViewModel(titles)
     val cards = cardsViewModel.cards.collectAsState()
@@ -57,7 +59,11 @@ fun CourseContentScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navigateTo(Screen.Interests) }) {
+                    IconButton(
+                        onClick = {
+                            navigateTo(Screen.Interests)
+                        }
+                    ) {
                         Icon(Icons.Filled.ArrowBack, null)
                     }
                 }
@@ -84,19 +90,20 @@ fun CourseContentScreen(
 //                        if (foundNullItem) {
 //                           return@ExpandableCard
 //                        }
+
                         if (lessonContent != null) {
-                            CardItems(// TODO: исправить на нормально
-                                tasksType = lessonContent.map { TaskType.valueOf(it.modname?.uppercase()?: "NONE")}.toList(),
-                                tasksTitles = lessonContent.map { it.name ?: "<Ошибка загрузки данных>" }.toList(),
+                            CardItems( // TODO: исправить на нормально
+                                tasksType = lessonContent.map { TaskType.valueOf(it.modname?.uppercase() ?: "NONE") }.toList(),
+                                tasksTitles = lessonContent.map { Html.fromHtml(it.name).toString() ?: "<Ошибка загрузки данных>" }.toList(),
                                 tasksStatus = lessonContent.map {
-                                    when(it.completiondata?.state) {
+                                    when (it.completiondata?.state) {
                                         TaskStatus.DONE.value -> TaskStatus.DONE
                                         TaskStatus.FAILED.value -> TaskStatus.FAILED
                                         TaskStatus.WORKING.value -> TaskStatus.WORKING
                                         TaskStatus.RELOAD.value -> TaskStatus.RELOAD
                                         else -> TaskStatus.NONE
                                     }
-                                                                },
+                                },
                                 categoryLessonIndex = index,
                                 courseManager = courseManager,
                                 navigateTo = navigateTo
@@ -172,24 +179,23 @@ fun CardItem(
             Modifier.clickable {
                 // загрузка данных
                 when (taskType) {
-                    TaskType.LESSON ->{
-                        courseManager.loadLessonPages(lessonId)
+                    TaskType.LESSON -> {
+                        courseManager.receiveLessonPages(lessonId)
                         courseManager.setCategoryLessonIndex(categoryLessonIndex)
                         courseManager.setLessonIndex(lessonIndex)
                         courseManager.setTaskIndex(0)
                         courseManager.changeLessonItem()
                         navigateTo(Screen.Article)
                     }
+                    TaskType.QUIZ -> {
+                        courseManager.receiveQuizAttempts(lessonId.toString())
+                        courseManager.setCategoryLessonIndex(categoryLessonIndex)
+                        courseManager.setLessonIndex(lessonIndex)
+                        courseManager.setTaskIndex(0)
+                        navigateTo(Screen.PreviewQuiz)
+                    }
                     else -> ""
                 }
-
-                val z = taskType.value
-//                courseManager.setCourseContentIndex(courseId)
-//                courseManager.setLessonIndex(lessonId)
-//                when (taskType) {
-//                    TaskType.TOPIC -> navigateTo(Screen.Article)
-//                    TaskType.TEST -> navigateTo(Screen.PreviewTest)
-//                }
             }
         ) {
             Row(Modifier.padding(top = 8.dp, bottom = 15.dp)) {
@@ -234,8 +240,7 @@ fun CardItem(
                             )
                         ),
                         contentDescription = "taskStatus",
-
-                        )
+                    )
                 }
             }
             Divider(

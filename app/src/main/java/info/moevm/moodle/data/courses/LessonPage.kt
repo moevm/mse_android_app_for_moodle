@@ -2,7 +2,6 @@ package info.moevm.moodle.data.courses
 
 import info.moevm.moodle.model.Warning
 
-
 data class LessonPage(
     val id: Int?,
     val lessonid: Int?,

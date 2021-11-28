@@ -30,7 +30,6 @@ import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.rememberImeNestedScrollConnection
 import info.moevm.moodle.data.courses.CourseManager
-import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescontent.*
 import kotlinx.coroutines.launch
@@ -38,7 +37,7 @@ import java.lang.Math.random
 
 @OptIn(ExperimentalAnimatedInsets::class)
 @Composable
-fun TestScreen(
+fun TestScreen( // FIXME пока не работает, исправить
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
@@ -49,11 +48,11 @@ fun TestScreen(
         courseManager.requiredMoveLessonIndexBack = false
         courseManager.moveLessonIndex(-1)
     }
-    val lessonContent = courseManager.getTestLessonContent()
-    val taskContent =
-        lessonContent?.taskContent?.get(courseManager.getAttemptKey().value)?.second?.get(
-            courseManager.getTaskContentItemIndexState().value
-        ) as TestTaskContentItem?
+    val lessonContent = courseManager.getQuizInProgressContent()
+    val taskContent: TestTaskContentItem? = null
+//        lessonContent?.taskContent?.get(courseManager.getAttemptKey().value)?.second?.get(
+//            courseManager.getTaskContentItemIndexState().value
+//        ) as TestTaskContentItem?
     val taskState: MutableState<TaskStatus?> =
         remember { mutableStateOf(TaskStatus.NONE) }
     taskState.value = taskContent?.taskContentStatus
@@ -61,24 +60,25 @@ fun TestScreen(
     val lazyListState = LazyListState(5)
     Scaffold(
         topBar = {
-            TaskScreenTopBar(
-                onBack = { navigateTo(Screen.CourseContent) }
-            )
+//            TaskScreenTopBar( // TODO нельзя использовать из-за специфики ссылки на тест для браузера
+//                courseManager = courseManager,
+//                onBack = { navigateTo(Screen.CourseContent) }
+//            )
         },
         bottomBar = {
             Column {
                 if (taskContent?.taskContentType == TaskContentType.TEST_ANSWER) {
                     Surface {
-                        TestAnswer(taskAnswerType = taskContent.taskAnswerType, lazyListState = lazyListState)
+//                        TestAnswer(taskAnswerType = taskContent.taskAnswerType, lazyListState = lazyListState)
                     }
                     Spacer(Modifier.height(12.dp))
                 }
                 BottomNavigatorWithChecker(
                     courseManager = courseManager,
                     taskState = taskState,
-                    taskContentItemSize = courseManager.getTestLessonContent()?.taskContent?.get(
+                    taskContentItemSize = 1 /* courseManager.getQuizInProgressContent()?.taskContent?.get(
                         courseManager.getAttemptKey().value
-                    )?.second?.size ?: 1,
+                    )?.second?.size ?: 1*/,
                     navigateTo = navigateTo
                 )
             }
@@ -121,23 +121,23 @@ fun TestScreen(
             ) {
                 item {
                     when (taskContent.taskContentType) {
-                        TaskContentType.TEST_ONE_CHOICE -> TestOneChoice(
-                            taskAnswers = taskContent.taskAnswers
-                        )
-                        TaskContentType.TEST_MULTI_CHOICE -> TestMultiChoice(
-                            taskAnswers = taskContent.taskAnswers
-                        )
-                        //                TaskContentType.TEST_ANSWER -> TestAnswer(taskAnswerType = taskContent.taskAnswerType)
-                        TaskContentType.TEST_MATCH -> TestMatch(
-                            taskAnswers = taskContent.taskAnswers,
-                            taskAdditionInfo = taskContent.taskAdditionInfo
-                        )
+//                        TaskContentType.TEST_ONE_CHOICE -> TestOneChoice(
+//                            taskAnswers = taskContent.taskAnswers
+//                        )
+//                        TaskContentType.TEST_MULTI_CHOICE -> TestMultiChoice(
+//                            taskAnswers = taskContent.taskAnswers
+//                        )
+// //                                        TaskContentType.TEST_ANSWER -> TestAnswer(taskAnswerType = taskContent.taskAnswerType)
+//                        TaskContentType.TEST_MATCH -> TestMatch(
+//                            taskAnswers = taskContent.taskAnswers,
+//                            taskAdditionInfo = taskContent.taskAdditionInfo
+//                        )
                         else -> {
                         }
                     }
                 }
                 item {
-                    taskContent.taskContent()
+//                    taskContent.taskContent()
                 }
                 item {
                     Text(
@@ -234,7 +234,7 @@ fun BottomNavigatorWithChecker(
                 if (courseManager.getTaskContentItemIndexState().value == 0) {
                     courseManager.requiredMoveLessonIndexBack = true
                     when (courseManager.getPrevLessonType()) {
-                        TaskType.QUIZ -> navigateTo(Screen.PreviewTest)
+                        TaskType.QUIZ -> navigateTo(Screen.PreviewQuiz)
                         TaskType.LESSON -> navigateTo(Screen.Article)
                         TaskType.NONE -> {
                         }
@@ -285,7 +285,7 @@ fun BottomNavigatorWithChecker(
                 if (courseManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
                     courseManager.requiredMoveLessonIndexForward = true
                     when (courseManager.getNextLessonType()) {
-                        TaskType.QUIZ -> navigateTo(Screen.PreviewTest)
+                        TaskType.QUIZ -> navigateTo(Screen.PreviewQuiz)
                         TaskType.LESSON -> navigateTo(Screen.Article)
                         TaskType.NONE -> {
                         }
@@ -573,11 +573,12 @@ fun testChecker(
     taskContentItemIndex: Int,
     listAnswer: List<String>
 ): Boolean {
-    val courseData = exampleCourseContent().values.first()
+//    val courseData = exampleCourseContent().values.first()
 
-    val rightAnswer = (
-        (courseData[courseContentItemIndex].lessonContent[lessonContentItemIndex] as TestContentItems)
-            .taskContent[testAttemptKey]!!.second[taskContentItemIndex] as TestTaskContentItem
-        ).taskRightAnswers
-    return rightAnswer == listAnswer
+//    val rightAnswer = (
+//        (courseData[courseContentItemIndex].lessonContent[lessonContentItemIndex] as TestContentItems)
+//            .taskContent[testAttemptKey]!!.second[taskContentItemIndex] as TestTaskContentItem
+//        ).taskRightAnswers
+//    return rightAnswer == listAnswer
+    return false
 }

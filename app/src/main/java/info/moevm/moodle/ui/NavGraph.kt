@@ -27,7 +27,7 @@ sealed class Screen(val id: ScreenName) {
     object Settings : Screen(SETTINGS)
     object CourseContent : Screen(COURSE_CONTENT)
     object Article : Screen(ARTICLE)
-    object PreviewTest : Screen(PREVIEW_TEST)
+    object PreviewQuiz : Screen(PREVIEW_TEST)
     object Test : Screen(TEST)
     object Preview : Screen(PREVIEW)
     object Add : Screen(ADD)

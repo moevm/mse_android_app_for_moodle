@@ -1,6 +1,5 @@
 package info.moevm.moodle.data.courses
 
-
 /**
 id : Int?                                               Section ID
 name : String?                                          Section name
@@ -25,7 +24,6 @@ data class CourseMoodleContentData(
     val availabilityinfo: String? = null,
     val modules: Array<CourseModule>? = null
 )
-
 
 /**
 id : Int?                                                              activity id
@@ -76,7 +74,6 @@ data class CourseModule(
     val contentsinfo: Array<CourseModuleContentInfo>? = null
 )
 
-
 /**
 state : Int?                            Completion state value: 0 means incomplete, 1 complete, 2 complete pass, 3 complete fail
 timecompleted : Int?                    Timestamp for completion status.
@@ -89,7 +86,6 @@ data class CourseModuleCompletionData(
     val overrideby: Int? = null,
     val valueused: Boolean? = null
 )
-
 
 /**
 id : Int?,                               Tag id.
@@ -115,7 +111,6 @@ data class CourseModuleContentTagsData(
     val ordering: Int? = null,
     val flag: Int? = null
 )
-
 
 /**
 type : String?                                         a file or a folder or external link
@@ -153,7 +148,6 @@ data class CourseModuleContent(
     val license: String? = null,
     val tags: Array<CourseModuleContentTagsData>? = null
 )
-
 
 /**
 filescount : Int?,                         Total number of files.
