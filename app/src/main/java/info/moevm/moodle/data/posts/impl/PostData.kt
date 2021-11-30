@@ -843,7 +843,7 @@ val post3 = Post(
 
 val post4 = Post(
     id = "84eb677660d9",
-    title = "Курс молодого бойца",
+    title = "Курс молодого бойца (недоступно)",
     subtitle = "Данный курс представляет собой обобщение правил работы над студенческими проектами, принятых в Open Source and Linux Laboratory.",
     url = "https://etu.ru/",
     publication = publication,
@@ -853,8 +853,8 @@ val post4 = Post(
         hoursToPass = 1
     ),
     paragraphs = paragraphsPost4,
-    imageId = R.drawable.kmb_cource_logo,
-    imageThumbId = R.drawable.kmb_cource_logo
+    imageId = R.drawable.not_available_course,
+    imageThumbId = R.drawable.not_available_course
 )
 
 val post5 = Post(

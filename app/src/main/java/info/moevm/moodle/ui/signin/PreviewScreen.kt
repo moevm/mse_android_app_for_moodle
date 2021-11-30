@@ -16,11 +16,13 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.observe
 import info.moevm.moodle.api.DataStoreUser
 import info.moevm.moodle.api.MoodleApi
+import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
 import timber.log.Timber
 
 @Composable
 fun PreviewScreen(
+    courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
     PreviewScreenContent()
@@ -56,6 +58,7 @@ fun PreviewScreen(
             if (answ.value?.errorcode != "invalidtoken") {
                 if (!inHomeScreen.value) {
                     showMessage(context, "already login")
+                    courseManager.setToken(token)
                     navigateTo(Screen.Home)
                     inHomeScreen.value = true
                 }
@@ -74,6 +77,7 @@ fun PreviewScreen(
                 checkToken(tokenState)
             } else {
                 if (!inSignInScreen.value) {
+                    courseManager.setToken(it)
                     navigateTo(Screen.SignIn)
                     inSignInScreen.value = true
                 }

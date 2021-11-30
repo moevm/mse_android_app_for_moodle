@@ -13,7 +13,8 @@
         android:theme="@style/Theme.MOEVMMoodle"
         android:usesCleartextTraffic="true">
         <activity android:name=".ui.MainActivity"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

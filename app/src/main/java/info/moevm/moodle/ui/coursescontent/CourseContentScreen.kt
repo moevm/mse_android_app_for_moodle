@@ -1,5 +1,6 @@
-package info.moevm.moodle.ui.coursescreen
+package info.moevm.moodle.ui.coursescontent
 
+import android.text.Html
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import info.moevm.moodle.R
-import info.moevm.moodle.data.courses.CoursesManager
+import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.components.ExpandableCard
@@ -33,21 +34,36 @@ import kotlin.IllegalArgumentException
 
 @Composable
 fun CourseContentScreen(
-    courseName: String,
-    coursesManager: CoursesManager,
-    cardsViewModel: CardsViewModel,
+    courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
-    coursesManager.getTaskContentItemIndexState().value = 0
+//    return  TODO: исправить на вывод ошибки
+    val titles = courseManager.getLessonsTitles() ?: return
+
+    val time = System.currentTimeMillis()
+    while (System.currentTimeMillis() - time < 250) { // FIXME: Даём время на удаление прошлого содержимого, исправить
+        Timber.i("content TimeOut 250ms")
+    }
+
+    val cardsViewModel = CardsViewModel(titles)
     val cards = cardsViewModel.cards.collectAsState()
     val expandedCardIds = cardsViewModel.expandedCardIdsList.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
                 modifier = Modifier.testTag("topAppBarInterests"),
-                title = { Text(courseName) },
+                title = {
+                    Text(
+                        fontSize = 15.sp,
+                        text = courseManager.getCourseName()
+                    )
+                },
                 navigationIcon = {
-                    IconButton(onClick = { navigateTo(Screen.Interests) }) {
+                    IconButton(
+                        onClick = {
+                            navigateTo(Screen.Interests)
+                        }
+                    ) {
                         Icon(Icons.Filled.ArrowBack, null)
                     }
                 }
@@ -66,21 +82,33 @@ fun CourseContentScreen(
                 val dividerColor = remember { mutableStateOf(primaryColor) }
                 ExpandableCard(
                     cardContent = {
-                        val lessonContent = coursesManager.getLessonsContents(index)
+                        val lessonContent =
+                            courseManager.getLessonsContents(index)
 //                        var foundNullItem = lessonContent == null
 //                        for (item in lessonContent.orEmpty())
 //                            foundNullItem = foundNullItem || item == null
 //                        if (foundNullItem) {
 //                           return@ExpandableCard
 //                        }
-                        CardItems(
-                            tasksType = lessonContent.map { it?.taskType ?: TaskType.NONE }.toList(),
-                            tasksTitles = lessonContent.map { it?.taskTitle ?: "<Ошибка загрузки данных>" }.toList(),
-                            tasksStatus = lessonContent.map { it?.taskStatus ?: TaskStatus.RELOAD }.toList(),
-                            courseId = index,
-                            coursesManager = coursesManager,
-                            navigateTo = navigateTo
-                        )
+
+                        if (lessonContent != null) {
+                            CardItems( // TODO: исправить на нормально
+                                tasksType = lessonContent.map { TaskType.valueOf(it.modname?.uppercase() ?: "NONE") }.toList(),
+                                tasksTitles = lessonContent.map { Html.fromHtml(it.name).toString() ?: "<Ошибка загрузки данных>" }.toList(),
+                                tasksStatus = lessonContent.map {
+                                    when (it.completiondata?.state) {
+                                        TaskStatus.DONE.value -> TaskStatus.DONE
+                                        TaskStatus.FAILED.value -> TaskStatus.FAILED
+                                        TaskStatus.WORKING.value -> TaskStatus.WORKING
+                                        TaskStatus.RELOAD.value -> TaskStatus.RELOAD
+                                        else -> TaskStatus.NONE
+                                    }
+                                },
+                                categoryLessonIndex = index,
+                                courseManager = courseManager,
+                                navigateTo = navigateTo
+                            )
+                        }
                     },
                     card = card,
                     onExpandableClick = {
@@ -101,8 +129,8 @@ fun CardItems(
     tasksType: List<TaskType>,
     tasksTitles: List<String>,
     tasksStatus: List<TaskStatus>,
-    coursesManager: CoursesManager,
-    courseId: Int,
+    courseManager: CourseManager,
+    categoryLessonIndex: Int,
     navigateTo: (Screen) -> Unit
 ) {
     try {
@@ -115,15 +143,18 @@ fun CardItems(
     }
     Column {
         for (i in tasksType.indices) {
-            CardItem(
-                taskType = tasksType[i],
-                taskTitle = tasksTitles[i],
-                taskStatus = tasksStatus[i],
-                coursesManager = coursesManager,
-                courseId = courseId,
-                lessonId = i,
-                navigateTo = navigateTo
-            )
+            if (courseManager.getLessonsItemInstanceId(categoryLessonIndex, i) != null) {
+                CardItem(
+                    taskType = tasksType[i],
+                    taskTitle = tasksTitles[i],
+                    taskStatus = tasksStatus[i],
+                    courseManager = courseManager,
+                    categoryLessonIndex = categoryLessonIndex,
+                    lessonIndex = i,
+                    lessonId = courseManager.getLessonsItemInstanceId(categoryLessonIndex, i)!!,
+                    navigateTo = navigateTo
+                )
+            }
         }
     }
 }
@@ -133,8 +164,9 @@ fun CardItem(
     taskType: TaskType,
     taskTitle: String,
     taskStatus: TaskStatus,
-    coursesManager: CoursesManager,
-    courseId: Int,
+    courseManager: CourseManager,
+    categoryLessonIndex: Int,
+    lessonIndex: Int,
     lessonId: Int,
     navigateTo: (Screen) -> Unit
 ) {
@@ -145,11 +177,24 @@ fun CardItem(
         val boxScope = this
         Column(
             Modifier.clickable {
-                coursesManager.setCourseIndex(courseId)
-                coursesManager.setLessonIndex(lessonId)
+                // загрузка данных
                 when (taskType) {
-                    TaskType.TOPIC -> navigateTo(Screen.Article)
-                    TaskType.TEST -> navigateTo(Screen.PreviewTest)
+                    TaskType.LESSON -> {
+                        courseManager.receiveLessonPages(lessonId)
+                        courseManager.setCategoryLessonIndex(categoryLessonIndex)
+                        courseManager.setLessonIndex(lessonIndex)
+                        courseManager.setTaskIndex(0)
+                        courseManager.changeLessonItem()
+                        navigateTo(Screen.Article)
+                    }
+                    TaskType.QUIZ -> {
+                        courseManager.receiveQuizAttempts(lessonId.toString())
+                        courseManager.setCategoryLessonIndex(categoryLessonIndex)
+                        courseManager.setLessonIndex(lessonIndex)
+                        courseManager.setTaskIndex(0)
+                        navigateTo(Screen.PreviewQuiz)
+                    }
+                    else -> ""
                 }
             }
         ) {
@@ -195,7 +240,6 @@ fun CardItem(
                             )
                         ),
                         contentDescription = "taskStatus",
-
                     )
                 }
             }

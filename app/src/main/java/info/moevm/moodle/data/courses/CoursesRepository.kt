@@ -3,7 +3,7 @@ package info.moevm.moodle.data.courses
 import info.moevm.moodle.data.Result
 import kotlinx.coroutines.flow.Flow
 
-typealias CoursesMap = Map<String, List<String>>
+typealias CoursesMap = Map<String, List<Pair<String, Int>>>
 
 /**
  * Interface to the Interests data layer.
@@ -18,7 +18,7 @@ interface CoursesRepository {
     /**
      * Get list of people.
      */
-    suspend fun getPeople(token: String): Result<List<String>>
+    suspend fun getPeople(token: String): Result<List<Pair<String, Int>>>
 
     /**
      * Get list of publications.

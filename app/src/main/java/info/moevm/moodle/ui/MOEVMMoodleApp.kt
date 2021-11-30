@@ -20,19 +20,17 @@ import androidx.navigation.compose.rememberNavController
 import info.moevm.moodle.api.DataStoreMoodleUser
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.data.AppContainer
-import info.moevm.moodle.data.courses.CoursesManager
+import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.data.courses.CoursesRepository
-import info.moevm.moodle.data.courses.exampleCourseContent
 import info.moevm.moodle.data.posts.PostsRepository
-import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.article.ArticleScreen
 import info.moevm.moodle.ui.components.StatisticsTopAppBar
-import info.moevm.moodle.ui.coursecontent.TestPreviewScreen
-import info.moevm.moodle.ui.coursecontent.TestScreen
-import info.moevm.moodle.ui.coursescreen.CourseContentScreen
+import info.moevm.moodle.ui.coursescontent.CourseContentScreen
 import info.moevm.moodle.ui.entersetup.EnterSetupScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
+import info.moevm.moodle.ui.lessoncontent.TestPreviewScreen
+import info.moevm.moodle.ui.lessoncontent.TestScreen
 import info.moevm.moodle.ui.settings.SettingsScreen
 import info.moevm.moodle.ui.signin.PreviewScreen
 import info.moevm.moodle.ui.signin.SignInScreen
@@ -101,60 +99,52 @@ private fun AppContent(
         countryMoodleUser.value = countryMoodleUserString
     }
 
-    var nameCourses: List<String>
-    runBlocking {
-        withContext(Dispatchers.IO) {
-            nameCourses =
-                exampleCourseContent().keys.toList() // TODO заменить на получение заголовков
-        }
-    }
+    val courseId = remember { mutableStateOf(0) }
+    val categoryLessonItemIndex = remember { mutableStateOf(0) }
+    val lessonItemIndex = remember { mutableStateOf(0) }
+    val taskItemIndex = remember { mutableStateOf(0) }
+    val testAttemptKey = remember { mutableStateOf(0) }
 
-    val courseContentItemIndex = remember { mutableStateOf(0) }
-    val lessonContentItemIndex = remember { mutableStateOf(0) }
-    val taskContentItemIndex = remember { mutableStateOf(0) }
-    val testAttemptKey = remember { mutableStateOf("0") }
-
-    val coursesManager = CoursesManager(
+    val courseManager = CourseManager(
+        token = "", // инициализируется после входа в аккаунт в PreviewScreen
         moodleApi = MoodleApi(),
-        courseName = nameCourses.first(),
-        courseContentItemIndex = courseContentItemIndex,
-        lessonContentItemIndex = lessonContentItemIndex,
-        taskContentItemIndex = taskContentItemIndex,
+        courseId = courseId,
+        categoryLessonItemIndex = categoryLessonItemIndex,
+        lessonItemIndex = lessonItemIndex,
+        taskItemIndex = taskItemIndex,
         testAttemptKey = testAttemptKey
     )
-    coursesManager.receiveFullCoursesData()
 
     Crossfade(navController.currentBackStackEntryAsState()) {
         Surface(color = MaterialTheme.colors.background) {
             NavHost(navController, startDestination = ScreenName.PREVIEW.name) {
                 composable(ScreenName.PREVIEW.name) {
                     PreviewScreen(
+                        courseManager = courseManager,
                         navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.TEST.name) {
                     TestScreen(
-                        coursesManager = coursesManager,
+                        courseManager = courseManager,
                         navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.PREVIEW_TEST.name) {
                     TestPreviewScreen(
-                        coursesManager = coursesManager,
+                        courseManager = courseManager,
                         navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.ARTICLE.name) {
-                    info.moevm.moodle.ui.coursecontent.ArticleScreen(
-                        coursesManager = coursesManager,
+                    info.moevm.moodle.ui.lessoncontent.ArticleScreen(
+                        courseManager = courseManager,
                         navigateTo = actions.select
                     )
                 }
                 composable(ScreenName.COURSE_CONTENT.name) {
                     CourseContentScreen(
-                        courseName = nameCourses.first(),
-                        coursesManager = coursesManager,
-                        cardsViewModel = CardsViewModel(coursesManager.getLessonsTitles()),
+                        courseManager = courseManager,
                         navigateTo = actions.select
                     )
                 }
@@ -190,6 +180,7 @@ private fun AppContent(
                 composable(ScreenName.INTERESTS.name) {
                     InterestsScreen(
                         navigateTo = actions.select,
+                        courseManager = courseManager,
                         coursesRepository = coursesRepository,
                         scaffoldState = scaffoldState
                     )
