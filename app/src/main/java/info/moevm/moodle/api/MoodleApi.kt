@@ -13,10 +13,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -249,7 +246,7 @@ class MoodleApi {
         var data: QuizFinished? = null
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                val response = api.getQuizFinished(token, APIVariables.MOD_QUIZ_GET_ATTEMPT_DATA.value, attemptid, page, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
+                val response = api.getQuizFinished(token, APIVariables.MOD_QUIZ_GET_ATTEMPT_REVIEW.value, attemptid, page, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
                 if (response.isSuccessful) {
                     Timber.d("get response " + response.body())
                     data = response.body()
@@ -268,8 +265,31 @@ class MoodleApi {
         return data
     }
 
-    fun startNewAttempt(token: String, quizid: String): QuizAttempts? {
-        var data: QuizAttempts? = null
+    fun getQuizFinished(token: String, attemptid: String): QuizFinished? {
+        var data: QuizFinished? = null
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val response = api.getQuizFinished(token, APIVariables.MOD_QUIZ_GET_ATTEMPT_REVIEW.value, attemptid, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
+                if (response.isSuccessful) {
+                    Timber.d("get response " + response.body())
+                    data = response.body()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    val z = e.message // TODO убрать
+                    Timber.d("fatal error")
+                }
+            }
+        }
+        // WORK IN PROGRESS
+        val time = System.currentTimeMillis()
+        while (data == null && System.currentTimeMillis() - time < 1000) {}
+        Timber.d("answer is received")
+        return data
+    }
+
+    fun startNewAttempt(token: String, quizid: String): QuizAttempt? {
+        var data: QuizAttempt? = null
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val response = api.startNewAttempt(token, APIVariables.MOD_QUIZ_START_ATTEMPT.value, quizid, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()

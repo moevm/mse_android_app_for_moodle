@@ -46,11 +46,14 @@ interface ApiRequests {
     fun getQuizAttempts(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("quizid") quizid: String, @Query("status") status: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizAttempts?>
 
     @GET("/webservice/rest/server.php")
-    fun startNewAttempt(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("quizid") quizid: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizAttempts?>
+    fun startNewAttempt(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("quizid") quizid: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizAttempt?>
 
     @GET("/webservice/rest/server.php")
     fun getQuizInProgress(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("attemptid") attemptid: String, @Query("page") page: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizInProgress?>
 
     @GET("/webservice/rest/server.php")
     fun getQuizFinished(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("attemptid") attemptid: String, @Query("page") page: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizFinished?>
+
+    @GET("/webservice/rest/server.php")
+    fun getQuizFinished(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("attemptid") attemptid: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizFinished?>
 }

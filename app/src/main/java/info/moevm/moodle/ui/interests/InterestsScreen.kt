@@ -133,7 +133,7 @@ fun InterestsScreen(
         PeopleList(navigateTo, data, selectedPeople, onPeopleSelect, changeCourse)
     }
 
-//    val publicationSection = TabContent(Sections.Publications) {
+//    val publicationSection = TabContent(Sections.Publications) { // Не требуется
 //        val (publications) = produceUiState(coursesRepository) {
 //            getPublications()
 //        }

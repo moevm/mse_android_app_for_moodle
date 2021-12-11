@@ -14,6 +14,7 @@ import info.moevm.moodle.model.CurrentCourses
 import info.moevm.moodle.ui.coursescontent.*
 import kotlinx.coroutines.*
 import timber.log.Timber
+import java.lang.Math.max
 
 class CourseManager(
     private var token: String,
@@ -58,11 +59,11 @@ class CourseManager(
         }
     }
 
-    fun changeLessonItem(isFinished: Boolean = false) {
+    fun changeGlobalLessonItem(isFinished: Boolean = false) {
         when (courseContentData?.getOrNull(categoryLessonItemIndex.value)?.modules?.getOrNull(lessonItemIndex.value)?.modname ?: "") {
-            TaskType.LESSON.value -> { // TODO: починить
+            TaskType.LESSON.value -> {
                 articleLesson = ArticleTaskContentItem(
-                    lessonPages?.pages?.getOrNull(taskItemIndex.value)?.page?.title ?: "Ошибка загрузки",
+                    lessonPages?.pages?.getOrNull(taskItemIndex.value)?.page?.title ?: "Данный элемент не поддерживается",
                     TaskContentType.ARTICLE,
                     "",
                     TaskStatus.WORKING,
@@ -76,22 +77,42 @@ class CourseManager(
                 if (isFinished)
                     testTaskContentItem = TestTaskContentItem(
                         "Элемент теста",
-                        TaskContentType.UNSUPPORTED,
-                        quizFinishedContent?.questions?.getOrNull(0)?.mark ?: "Ошибка загрузки",
+                        TaskContentType.TEST_FINISHED,
+                        quizFinishedContent?.questions?.getOrNull(0)?.mark ?: "Данный элемент не поддерживается",
                         TaskStatus.DONE,
                         { BuildLessonContent(content = quizFinishedContent?.questions?.getOrNull(0)?.html) } // FIXME доработать
                     )
                 else
                     testTaskContentItem = TestTaskContentItem(
                         "Элемент теста",
-                        TaskContentType.UNSUPPORTED,
-                        quizInProgressContent?.questions?.getOrNull(0)?.mark ?: "Ошибка загрузки",
+                        TaskContentType.TEST_IN_PROGRESS,
+                        quizInProgressContent?.questions?.getOrNull(0)?.mark ?: "Данный элемент не поддерживается",
                         TaskStatus.DONE,
                         { BuildLessonContent(content = quizInProgressContent?.questions?.getOrNull(0)?.html) } // FIXME доработать
                     )
                 articleLesson = null
             }
             else -> { }
+        }
+    }
+
+    fun changeLocalTestItem() {
+        if (quizFinishedContent != null) {
+            testTaskContentItem = TestTaskContentItem(
+                "Элемент теста",
+                TaskContentType.TEST_FINISHED,
+                quizFinishedContent?.questions?.getOrNull(taskItemIndex.value)?.mark ?: "Данный элемент не поддерживается",
+                TaskStatus.DONE,
+                { BuildLessonContent(content = quizFinishedContent?.questions?.getOrNull(taskItemIndex.value)?.html) } // FIXME доработать
+            )
+        } else if (quizInProgressContent != null) {
+            testTaskContentItem = TestTaskContentItem(
+                "Элемент теста",
+                TaskContentType.TEST_IN_PROGRESS,
+                quizInProgressContent?.questions?.getOrNull(0)?.mark ?: "Данный элемент не поддерживается", // 0, т.к всегда загружается 1 вопрос
+                TaskStatus.DONE,
+                { BuildLessonContent(content = quizInProgressContent?.questions?.getOrNull(0)?.html) } // FIXME доработать
+            )
         }
     }
 
@@ -147,11 +168,12 @@ class CourseManager(
         while (!loaded && System.currentTimeMillis() - time < 2000) {} // FIXME заменить 2с на другое или константу
     }
 
-    fun receiveQuizInProgress(attemptid: String, page: String) { //
+    fun receiveQuizInProgress(attemptid: String, page: String) {
         var loaded = false
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 quizInProgressContent = moodleApi.getQuizInProgress(token, attemptid, page)
+                quizFinishedContent = null
                 loaded = true
             }
         }
@@ -159,11 +181,12 @@ class CourseManager(
         while (!loaded && System.currentTimeMillis() - time < 2000) {} // FIXME заменить 2с на другое или константу
     }
 
-    fun receiveQuizFinished(attemptid: String, page: String) {
+    fun receiveQuizFinished(attemptid: String) {
         var loaded = false
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                quizFinishedContent = moodleApi.getQuizFinished(token, attemptid, page)
+                quizFinishedContent = moodleApi.getQuizFinished(token, attemptid)
+                quizInProgressContent = null
                 loaded = true
             }
         }
@@ -177,7 +200,7 @@ class CourseManager(
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
                 val response = moodleApi.startNewAttempt(token, quizid)
-                if (response?.attempts != null) {
+                if (response != null) {
                     newAttempt = true
 //                    quizAttemptContent?.attempts?.add(response.attempts[0])
                 } else
@@ -191,38 +214,32 @@ class CourseManager(
         return newAttempt
     }
 
-    fun moveTaskIndex(delta: Int = 1) {
-        setTaskIndex(taskItemIndex.value + delta)
+    fun moveTaskIndex(delta: Int = 1): Boolean {
+        return setTaskIndex(taskItemIndex.value + delta)
     }
 
-    fun setTaskIndex(newIndex: Int) {
+    fun setTaskIndex(newIndex: Int): Boolean {
+        if (isRealPage(newIndex)) {
+            taskItemIndex.value = newIndex
+            Timber.i("taskContentItemIndex: ${taskItemIndex.value}")
+            return true
+        }
+        Timber.i("taskContentItemIndex: ${taskItemIndex.value}")
+        return false
+    }
+
+    fun isRealPage(newIndex: Int): Boolean {
         if (articleLesson != null) {
             if (0 <= newIndex && newIndex < lessonPages?.pages?.size ?: 0)
-                taskItemIndex.value = newIndex
-        } /* else if (quizContent != null) {
-//            if (0 <= newIndex && newIndex < testLessonContent?.taskContent?.get(
-//                    testAttemptKey.value
-//                )?.second?.size ?: 0
-//            )
-//                taskContentItemIndex.value = newIndex
-        }*/
-        Timber.i("taskContentItemIndex: ${taskItemIndex.value}")
-    }
-
-    fun setAttemptKey(newTestAttemptKey: Int) {
-        testAttemptKey.value = newTestAttemptKey
-        taskItemIndex.value = 0
-//        if (testLessonContent != null && testLessonContent?.taskContent.orEmpty()
-//                .contains(newTestAttemptKey)
-//        ) {
-//            testAttemptKey.value = newTestAttemptKey
-//            taskContentItemIndex.value = 0
-//        }
-        Timber.i("testAttemptKey: ${testAttemptKey.value}")
-    }
-
-    fun moveLessonIndex(delta: Int = 1) {
-        setLessonIndex(lessonItemIndex.value + delta)
+                return true
+        } else if (quizFinishedContent != null) {
+            if (0 <= newIndex && newIndex < quizFinishedContent?.questions?.size ?: 0)
+                return true
+        } else if (quizInProgressContent != null) {
+            if (0 <= newIndex && newIndex <= max(quizInProgressContent?.nextpage ?: 0, taskItemIndex.value)) // нужна верхняя граница max, т.к у moodle конец страниц равен -1
+                return true
+        }
+        return false
     }
 
     fun setLessonIndex(newIndex: Int) {
@@ -247,7 +264,7 @@ class CourseManager(
         lessonItemIndex.value = 0
         taskItemIndex.value = 0
         receiveCourseContentData(newIndex.toString())
-        changeLessonItem()
+        changeGlobalLessonItem()
         Timber.i("courseIndex is $newIndex")
     }
 
@@ -257,10 +274,6 @@ class CourseManager(
 
     fun setCourseName(courseName: String) {
         this.courseName = courseName
-    }
-
-    fun getLessonPage(pageIndex: Int): LessonPage? {
-        return lessonPages?.pages?.getOrNull(pageIndex)?.page
     }
 
     fun getCurrentLessonURL(): String? {
@@ -287,16 +300,12 @@ class CourseManager(
         return quizAttemptContent
     }
 
-    fun getQuizInProgressContent(): QuizInProgress? {
-        return quizInProgressContent
-    }
-
-    fun getQuizFinishedContent(): QuizFinished? {
-        return quizFinishedContent
-    }
-
     fun getArticleLessonContentItem(): ArticleTaskContentItem? {
         return articleLesson
+    }
+
+    fun getTestTaskContentItem(): TestTaskContentItem? {
+        return testTaskContentItem
     }
 
     fun getLessonContentItemIndex(): MutableState<Int> {
@@ -311,44 +320,12 @@ class CourseManager(
         return testAttemptKey
     }
 
-    fun getCategoryLessonSize(): Int {
-        return courseContentData?.size ?: 0
-    }
-
     fun getLessonContentSize(): Int {
         return courseContentData?.getOrNull(categoryLessonItemIndex.value)?.modules?.size ?: 0
     }
 
-    fun getTaskAttemptsCount(): Int {
-        return TODO()
-
-//        return (
-//            courseContentData?.get(courseContentItemIndex.value)?.lessonContent?.get(
-//                lessonContentItemIndex.value
-//            ) as TestContentItems?
-//            )?.taskContent?.size ?: 0
-    }
-
-    fun getTaskTestsContentSize(): Int {
-        return TODO()
-//        return 0
-//        return (
-//            courseContentData?.get(courseContentItemIndex.value)?.lessonContent?.get(
-//                lessonContentItemIndex.value
-//            ) as TestContentItems?
-//            )?.taskContent?.get(testAttemptKey.value)?.second?.size ?: 0
-    }
-
     fun getTaskArticlesContentSize(): Int {
         return lessonPages?.pages?.size ?: 0
-    }
-
-    fun getTaskType(indexCategory: Int?, indexLesson: Int?): TaskType {
-        return when (courseContentData?.getOrNull(indexCategory ?: -1)?.modules?.getOrNull(indexLesson ?: -1)?.modname ?: "") {
-            TaskType.LESSON.value -> TaskType.LESSON
-            TaskType.QUIZ.value -> TaskType.QUIZ
-            else -> TaskType.NONE
-        }
     }
 
     fun getNextLessonType(): TaskType {
@@ -361,16 +338,6 @@ class CourseManager(
 //        )
 //            (courseContentData?.get(courseContentItemIndex.value)?.lessonContent?.get(
 //                lessonContentItemIndex.value + 1
-//            )?.taskType ?: TaskType.NONE)
-//        else
-//            TaskType.NONE
-    }
-
-    fun getPrevLessonType(): TaskType {
-        return TODO()
-//        return if (0 <= lessonContentItemIndex.value - 1)
-//            (courseContentData?.get(courseContentItemIndex.value)?.lessonContent?.get(
-//                lessonContentItemIndex.value - 1
 //            )?.taskType ?: TaskType.NONE)
 //        else
 //            TaskType.NONE

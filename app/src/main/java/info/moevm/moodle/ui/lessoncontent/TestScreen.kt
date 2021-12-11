@@ -1,8 +1,8 @@
 package info.moevm.moodle.ui.lessoncontent
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -19,187 +19,93 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.accompanist.insets.rememberImeNestedScrollConnection
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescontent.*
 import kotlinx.coroutines.launch
-import java.lang.Math.random
 
+@SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalAnimatedInsets::class)
 @Composable
-fun TestScreen( // FIXME пока не работает, исправить
+fun TestScreen(
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
-    if (courseManager.requiredMoveLessonIndexForward) {
-        courseManager.requiredMoveLessonIndexForward = false
-        courseManager.moveLessonIndex(1)
-    } else if (courseManager.requiredMoveLessonIndexBack) {
-        courseManager.requiredMoveLessonIndexBack = false
-        courseManager.moveLessonIndex(-1)
-    }
-    val lessonContent = courseManager.getQuizInProgressContent()
-    val taskContent: TestTaskContentItem? = null
-//        lessonContent?.taskContent?.get(courseManager.getAttemptKey().value)?.second?.get(
-//            courseManager.getTaskContentItemIndexState().value
-//        ) as TestTaskContentItem?
-    val taskState: MutableState<TaskStatus?> =
-        remember { mutableStateOf(TaskStatus.NONE) }
-    taskState.value = taskContent?.taskContentStatus
+//    if (courseManager.requiredMoveLessonIndexForward) {
+//        courseManager.requiredMoveLessonIndexForward = false
+//        courseManager.moveLessonIndex(1)
+//    } else if (courseManager.requiredMoveLessonIndexBack) {
+//        courseManager.requiredMoveLessonIndexBack = false
+//        courseManager.moveLessonIndex(-1)
+//    }
+    val testContentItem = courseManager.getTestTaskContentItem()
+    val taskContentState = remember { mutableStateOf(testContentItem) }
+//    val taskContent: TestTaskContentItem? = null
+//    val taskState: MutableState<TaskStatus?> =
+//        remember { mutableStateOf(TaskStatus.NONE) }
+//    taskState.value = taskContent?.taskContentStatus
 
-    val lazyListState = LazyListState(5)
     Scaffold(
         topBar = {
-//            TaskScreenTopBar( // TODO нельзя использовать из-за специфики ссылки на тест для браузера
-//                courseManager = courseManager,
-//                onBack = { navigateTo(Screen.CourseContent) }
-//            )
+            TaskScreenTopBar(
+                courseManager = courseManager,
+                onBack = { navigateTo(Screen.CourseContent) }
+            )
         },
         bottomBar = {
             Column {
-                if (taskContent?.taskContentType == TaskContentType.TEST_ANSWER) {
-                    Surface {
-//                        TestAnswer(taskAnswerType = taskContent.taskAnswerType, lazyListState = lazyListState)
+                if (testContentItem?.taskContentType == TaskContentType.TEST_FINISHED) {
+                    BottomNavigatorWithChecker(
+                        courseManager = courseManager,
+//                        taskState = taskState,
+                        navigatePrevPage = {
+                            if (!courseManager.moveTaskIndex(-1))
+                                navigateTo(Screen.TestAttempts)
+                            courseManager.changeLocalTestItem()
+                            taskContentState.value = courseManager.getTestTaskContentItem()
+                        }
+                    ) {
+                        if (!courseManager.moveTaskIndex(1))
+                            navigateTo(Screen.TestAttempts)
+                        courseManager.changeLocalTestItem()
+                        taskContentState.value =
+                            courseManager.getTestTaskContentItem()
                     }
-                    Spacer(Modifier.height(12.dp))
+                } else if (testContentItem?.taskContentType == TaskContentType.TEST_IN_PROGRESS) {
+                    BottomNavigatorWithChecker(
+                        courseManager = courseManager,
+//                        taskState = taskState,
+                        navigatePrevPage = {
+                            if (!courseManager.moveTaskIndex(-1))
+                                navigateTo(Screen.TestAttempts)
+                            courseManager.receiveQuizInProgress(courseManager.getAttemptKey().value.toString(), courseManager.getTaskContentItemIndexState().value.toString())
+                            courseManager.changeLocalTestItem()
+                            taskContentState.value = courseManager.getTestTaskContentItem()
+                        }
+                    ) {
+                        if (!courseManager.moveTaskIndex(1))
+                            navigateTo(Screen.TestAttempts)
+                        courseManager.receiveQuizInProgress(
+                            courseManager.getAttemptKey().value.toString(),
+                            courseManager.getTaskContentItemIndexState().value.toString()
+                        )
+                        courseManager.changeLocalTestItem()
+                        taskContentState.value =
+                            courseManager.getTestTaskContentItem()
+                    }
                 }
-                BottomNavigatorWithChecker(
-                    courseManager = courseManager,
-                    taskState = taskState,
-                    taskContentItemSize = 1 /* courseManager.getQuizInProgressContent()?.taskContent?.get(
-                        courseManager.getAttemptKey().value
-                    )?.second?.size ?: 1*/,
-                    navigateTo = navigateTo
-                )
             }
         }
     ) { contentPadding ->
-        // TODO Заблокировать отправку задания на проверку
-        if (lessonContent == null || taskContent == null) {
-            BoxWithConstraints(Modifier.fillMaxSize()) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(20.dp),
-                    text = "Ошибка загрузки данных"
-                )
-                IconButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 80.dp)
-                        .size(60.dp),
-                    onClick = { /*TODO*/ } // Повторная загрузка
-                ) {
-                    Icon(
-                        modifier = Modifier.size(42.dp),
-                        imageVector = Icons.Filled.Refresh,
-                        contentDescription = null
-                    )
-                }
-            }
-            return@Scaffold
-        }
-        Column {
-            LazyColumn(
-                contentPadding = contentPadding,
-                state = lazyListState,
-                reverseLayout = true,
-                modifier = Modifier
-                    .nestedScroll(connection = rememberImeNestedScrollConnection())
-                    .padding(bottom = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    when (taskContent.taskContentType) {
-//                        TaskContentType.TEST_ONE_CHOICE -> TestOneChoice(
-//                            taskAnswers = taskContent.taskAnswers
-//                        )
-//                        TaskContentType.TEST_MULTI_CHOICE -> TestMultiChoice(
-//                            taskAnswers = taskContent.taskAnswers
-//                        )
-// //                                        TaskContentType.TEST_ANSWER -> TestAnswer(taskAnswerType = taskContent.taskAnswerType)
-//                        TaskContentType.TEST_MATCH -> TestMatch(
-//                            taskAnswers = taskContent.taskAnswers,
-//                            taskAdditionInfo = taskContent.taskAdditionInfo
-//                        )
-                        else -> {
-                        }
-                    }
-                }
-                item {
-//                    taskContent.taskContent()
-                }
-                item {
-                    Text(
-                        modifier = Modifier.padding(
-                            start = 16.dp,
-                            end = 16.dp,
-                            bottom = 12.dp
-                        ),
-                        text = if (taskContent.taskContentStatus == TaskStatus.DONE) "Выполнено" else "Не выполнено",
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            color = Color(0f, 0f, 0f, 0.4f),
-                            textAlign = TextAlign.Center
-                        )
-                    )
-                }
-                item {
-                    Text(
-                        modifier = Modifier.padding(
-                            start = 16.dp,
-                            end = 16.dp,
-                            bottom = 4.dp
-                        ),
-                        text = taskContent.taskMark,
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            color = Color(0f, 0f, 0f, 0.4f),
-                            textAlign = TextAlign.Center
-                        )
-                    )
-                }
-                item {
-                    Text(
-                        modifier = Modifier.padding(
-                            start = 16.dp,
-                            end = 16.dp,
-                            bottom = 6.dp
-                        ),
-                        text =
-                        when (taskContent.taskContentType) {
-                            TaskContentType.TEST_ONE_CHOICE -> "Выберите подходящий ответ из списка"
-                            TaskContentType.TEST_MULTI_CHOICE -> "Выберите все подходящие ответы из списка"
-                            TaskContentType.TEST_ANSWER -> "Введите ваш ответ на вопрос"
-                            TaskContentType.TEST_MATCH -> "Расположите элементы в правильном порядке"
-                            else -> "<error>"
-                        },
-                        style = MaterialTheme.typography.h6
-                    )
-                }
-                item {
-                    Text(
-                        modifier = Modifier.padding(
-                            top = 16.dp,
-                            start = 16.dp,
-                            end = 16.dp,
-                            bottom = 10.dp
-                        ),
-                        text = taskContent.taskTitle,
-                        style = MaterialTheme.typography.h6
-                    )
-                }
-            }
+        Box(
+            modifier = Modifier.padding(contentPadding)
+        ) {
+            taskContentState.value!!.taskContent()
         }
     }
 }
@@ -207,41 +113,32 @@ fun TestScreen( // FIXME пока не работает, исправить
 @Composable
 fun BottomNavigatorWithChecker(
     courseManager: CourseManager,
-    taskState: MutableState<TaskStatus?>,
-    taskContentItemSize: Int,
-    navigateTo: (Screen) -> Unit
+//    taskState: MutableState<TaskStatus?>,
+    navigatePrevPage: () -> Unit,
+    navigateNextPage: () -> Unit
 ) {
     // TODO добавить изменение иконок при проверке
     val (iconBack, textBack) = when (courseManager.getTaskContentItemIndexState().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
     }
-    val (iconForward, textForward) = when (courseManager.getTaskContentItemIndexState().value) {
-        taskContentItemSize - 1 -> Pair(Icons.Filled.Task, "Завершить")
+    val (iconForward, textForward) = when {
+        !courseManager.isRealPage(courseManager.getTaskContentItemIndexState().value+1) -> Pair(Icons.Filled.Task, "Завершить")
         else -> Pair(Icons.Filled.ChevronRight, "Далее")
     }
-    val (iconStatus, textStatus) = when (taskState.value) {
-        TaskStatus.NONE -> Pair(Icons.Filled.ArrowUpward, "Отправить")
-        TaskStatus.DONE -> Pair(Icons.Filled.CheckCircle, "Верно")
+    val (iconStatus, textStatus) = /*when {
+        TaskStatus.NONE -> */Pair(Icons.Filled.ArrowUpward, "Отправить")
+        /*TaskStatus.DONE -> Pair(Icons.Filled.CheckCircle, "Верно")
         TaskStatus.FAILED -> Pair(Icons.Filled.Cached, "Повторить")
         else -> Pair(Icons.Filled.Error, "<error>")
-    }
+    }*/
     val selectedItem by remember { mutableStateOf(0) }
     BottomNavigation {
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-                if (courseManager.getTaskContentItemIndexState().value == 0) {
-                    courseManager.requiredMoveLessonIndexBack = true
-                    when (courseManager.getPrevLessonType()) {
-                        TaskType.QUIZ -> navigateTo(Screen.PreviewQuiz)
-                        TaskType.LESSON -> navigateTo(Screen.Article)
-                        TaskType.NONE -> {
-                        }
-                    }
-                } else
-                    courseManager.moveTaskIndex(-1)
-            }, // FIXME исправить на нормально
+                navigatePrevPage()
+            },
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
         )
@@ -256,24 +153,24 @@ fun BottomNavigatorWithChecker(
 //
 //                    ))
 //
-                if (taskState.value != TaskStatus.NONE)
-                    taskState.value = TaskStatus.NONE
-                else {
-                    if (random() < 0.5)
-                        taskState.value = TaskStatus.DONE
-                    else
-                        taskState.value = TaskStatus.FAILED
-                }
+//                if (taskState.value != TaskStatus.NONE)
+//                    taskState.value = TaskStatus.NONE
+//                else {
+//                    if (random() < 0.5)
+//                        taskState.value = TaskStatus.DONE
+//                    else
+//                        taskState.value = TaskStatus.FAILED
+//                }
                 // TODO Проверка
-            }, // FIXME исправить на нормально
+            },
             icon = {
                 Icon(
                     imageVector = iconStatus,
-                    tint = when (taskState.value) {
+                    tint = LocalContentColor.current.copy(alpha = LocalContentAlpha.current) /*when (taskState.value) {
                         TaskStatus.DONE -> Color.Green
                         TaskStatus.FAILED -> Color.Red
                         else -> LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
-                    },
+                    }*/,
                     contentDescription = null
                 )
             },
@@ -282,16 +179,7 @@ fun BottomNavigatorWithChecker(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 2,
             onClick = {
-                if (courseManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
-                    courseManager.requiredMoveLessonIndexForward = true
-                    when (courseManager.getNextLessonType()) {
-                        TaskType.QUIZ -> navigateTo(Screen.PreviewQuiz)
-                        TaskType.LESSON -> navigateTo(Screen.Article)
-                        TaskType.NONE -> {
-                        }
-                    }
-                } else
-                    courseManager.moveTaskIndex(1)
+                navigateNextPage()
             },
             icon = {
                 Icon(
@@ -564,21 +452,4 @@ fun TestRadioButtonItem(
                 .align(Alignment.CenterVertically)
         )
     }
-}
-
-fun testChecker(
-    courseContentItemIndex: Int,
-    lessonContentItemIndex: Int,
-    testAttemptKey: String,
-    taskContentItemIndex: Int,
-    listAnswer: List<String>
-): Boolean {
-//    val courseData = exampleCourseContent().values.first()
-
-//    val rightAnswer = (
-//        (courseData[courseContentItemIndex].lessonContent[lessonContentItemIndex] as TestContentItems)
-//            .taskContent[testAttemptKey]!!.second[taskContentItemIndex] as TestTaskContentItem
-//        ).taskRightAnswers
-//    return rightAnswer == listAnswer
-    return false
 }

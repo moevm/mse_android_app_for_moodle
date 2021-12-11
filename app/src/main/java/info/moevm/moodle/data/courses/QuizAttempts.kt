@@ -1,5 +1,7 @@
 package info.moevm.moodle.data.courses
 
+import info.moevm.moodle.model.WrongToken
+
 /**
 val id: Int?,                              Необязательно //Attempt id.
 val quiz: Int?,                            Необязательно //Foreign key reference to the quiz that was attempted.
@@ -38,4 +40,9 @@ data class Attempt(
 data class QuizAttempts(
     val attempts: List<Attempt>? = null,
     val warnings: List<WarningItem>? = null
+)
+
+data class QuizAttempt(
+    val attempts: Attempt? = null,
+    val warnings: WrongToken? = null
 )

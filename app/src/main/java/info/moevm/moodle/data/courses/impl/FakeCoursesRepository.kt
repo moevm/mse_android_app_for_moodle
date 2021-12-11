@@ -66,6 +66,10 @@ class FakeCoursesRepository : CoursesRepository {
     private val mutex = Mutex()
 
     override suspend fun getTopics(token: String): Result<CoursesMap> {
+        if (token.isEmpty())
+            Timber.i("token in getTopics empty")
+        else
+            Timber.i("token in getTopics not empty")
 
         val apiclient = MoodleApi()
         val data = apiclient.getCourses(token)
@@ -94,6 +98,11 @@ class FakeCoursesRepository : CoursesRepository {
     }
 
     override suspend fun getPeople(token: String): Result<List<Pair<String, Int>>> {
+        if (token.isEmpty())
+            Timber.i("token in getPeople empty")
+        else
+            Timber.i("token in getPeople not empty")
+
         val apiclient = MoodleApi()
         val data = apiclient.getCurrentCourses(token)
 

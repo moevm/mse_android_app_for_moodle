@@ -246,6 +246,7 @@ enum class APIVariables(var value: String) {
     MOD_LESSON_GET_PAGES("mod_lesson_get_pages"),
     MOD_QUIZ_GET_USER_ATTEMPTS("mod_quiz_get_user_attempts"),
     MOD_QUIZ_GET_ATTEMPT_DATA("mod_quiz_get_attempt_data"),
+    MOD_QUIZ_GET_ATTEMPT_REVIEW("mod_quiz_get_attempt_review"),
     MOD_QUIZ_START_ATTEMPT("mod_quiz_start_attempt"),
     CORE_COURSE_GET_COURSES_BY_FIELD("core_course_get_courses_by_field"),
     CORE_USER_GET_USERS_BY_FIELD("core_user_get_users_by_field"),

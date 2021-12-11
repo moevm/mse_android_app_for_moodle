@@ -29,7 +29,7 @@ import info.moevm.moodle.ui.coursescontent.CourseContentScreen
 import info.moevm.moodle.ui.entersetup.EnterSetupScreen
 import info.moevm.moodle.ui.home.HomeScreen
 import info.moevm.moodle.ui.interests.InterestsScreen
-import info.moevm.moodle.ui.lessoncontent.TestPreviewScreen
+import info.moevm.moodle.ui.lessoncontent.TestAttemptsScreen
 import info.moevm.moodle.ui.lessoncontent.TestScreen
 import info.moevm.moodle.ui.settings.SettingsScreen
 import info.moevm.moodle.ui.signin.PreviewScreen
@@ -130,8 +130,8 @@ private fun AppContent(
                         navigateTo = actions.select
                     )
                 }
-                composable(ScreenName.PREVIEW_TEST.name) {
-                    TestPreviewScreen(
+                composable(ScreenName.TEST_ATTEMPTS.name) {
+                    TestAttemptsScreen(
                         courseManager = courseManager,
                         navigateTo = actions.select
                     )
