@@ -9,7 +9,7 @@ typealias CourseMapData = Map<String, List<CourseContentItem>>
 enum class TaskType(val value: String = "") { NONE(""), LESSON("lesson"), QUIZ("quiz"), FORUM("forum"), LTI("lti") }
 enum class TaskStatus(val value: Int = -1) { NONE(-1), WORKING(0), DONE(1), FAILED(2), RELOAD(3) } // TODO: исправить на нужные из документации
 enum class AttemptStatus(val value: String) { IN_PROGRESS("inprogress"), OVERDUE("overdue"), FINISHED("finished"), ABANDONED("abandoned") }
-enum class TaskContentType { VIDEO, ARTICLE, TEST_ONE_CHOICE, TEST_MULTI_CHOICE, TEST_ANSWER, TEST_MATCH, UNSUPPORTED }
+enum class TaskContentType { ARTICLE, TEST_IN_PROGRESS, TEST_FINISHED, UNSUPPORTED }
 enum class TaskAnswerType { NONE, NUMBERS, TEXT }
 
 data class CourseContentItem(

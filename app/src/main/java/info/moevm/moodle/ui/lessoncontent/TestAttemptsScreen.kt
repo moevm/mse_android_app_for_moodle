@@ -22,11 +22,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun TestPreviewScreen(
+fun TestAttemptsScreen(
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
@@ -49,9 +50,6 @@ fun TestPreviewScreen(
             )
         }
     ) {
-        if (attemptContent == null) {
-            return@Scaffold
-        }
 //        if (lessonContent.taskType == TaskType.NONE) {
 //            BoxWithConstraints(Modifier.fillMaxSize()) {
 //                Text(
@@ -134,15 +132,18 @@ fun TestPreviewScreen(
                         )
                     }
                 }
+                if (attemptContent?.attempts == null)
+                    throw IllegalArgumentException("Попытки являются null")
+
                 var index = 1
-                for (item in attemptContent.attempts!!) {
+                for (item in attemptContent.attempts) {
                     AttemptsCard(
+                        courseManager = courseManager,
                         chosenAttempt = courseManager.getAttemptKey(),
-                        idAttempt = item?.id ?: -1,
+                        idAttempt = item.id ?: -1,
                         numberCard = index++,
-                        attemptStatus = item?.state ?: "Ошибка",
-                        // в дате убираем +2 часа
-                        date = SimpleDateFormat("dd.MM.yyyy HH:mm").format(Date((((item?.timefinish?.toLong() ?: 0L) - 2 * 60 * 60).coerceAtLeast(0L) * 1000))).toString(),
+                        attemptStatus = item.state ?: "Ошибка",
+                        date = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.ROOT).format(Date((((item.timefinish?.toLong() ?: 0L) - 0).coerceAtLeast(0L) * 1000))).toString(),
                         navigateTo = navigateTo
                     )
                 }
@@ -161,6 +162,7 @@ fun TestPreviewScreen(
 
 @Composable
 fun AttemptsCard(
+    courseManager: CourseManager,
     chosenAttempt: MutableState<Int>,
     idAttempt: Int,
     numberCard: Int,
@@ -210,6 +212,15 @@ fun AttemptsCard(
                         .padding(end = 25.dp)
                         .align(Alignment.CenterEnd),
                     onClick = {
+                        if (attemptStatus == AttemptStatus.FINISHED.value) {
+                            courseManager.setTaskIndex(0)
+                            courseManager.receiveQuizFinished(idAttempt.toString())
+                            courseManager.changeGlobalLessonItem(true)
+                        } else if (attemptStatus == AttemptStatus.IN_PROGRESS.value) {
+                            courseManager.setTaskIndex(0)
+                            courseManager.receiveQuizInProgress(idAttempt.toString(), "0")
+                            courseManager.changeGlobalLessonItem(false)
+                        }
                         chosenAttempt.value = idAttempt
                         navigateTo(Screen.Test)
                     }
@@ -254,8 +265,6 @@ fun BottomNavigatorWithAttempt(
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
-//    val lessonContent = courseManager.getQuizInProgressContent()
-
     val (iconBack, textBack) = when (courseManager.getLessonContentItemIndex().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")

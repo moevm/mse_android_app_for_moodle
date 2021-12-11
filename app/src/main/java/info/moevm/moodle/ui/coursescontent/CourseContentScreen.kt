@@ -184,7 +184,7 @@ fun CardItem(
                         courseManager.setCategoryLessonIndex(categoryLessonIndex)
                         courseManager.setLessonIndex(lessonIndex)
                         courseManager.setTaskIndex(0)
-                        courseManager.changeLessonItem()
+                        courseManager.changeGlobalLessonItem()
                         navigateTo(Screen.Article)
                     }
                     TaskType.QUIZ -> {
@@ -192,7 +192,7 @@ fun CardItem(
                         courseManager.setCategoryLessonIndex(categoryLessonIndex)
                         courseManager.setLessonIndex(lessonIndex)
                         courseManager.setTaskIndex(0)
-                        navigateTo(Screen.PreviewQuiz)
+                        navigateTo(Screen.TestAttempts)
                     }
                     else -> ""
                 }

@@ -3,7 +3,6 @@ package info.moevm.moodle.ui.lessoncontent
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.webkit.WebView
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -20,30 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescontent.ArticleTaskContentItem
-
-@SuppressLint("SetJavaScriptEnabled")
-@Composable
-private fun BuildLessonContent(content: String?) { // TODO добавить обработку строки для удаления лишних '/'
-    Box( // TODO добавить поддержку полноэкранного режима для видео
-        modifier = Modifier.padding(10.dp)
-    ) {
-        AndroidView(
-            factory = { context ->
-                WebView(context).apply {
-                    this.settings.javaScriptEnabled = true
-                    this.loadData(content ?: "<p>Ошибка загрузки</p>", "text/html", "utf-16")
-                }
-            },
-            update = {
-                it.loadData(content ?: "<p>Ошибка загрузки</p>", "text/html", "utf-16")
-            }
-        )
-    }
-}
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -51,13 +29,13 @@ fun ArticleScreen(
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
-    if (courseManager.requiredMoveLessonIndexForward) {
-        courseManager.requiredMoveLessonIndexForward = false
-        courseManager.moveLessonIndex(1)
-    } else if (courseManager.requiredMoveLessonIndexBack) {
-        courseManager.requiredMoveLessonIndexBack = false
-        courseManager.moveLessonIndex(-1)
-    }
+//    if (courseManager.requiredMoveLessonIndexForward) {
+//        courseManager.requiredMoveLessonIndexForward = false
+//        courseManager.moveLessonIndex(1)
+//    } else if (courseManager.requiredMoveLessonIndexBack) {
+//        courseManager.requiredMoveLessonIndexBack = false
+//        courseManager.moveLessonIndex(-1)
+//    }
 
     val taskContent = courseManager.getArticleLessonContentItem()
     val taskContentState = remember { mutableStateOf(taskContent) }
@@ -80,30 +58,30 @@ fun ArticleScreen(
             )
         }
     ) {
-        if (taskContent == null) { // FIXME исправить появление Ошибки при переходе между статьёй и тестом
-            BoxWithConstraints(Modifier.fillMaxSize()) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(20.dp),
-                    text = "Ошибка загрузки данных"
-                )
-                IconButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 80.dp)
-                        .size(60.dp),
-                    onClick = { /*TODO*/ } // Повторная загрузка
-                ) {
-                    Icon(
-                        modifier = Modifier.size(42.dp),
-                        imageVector = Icons.Filled.Refresh,
-                        contentDescription = null
-                    )
-                }
-            }
-            return@Scaffold
-        }
+//        if (taskContent == null) { // FIXME исправить появление Ошибки при переходе между статьёй и тестом
+//            BoxWithConstraints(Modifier.fillMaxSize()) {
+//                Text(
+//                    modifier = Modifier
+//                        .align(Alignment.TopCenter)
+//                        .padding(20.dp),
+//                    text = "Ошибка загрузки данных"
+//                )
+//                IconButton(
+//                    modifier = Modifier
+//                        .align(Alignment.BottomCenter)
+//                        .padding(bottom = 80.dp)
+//                        .size(60.dp),
+//                    onClick = { /*TODO*/ } // Повторная загрузка
+//                ) {
+//                    Icon(
+//                        modifier = Modifier.size(42.dp),
+//                        imageVector = Icons.Filled.Refresh,
+//                        contentDescription = null
+//                    )
+//                }
+//            }
+//            return@Scaffold
+//        }
 
         Column(
             modifier = Modifier
@@ -184,13 +162,16 @@ fun TaskBottomNavigator(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-                if (courseManager.getTaskContentItemIndexState().value == 0) {
+                if (!courseManager.moveTaskIndex(-1))
                     navigateTo(Screen.CourseContent)
-                } else {
-                    courseManager.moveTaskIndex(-1)
-                    courseManager.changeLessonItem()
-                    taskContentState.value = courseManager.getArticleLessonContentItem()
-                }
+
+//                if (courseManager.getTaskContentItemIndexState().value == 0) {
+//                    navigateTo(Screen.CourseContent)
+//                } else {
+
+                courseManager.changeGlobalLessonItem()
+                taskContentState.value = courseManager.getArticleLessonContentItem()
+//                }
             },
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
@@ -198,13 +179,17 @@ fun TaskBottomNavigator(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 1,
             onClick = {
-                if (courseManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
+                if (!courseManager.moveTaskIndex(1)) {
                     navigateTo(Screen.CourseContent)
-                } else {
-                    courseManager.moveTaskIndex(1)
-                    courseManager.changeLessonItem()
-                    taskContentState.value = courseManager.getArticleLessonContentItem()
                 }
+                courseManager.changeGlobalLessonItem()
+                taskContentState.value = courseManager.getArticleLessonContentItem()
+//                if (courseManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
+//
+//                } else {
+//
+//
+//                }
             },
             icon = {
                 Icon(
