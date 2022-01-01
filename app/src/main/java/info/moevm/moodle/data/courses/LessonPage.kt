@@ -30,7 +30,6 @@ filescount : Int?                                 The total number of files atta
 filessizetotal : Int?                             The total size of the files
 
  */
-// TODO дописать комментарии к полям класса
 data class LessonPagesData(
     val page: LessonPage?,
     val answerids: Array<Int>?,

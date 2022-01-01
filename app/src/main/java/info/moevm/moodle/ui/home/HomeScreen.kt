@@ -300,7 +300,7 @@ private fun PostListTopSection(post: Post, navigateTo: (Screen) -> Unit) {
     )
     PostCardTop(
         post = post,
-        modifier = Modifier.clickable(onClick = { /* navigateTo(Screen.CourseContent/*Screen.FakeArticle(post.id)*/)*/ }) // FIXME исправить на нормально
+        modifier = Modifier.clickable(onClick = { /* navigateTo(Screen.CourseContent/*Screen.FakeArticle(post.id)*/)*/ }) // FIXME исправить на переход к нужному курса
     )
     PostListDivider()
 }

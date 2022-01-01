@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui.lessoncontent
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
@@ -26,29 +25,18 @@ import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.coursescontent.*
+import info.moevm.moodle.ui.coursescontent.TaskAnswerType
+import info.moevm.moodle.ui.coursescontent.TaskContentType
 import kotlinx.coroutines.launch
 
-@SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalAnimatedInsets::class)
 @Composable
 fun TestScreen(
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
-//    if (courseManager.requiredMoveLessonIndexForward) {
-//        courseManager.requiredMoveLessonIndexForward = false
-//        courseManager.moveLessonIndex(1)
-//    } else if (courseManager.requiredMoveLessonIndexBack) {
-//        courseManager.requiredMoveLessonIndexBack = false
-//        courseManager.moveLessonIndex(-1)
-//    }
     val testContentItem = courseManager.getTestTaskContentItem()
     val taskContentState = remember { mutableStateOf(testContentItem) }
-//    val taskContent: TestTaskContentItem? = null
-//    val taskState: MutableState<TaskStatus?> =
-//        remember { mutableStateOf(TaskStatus.NONE) }
-//    taskState.value = taskContent?.taskContentStatus
 
     Scaffold(
         topBar = {
@@ -62,42 +50,49 @@ fun TestScreen(
                 if (testContentItem?.taskContentType == TaskContentType.TEST_FINISHED) {
                     BottomNavigatorWithChecker(
                         courseManager = courseManager,
-//                        taskState = taskState,
+                        needChecker = false,
                         navigatePrevPage = {
                             if (!courseManager.moveTaskIndex(-1))
                                 navigateTo(Screen.TestAttempts)
                             courseManager.changeLocalTestItem()
-                            taskContentState.value = courseManager.getTestTaskContentItem()
+                            taskContentState.value =
+                                courseManager.getTestTaskContentItem()
+                        },
+                        navigateNextPage = {
+                            if (!courseManager.moveTaskIndex(1))
+                                navigateTo(Screen.TestAttempts)
+                            courseManager.changeLocalTestItem()
+                            taskContentState.value =
+                                courseManager.getTestTaskContentItem()
                         }
-                    ) {
-                        if (!courseManager.moveTaskIndex(1))
-                            navigateTo(Screen.TestAttempts)
-                        courseManager.changeLocalTestItem()
-                        taskContentState.value =
-                            courseManager.getTestTaskContentItem()
-                    }
+                    )
                 } else if (testContentItem?.taskContentType == TaskContentType.TEST_IN_PROGRESS) {
                     BottomNavigatorWithChecker(
                         courseManager = courseManager,
-//                        taskState = taskState,
+                        needChecker = true,
                         navigatePrevPage = {
                             if (!courseManager.moveTaskIndex(-1))
                                 navigateTo(Screen.TestAttempts)
-                            courseManager.receiveQuizInProgress(courseManager.getAttemptKey().value.toString(), courseManager.getTaskContentItemIndexState().value.toString())
+                            courseManager.receiveQuizInProgress(
+                                courseManager.getAttemptId().value.toString(),
+                                courseManager.getTaskContentItemIndexState().value.toString()
+                            )
                             courseManager.changeLocalTestItem()
-                            taskContentState.value = courseManager.getTestTaskContentItem()
+                            taskContentState.value =
+                                courseManager.getTestTaskContentItem()
+                        },
+                        navigateNextPage = {
+                            if (!courseManager.moveTaskIndex(1))
+                                navigateTo(Screen.TestAttempts)
+                            courseManager.receiveQuizInProgress(
+                                courseManager.getAttemptId().value.toString(),
+                                courseManager.getTaskContentItemIndexState().value.toString()
+                            )
+                            courseManager.changeLocalTestItem()
+                            taskContentState.value =
+                                courseManager.getTestTaskContentItem()
                         }
-                    ) {
-                        if (!courseManager.moveTaskIndex(1))
-                            navigateTo(Screen.TestAttempts)
-                        courseManager.receiveQuizInProgress(
-                            courseManager.getAttemptKey().value.toString(),
-                            courseManager.getTaskContentItemIndexState().value.toString()
-                        )
-                        courseManager.changeLocalTestItem()
-                        taskContentState.value =
-                            courseManager.getTestTaskContentItem()
-                    }
+                    )
                 }
             }
         }
@@ -114,24 +109,29 @@ fun TestScreen(
 fun BottomNavigatorWithChecker(
     courseManager: CourseManager,
 //    taskState: MutableState<TaskStatus?>,
+    needChecker: Boolean,
     navigatePrevPage: () -> Unit,
     navigateNextPage: () -> Unit
 ) {
+
     // TODO добавить изменение иконок при проверке
     val (iconBack, textBack) = when (courseManager.getTaskContentItemIndexState().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
     }
     val (iconForward, textForward) = when {
-        !courseManager.isRealPage(courseManager.getTaskContentItemIndexState().value+1) -> Pair(Icons.Filled.Task, "Завершить")
+        !courseManager.isRealPage(courseManager.getTaskContentItemIndexState().value + 1) -> Pair(
+            Icons.Filled.Task,
+            "Завершить"
+        )
         else -> Pair(Icons.Filled.ChevronRight, "Далее")
     }
     val (iconStatus, textStatus) = /*when {
         TaskStatus.NONE -> */Pair(Icons.Filled.ArrowUpward, "Отправить")
-        /*TaskStatus.DONE -> Pair(Icons.Filled.CheckCircle, "Верно")
-        TaskStatus.FAILED -> Pair(Icons.Filled.Cached, "Повторить")
-        else -> Pair(Icons.Filled.Error, "<error>")
-    }*/
+    /*TaskStatus.DONE -> Pair(Icons.Filled.CheckCircle, "Верно")
+    TaskStatus.FAILED -> Pair(Icons.Filled.Cached, "Повторить")
+    else -> Pair(Icons.Filled.Error, "<error>")
+}*/
     val selectedItem by remember { mutableStateOf(0) }
     BottomNavigation {
         BottomNavigationItem( // Назад
@@ -142,42 +142,28 @@ fun BottomNavigatorWithChecker(
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
         )
-        BottomNavigationItem( // Статус проверки
-            selected = selectedItem == 1,
-            onClick = {
-//                if (testChecker(
-//                        courseContentItemIndex = courseContentItemIndex.value,
-//                        lessonContentItemIndex = lessonContentItemIndex.value,
-//                        testAttemptKey = testAttemptKey.value,
-//                        taskContentItemIndex = taskContentItemIndex.value,
-//
-//                    ))
-//
-//                if (taskState.value != TaskStatus.NONE)
-//                    taskState.value = TaskStatus.NONE
-//                else {
-//                    if (random() < 0.5)
-//                        taskState.value = TaskStatus.DONE
-//                    else
-//                        taskState.value = TaskStatus.FAILED
-//                }
-                // TODO Проверка
-            },
-            icon = {
-                Icon(
-                    imageVector = iconStatus,
-                    tint = LocalContentColor.current.copy(alpha = LocalContentAlpha.current) /*when (taskState.value) {
+        if (needChecker) {
+            BottomNavigationItem( // Статус проверки
+                selected = selectedItem == 1,
+                onClick = {
+                    courseManager.requireSaveCurrentTestStep()
+                },
+                icon = {
+                    Icon(
+                        imageVector = iconStatus,
+                        tint = LocalContentColor.current.copy(alpha = LocalContentAlpha.current) /*when (taskState.value) {
                         TaskStatus.DONE -> Color.Green
                         TaskStatus.FAILED -> Color.Red
                         else -> LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
                     }*/,
-                    contentDescription = null
-                )
-            },
-            label = { Text(textStatus) }
-        )
+                        contentDescription = null
+                    )
+                },
+                label = { Text(textStatus) }
+            )
+        }
         BottomNavigationItem( // Вперёд
-            selected = selectedItem == 2,
+            selected = selectedItem == 2, // TODO если "Завершить", то нужно завершать попытку
             onClick = {
                 navigateNextPage()
             },
@@ -191,6 +177,8 @@ fun BottomNavigatorWithChecker(
         )
     }
 }
+
+// функции ниже не используются, так как отображается html из Moodle
 
 @Composable
 fun TestTaskTitle(

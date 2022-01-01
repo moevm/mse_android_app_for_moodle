@@ -36,7 +36,7 @@ fun TestAttemptsScreen(
     val attemptsState: SnapshotStateList<Attempt?> = remember { mutableStateListOf() }
     if (attemptContent?.attempts != null)
         attemptsState.addAll(attemptContent.attempts)
-    val badNewAttemptState = remember { mutableStateOf(false) } // если мы хотим начать новую попытку до
+    val badNewAttemptState = remember { mutableStateOf(false) } // если мы хотим начать новую попытку до завершнения прошлой
     val scaffoldState = rememberScaffoldState()
     Scaffold(
         scaffoldState = scaffoldState,
@@ -50,29 +50,6 @@ fun TestAttemptsScreen(
             )
         }
     ) {
-//        if (lessonContent.taskType == TaskType.NONE) {
-//            BoxWithConstraints(Modifier.fillMaxSize()) {
-//                Text(
-//                    modifier = Modifier
-//                        .align(Alignment.TopCenter)
-//                        .padding(20.dp),
-//                    text = "Ошибка загрузки данных"
-//                )
-//                IconButton(
-//                    modifier = Modifier
-//                        .align(Alignment.BottomCenter)
-//                        .padding(bottom = 80.dp)
-//                        .size(60.dp),
-//                    onClick = { /*TODO*/ }
-//                ) {
-//                    Icon(
-//                        modifier = Modifier.size(42.dp),
-//                        imageVector = Icons.Filled.Refresh,
-//                        contentDescription = null
-//                    )
-//                }
-//            }
-//        }
         val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
@@ -87,7 +64,7 @@ fun TestAttemptsScreen(
                 style = MaterialTheme.typography.h6,
                 textAlign = TextAlign.Center
             )
-//            Text(
+//            Text( // не используется
 //                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
 //                text = lessonContent.taskMark,
 //                style = TextStyle(
@@ -132,14 +109,15 @@ fun TestAttemptsScreen(
                         )
                     }
                 }
-                if (attemptContent?.attempts == null)
+
+                if (attemptContent?.attempts == null) // FIXME нужно обработать случай
                     throw IllegalArgumentException("Попытки являются null")
 
                 var index = 1
                 for (item in attemptContent.attempts) {
                     AttemptsCard(
                         courseManager = courseManager,
-                        chosenAttempt = courseManager.getAttemptKey(),
+                        chosenAttempt = courseManager.getAttemptId(),
                         idAttempt = item.id ?: -1,
                         numberCard = index++,
                         attemptStatus = item.state ?: "Ошибка",
@@ -187,7 +165,6 @@ fun AttemptsCard(
                         Modifier
                             .padding(start = 50.dp)
                             .width(120.dp)
-//                    .width(boxScope.maxWidth - 200.dp)
                     ) {
                         Text(
                             modifier = Modifier.padding(top = 8.dp),
@@ -215,11 +192,11 @@ fun AttemptsCard(
                         if (attemptStatus == AttemptStatus.FINISHED.value) {
                             courseManager.setTaskIndex(0)
                             courseManager.receiveQuizFinished(idAttempt.toString())
-                            courseManager.changeGlobalLessonItem(true)
+                            courseManager.setGlobalItem(true)
                         } else if (attemptStatus == AttemptStatus.IN_PROGRESS.value) {
                             courseManager.setTaskIndex(0)
                             courseManager.receiveQuizInProgress(idAttempt.toString(), "0")
-                            courseManager.changeGlobalLessonItem(false)
+                            courseManager.setGlobalItem(false)
                         }
                         chosenAttempt.value = idAttempt
                         navigateTo(Screen.Test)
@@ -286,16 +263,8 @@ fun BottomNavigatorWithAttempt(
         BottomNavigationItem( // Назад
             selected = selectedItem == 0,
             onClick = {
-//                if (courseManager.getTaskContentItemIndexState().value == 0) {
-//                    courseManager.requiredMoveLessonIndexBack = true
-//                    when (courseManager.getPrevLessonType()) {
-//                        TaskType.QUIZ -> navigateTo(Screen.PreviewQuiz)
-//                        TaskType.LESSON -> navigateTo(Screen.Article)
-//                        TaskType.NONE -> {}
-//                    }
-//                } else
-//                    courseManager.moveTaskIndex(-1)
-            }, // TODO сделать переход
+                // TODO сделать переход назад
+            },
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
         )
@@ -309,15 +278,6 @@ fun BottomNavigatorWithAttempt(
                 } else {
                     newAttemptState.value = true
                 }
-
-//                if (mapAttempts.values.last().first.taskStatus == TaskStatus.DONE) {
-//                    mapAttempts[mapAttempts.size.toString()] =
-//                        testData(mapAttempts.size)
-//                    lessonContent?.taskContent?.put(
-//                        lessonContent.taskContent.size.toString(),
-//                        testData(lessonContent.taskContent.size)
-//                    )
-//                }
             },
             icon = {
                 Icon(
@@ -330,16 +290,8 @@ fun BottomNavigatorWithAttempt(
         BottomNavigationItem( // Вперёд
             selected = selectedItem == 2,
             onClick = {
-//                if (courseManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
-//                    courseManager.requiredMoveLessonIndexForward = true
-//                    when (courseManager.getNextLessonType()) {
-//                        TaskType.QUIZ -> navigateTo(Screen.PreviewQuiz)
-//                        TaskType.LESSON -> navigateTo(Screen.Article)
-//                        TaskType.NONE -> {}
-//                    }
-//                } else
-//                    courseManager.moveTaskIndex(1)
-            }, // TODO сделать переход
+                // TODO сделать переход вперёд
+            },
             icon = {
                 Icon(
                     imageVector = iconForward,

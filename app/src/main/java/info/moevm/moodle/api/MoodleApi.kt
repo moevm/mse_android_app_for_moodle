@@ -10,6 +10,7 @@ import info.moevm.moodle.model.MoodleUser
 import info.moevm.moodle.model.WrongToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -30,6 +31,12 @@ class MoodleApi {
         .client(okHttpClient)
         .build()
         .create(ApiRequests::class.java)
+
+    private fun waitSomeSecondUntilFalse(flag: MutableStateFlow<Boolean>, seconds: Long) {
+        val time = System.currentTimeMillis()
+        val waitingTime = TimeUnit.SECONDS.toMillis(seconds)
+        while (!flag.value && System.currentTimeMillis() - time < waitingTime) {}
+    }
 
     fun checkLogIn(userName: String, passWord: String): LiveData<LoginSuccess> {
         Timber.tag("Check_login").i("checkLogIn with API was called")
@@ -58,6 +65,7 @@ class MoodleApi {
 
     fun getCurrentCourses(token: String): CurrentCourses? {
         var data: CurrentCourses? = null
+        val loaded = MutableStateFlow(false)
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val response = api.getCurrentCourses(token, APIVariables.MOD_ASSIGN_GET_ASSIGMENTS.value, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
@@ -70,16 +78,17 @@ class MoodleApi {
                     Timber.d("fatal error")
                 }
             }
+            loaded.value = true
         }
         // WORK IN PROGRESS
-        val time = System.currentTimeMillis()
-        while (data == null && System.currentTimeMillis() - time < 1000) {}
+        waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
 
     fun getCourses(token: String): Courses? {
         var data: Courses? = null
+        val loaded = MutableStateFlow(false)
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val response = api.getCourses(token, APIVariables.CORE_COURSE_GET_COURSES_BY_FIELD.value, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
@@ -92,10 +101,10 @@ class MoodleApi {
                     Timber.d("fatal error")
                 }
             }
+            loaded.value = true
         }
         // WORK IN PROGRESS
-        val time = System.currentTimeMillis()
-        while (data == null && System.currentTimeMillis() - time < 1000) {}
+        waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -152,6 +161,7 @@ class MoodleApi {
 
     fun getCourseContent(token: String, courseId: String): List<CourseMoodleContentData>? {
         var data: List<CourseMoodleContentData>? = null
+        val loaded = MutableStateFlow(false)
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val response = api.getCourseContent(token, APIVariables.CORE_COURSE_GET_CONTENTS.value, courseId, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
@@ -161,20 +171,20 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    val z = e.message // TODO убрать
                     Timber.d("fatal error")
                 }
             }
+            loaded.value = true
         }
         // WORK IN PROGRESS
-        val time = System.currentTimeMillis()
-        while (data == null && System.currentTimeMillis() - time < 1000) {}
+        waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
 
     fun getLessonPages(token: String, lessonId: String): LessonPages? {
         var data: LessonPages? = null
+        val loaded = MutableStateFlow(false)
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val response = api.getLessonPages(token, APIVariables.MOD_LESSON_GET_PAGES.value, lessonId, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
@@ -184,20 +194,20 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    val z = e.message // TODO убрать
                     Timber.d("fatal error")
                 }
             }
+            loaded.value = true
         }
         // WORK IN PROGRESS
-        val time = System.currentTimeMillis()
-        while (data == null && System.currentTimeMillis() - time < 1000) {}
+        waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
 
     fun getQuizAttempts(token: String, quizid: String, status: String = "all"): QuizAttempts? {
         var data: QuizAttempts? = null
+        val loaded = MutableStateFlow(false)
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val response = api.getQuizAttempts(token, APIVariables.MOD_QUIZ_GET_USER_ATTEMPTS.value, quizid, status, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
@@ -207,20 +217,20 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    val z = e.message // TODO убрать
                     Timber.d("fatal error")
                 }
             }
+            loaded.value = true
         }
         // WORK IN PROGRESS
-        val time = System.currentTimeMillis()
-        while (data == null && System.currentTimeMillis() - time < 1000) {}
+        waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
 
     fun getQuizInProgress(token: String, attemptid: String, page: String): QuizInProgress? {
         var data: QuizInProgress? = null
+        val loaded = MutableStateFlow(false)
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val response = api.getQuizInProgress(token, APIVariables.MOD_QUIZ_GET_ATTEMPT_DATA.value, attemptid, page, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
@@ -230,20 +240,43 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    val z = e.message // TODO убрать
                     Timber.d("fatal error")
                 }
             }
+            loaded.value = true
         }
         // WORK IN PROGRESS
-        val time = System.currentTimeMillis()
-        while (data == null && System.currentTimeMillis() - time < 1000) {}
+        waitSomeSecondUntilFalse(loaded, 1)
+        Timber.d("answer is received")
+        return data
+    }
+
+    fun requireQuizSaveStep(token: String, attemptid: String, answers: Map<String, String>): AnswerSendResult? {
+        var data: AnswerSendResult? = null
+        val loaded = MutableStateFlow(false)
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val response = api.requireQuizSaveAttempt(token, APIVariables.MOD_QUIZ_SAVE_ATTEMPT.value, attemptid, answers, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
+                if (response.isSuccessful) {
+                    Timber.d("get response " + response.body())
+                    data = response.body()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Timber.d("fatal error")
+                }
+            }
+            loaded.value = true
+        }
+        // WORK IN PROGRESS
+        waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
 
     fun getQuizFinished(token: String, attemptid: String, page: String): QuizFinished? {
         var data: QuizFinished? = null
+        val loaded = MutableStateFlow(false)
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val response = api.getQuizFinished(token, APIVariables.MOD_QUIZ_GET_ATTEMPT_REVIEW.value, attemptid, page, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
@@ -253,20 +286,20 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    val z = e.message // TODO убрать
                     Timber.d("fatal error")
                 }
             }
+            loaded.value = true
         }
         // WORK IN PROGRESS
-        val time = System.currentTimeMillis()
-        while (data == null && System.currentTimeMillis() - time < 1000) {}
+        waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
 
     fun getQuizFinished(token: String, attemptid: String): QuizFinished? {
         var data: QuizFinished? = null
+        val loaded = MutableStateFlow(false)
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val response = api.getQuizFinished(token, APIVariables.MOD_QUIZ_GET_ATTEMPT_REVIEW.value, attemptid, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
@@ -276,20 +309,20 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    val z = e.message // TODO убрать
                     Timber.d("fatal error")
                 }
             }
+            loaded.value = true
         }
         // WORK IN PROGRESS
-        val time = System.currentTimeMillis()
-        while (data == null && System.currentTimeMillis() - time < 1000) {}
+        waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
 
     fun startNewAttempt(token: String, quizid: String): QuizAttempt? {
         var data: QuizAttempt? = null
+        val loaded = MutableStateFlow(false)
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val response = api.startNewAttempt(token, APIVariables.MOD_QUIZ_START_ATTEMPT.value, quizid, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
@@ -299,15 +332,14 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    val z = e.message // TODO убрать
                     Timber.d("fatal error")
                 }
             }
+            loaded.value = true
         }
 
         // WORK IN PROGRESS
-        val time = System.currentTimeMillis()
-        while (data == null && System.currentTimeMillis() - time < 1000) {}
+        waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }

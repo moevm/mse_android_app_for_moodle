@@ -37,7 +37,7 @@ fun CourseContentScreen(
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
-//    return  TODO: исправить на вывод ошибки
+//    TODO: исправить на вывод ошибки
     val titles = courseManager.getLessonsTitles() ?: return
 
     val time = System.currentTimeMillis()
@@ -84,13 +84,6 @@ fun CourseContentScreen(
                     cardContent = {
                         val lessonContent =
                             courseManager.getLessonsContents(index)
-//                        var foundNullItem = lessonContent == null
-//                        for (item in lessonContent.orEmpty())
-//                            foundNullItem = foundNullItem || item == null
-//                        if (foundNullItem) {
-//                           return@ExpandableCard
-//                        }
-
                         if (lessonContent != null) {
                             CardItems( // TODO: исправить на нормально
                                 tasksType = lessonContent.map { TaskType.valueOf(it.modname?.uppercase() ?: "NONE") }.toList(),
@@ -184,7 +177,7 @@ fun CardItem(
                         courseManager.setCategoryLessonIndex(categoryLessonIndex)
                         courseManager.setLessonIndex(lessonIndex)
                         courseManager.setTaskIndex(0)
-                        courseManager.changeGlobalLessonItem()
+                        courseManager.setGlobalItem()
                         navigateTo(Screen.Article)
                     }
                     TaskType.QUIZ -> {

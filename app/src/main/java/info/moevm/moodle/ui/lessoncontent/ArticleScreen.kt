@@ -29,13 +29,6 @@ fun ArticleScreen(
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
-//    if (courseManager.requiredMoveLessonIndexForward) {
-//        courseManager.requiredMoveLessonIndexForward = false
-//        courseManager.moveLessonIndex(1)
-//    } else if (courseManager.requiredMoveLessonIndexBack) {
-//        courseManager.requiredMoveLessonIndexBack = false
-//        courseManager.moveLessonIndex(-1)
-//    }
 
     val taskContent = courseManager.getArticleLessonContentItem()
     val taskContentState = remember { mutableStateOf(taskContent) }
@@ -59,28 +52,6 @@ fun ArticleScreen(
         }
     ) {
 //        if (taskContent == null) { // FIXME исправить появление Ошибки при переходе между статьёй и тестом
-//            BoxWithConstraints(Modifier.fillMaxSize()) {
-//                Text(
-//                    modifier = Modifier
-//                        .align(Alignment.TopCenter)
-//                        .padding(20.dp),
-//                    text = "Ошибка загрузки данных"
-//                )
-//                IconButton(
-//                    modifier = Modifier
-//                        .align(Alignment.BottomCenter)
-//                        .padding(bottom = 80.dp)
-//                        .size(60.dp),
-//                    onClick = { /*TODO*/ } // Повторная загрузка
-//                ) {
-//                    Icon(
-//                        modifier = Modifier.size(42.dp),
-//                        imageVector = Icons.Filled.Refresh,
-//                        contentDescription = null
-//                    )
-//                }
-//            }
-//            return@Scaffold
 //        }
 
         Column(
@@ -164,14 +135,8 @@ fun TaskBottomNavigator(
             onClick = {
                 if (!courseManager.moveTaskIndex(-1))
                     navigateTo(Screen.CourseContent)
-
-//                if (courseManager.getTaskContentItemIndexState().value == 0) {
-//                    navigateTo(Screen.CourseContent)
-//                } else {
-
-                courseManager.changeGlobalLessonItem()
+                courseManager.setGlobalItem()
                 taskContentState.value = courseManager.getArticleLessonContentItem()
-//                }
             },
             icon = { Icon(imageVector = iconBack, contentDescription = null) },
             label = { Text(textBack) }
@@ -182,14 +147,8 @@ fun TaskBottomNavigator(
                 if (!courseManager.moveTaskIndex(1)) {
                     navigateTo(Screen.CourseContent)
                 }
-                courseManager.changeGlobalLessonItem()
+                courseManager.setGlobalItem()
                 taskContentState.value = courseManager.getArticleLessonContentItem()
-//                if (courseManager.getTaskContentItemIndexState().value == taskContentItemSize - 1) {
-//
-//                } else {
-//
-//
-//                }
             },
             icon = {
                 Icon(
@@ -208,24 +167,9 @@ fun ArticleScreenPreview() {
     val courseContentItemIndex = remember { mutableStateOf(0) }
     val lessonContentItemIndex = remember { mutableStateOf(0) }
     val taskContentItemIndex = remember { mutableStateOf(0) }
-//    val content = exampleCourseContent()
-//    ArticleScreen(
-//        courseData = content.values.first(),
-//        courseContentItemIndex = courseContentItemIndex,
-//        lessonContentItemIndex = lessonContentItemIndex,
-//        taskContentItemIndex = taskContentItemIndex,
-//        navigateTo = { }
-//    )
 }
 
 @Preview
 @Composable
 fun ArticleScreenBottomNavigatorPreview() {
-//    ArticleScreenBottomNavigator(
-//        listOf(),
-//        remember { mutableStateOf(0) },
-//        remember { mutableStateOf(0) },
-//        remember { mutableStateOf(0) },
-//        5
-//    )
 }
