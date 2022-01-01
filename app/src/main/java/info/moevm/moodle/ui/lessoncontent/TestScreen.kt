@@ -82,8 +82,11 @@ fun TestScreen(
                                 courseManager.getTestTaskContentItem()
                         },
                         navigateNextPage = {
-                            if (!courseManager.moveTaskIndex(1))
+                            if (!courseManager.moveTaskIndex(1)) {
+                                courseManager.requireQuizFinishAttempt(courseManager.getAttemptId().value.toString(), "1")
+                                courseManager.receiveQuizAttempts(courseManager.getLocalQuizId())
                                 navigateTo(Screen.TestAttempts)
+                            }
                             courseManager.receiveQuizInProgress(
                                 courseManager.getAttemptId().value.toString(),
                                 courseManager.getTaskContentItemIndexState().value.toString()
