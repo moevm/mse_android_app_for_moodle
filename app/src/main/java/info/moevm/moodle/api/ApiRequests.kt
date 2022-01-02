@@ -5,6 +5,7 @@ import info.moevm.moodle.model.*
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 interface ApiRequests {
     @GET("/login/token.php")
@@ -50,6 +51,9 @@ interface ApiRequests {
 
     @GET("/webservice/rest/server.php")
     fun getQuizInProgress(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("attemptid") attemptid: String, @Query("page") page: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizInProgress?>
+
+    @GET("/webservice/rest/server.php")
+    fun requireQuizSaveAttempt(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("attemptid") attemptid: String, @QueryMap answer: Map<String, String>, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<AnswerSendResult?>
 
     @GET("/webservice/rest/server.php")
     fun getQuizFinished(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("attemptid") attemptid: String, @Query("page") page: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizFinished?>

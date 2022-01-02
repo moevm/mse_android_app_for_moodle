@@ -99,11 +99,12 @@ private fun AppContent(
         countryMoodleUser.value = countryMoodleUserString
     }
 
+    // Нужно, чтобы "привязать" индексы к экранам
     val courseId = remember { mutableStateOf(0) }
     val categoryLessonItemIndex = remember { mutableStateOf(0) }
     val lessonItemIndex = remember { mutableStateOf(0) }
     val taskItemIndex = remember { mutableStateOf(0) }
-    val testAttemptKey = remember { mutableStateOf(0) }
+    val testAttemptId = remember { mutableStateOf(0) }
 
     val courseManager = CourseManager(
         token = "", // инициализируется после входа в аккаунт в PreviewScreen
@@ -112,7 +113,7 @@ private fun AppContent(
         categoryLessonItemIndex = categoryLessonItemIndex,
         lessonItemIndex = lessonItemIndex,
         taskItemIndex = taskItemIndex,
-        testAttemptKey = testAttemptKey
+        testAttemptId = testAttemptId
     )
 
     Crossfade(navController.currentBackStackEntryAsState()) {
@@ -244,6 +245,7 @@ private fun AppContent(
                 }
                 composable(ScreenName.ADD.name) {
                     // Unused
+                    // Баг Jetpack Compose, без этого возникает исключение ArrayIndexOutOfBoundsException
                 }
             }
         }

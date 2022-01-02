@@ -46,8 +46,8 @@ data class Question(
 )
 
 /**
-messages: List<String>?                                               access messages, will only be returned for users with mod/quiz:preview capability, for other users this method will throw an exception if there are messages
-nextpage: Int?                                                        next page number
+messages: List<String>?                         access messages, will only be returned for users with mod/quiz:preview capability, for other users this method will throw an exception if there are messages
+nextpage: Int?                                  next page number
  */
 
 data class QuizInProgress(
@@ -75,5 +75,10 @@ data class QuizFinished(
     val attempt: Attempt? = null,
     val additionaldata: List<AdditionalData>? = null,
     val questions: List<Question>? = null,
+    val warnings: List<WarningItem>? = null
+)
+
+data class AnswerSendResult(
+    val status: Boolean? = null,
     val warnings: List<WarningItem>? = null
 )

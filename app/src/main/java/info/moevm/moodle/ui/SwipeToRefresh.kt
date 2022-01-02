@@ -43,7 +43,7 @@ fun SwipeToRefreshLayout(
         )
     ) {
         content()
-        Box(Modifier.offset(x = 0.dp, y = state.offset.value.dp).align(Alignment.TopCenter)) { // x = 0 ???
+        Box(Modifier.offset(x = 0.dp, y = state.offset.value.dp).align(Alignment.TopCenter)) {
             if (state.offset.value != -refreshDistance) {
                 refreshIndicator()
             }
