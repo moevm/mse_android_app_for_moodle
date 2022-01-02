@@ -56,6 +56,9 @@ interface ApiRequests {
     fun requireQuizSaveAttempt(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("attemptid") attemptid: String, @QueryMap answer: Map<String, String>, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<AnswerSendResult?>
 
     @GET("/webservice/rest/server.php")
+    fun requireQuizProcessAttempt(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("attemptid") attemptid: String, @Query("finishattempt") finishattempt: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<AnswerSendResult?>
+
+    @GET("/webservice/rest/server.php")
     fun getQuizFinished(@Query("wstoken") wsToken: String, @Query("wsfunction") wsFunction: String, @Query("attemptid") attemptid: String, @Query("page") page: String, @Query("moodlewsrestformat") moodlewsRestFormat: String): Call<QuizFinished?>
 
     @GET("/webservice/rest/server.php")

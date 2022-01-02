@@ -39,7 +39,9 @@ class CourseManager(
     private var quizInProgressContent: QuizInProgress? = null
     private var quizFinishedContent: QuizFinished? = null
 
-    var webView: WebView? = null
+    private var localQuizId: String = "" // нужно для обновления списка попыток после завершения очередной
+
+    private var webView: WebView? = null
 
     /**
      * Удаляем кнопку "проверить", которая есть в html (её добавляет Moodle)
@@ -221,7 +223,7 @@ class CourseManager(
     /**
      * Режим ожидания на заданное время или пока флаг не станет true (нужно для получения данных от Moodle)
      */
-    private fun waitSomeSecondUntilFalse(flag: MutableStateFlow<Boolean>, seconds: Long) {
+    fun waitSomeSecondUntilFalse(flag: MutableStateFlow<Boolean>, seconds: Long) {
         val time = System.currentTimeMillis()
         val waitingTime = TimeUnit.SECONDS.toMillis(seconds)
         while (!flag.value && System.currentTimeMillis() - time < waitingTime) {}
@@ -345,7 +347,6 @@ class CourseManager(
         }
         return data
     }
-
     /**
      * Запрос на сохранение элемента теста
      */
@@ -479,6 +480,31 @@ class CourseManager(
     }
 
     /**
+     * Запрос на завершение попытки (Moodle осуществит проверку ответов самостоятельно)
+     */
+    fun requireQuizFinishAttempt(
+        attemptId: String,
+        finishAttempt: String = "1"
+    ): AnswerSendResult? {
+        var data: AnswerSendResult? = null
+        val loaded = MutableStateFlow(false)
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                if (token != "") {
+                    data = moodleApi.requireQuizFinishAttempt(
+                        token,
+                        attemptId,
+                        finishAttempt
+                    )
+                }
+                loaded.value = true
+            }
+        }
+        waitSomeSecondUntilFalse(loaded, 2)
+        return data
+    }
+
+    /**
      * Создать новую попытку
      */
     fun startNewAttempt(quizid: String): Boolean { // FIXME не работает, возвращает null вместо попытки
@@ -590,6 +616,21 @@ class CourseManager(
      */
     fun setCourseName(courseName: String) {
         this.courseName = courseName
+    }
+
+    /**
+     * Установить значение локального (для экрана теста) id теста
+     */
+
+    fun setLocalQuizId(newLocalQuizId: String) {
+        this.localQuizId = newLocalQuizId
+    }
+
+    /**
+     * Получить значение локального (для экрана теста) id теста
+     */
+    fun getLocalQuizId(): String {
+        return localQuizId
     }
 
     /**

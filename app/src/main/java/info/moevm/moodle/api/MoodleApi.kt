@@ -274,6 +274,29 @@ class MoodleApi {
         return data
     }
 
+    fun requireQuizFinishAttempt(token: String, attemptid: String, finishattempt: String): AnswerSendResult? {
+        var data: AnswerSendResult? = null
+        val loaded = MutableStateFlow(false)
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val response = api.requireQuizProcessAttempt(token, APIVariables.MOD_QUIZ_PROCESS_ATTEMPT.value, attemptid, finishattempt, APIVariables.MOODLE_WS_REST_FORMAT.value).execute()
+                if (response.isSuccessful) {
+                    Timber.d("get response " + response.body())
+                    data = response.body()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Timber.d("fatal error")
+                }
+            }
+            loaded.value = true
+        }
+        // WORK IN PROGRESS
+        waitSomeSecondUntilFalse(loaded, 1)
+        Timber.d("answer is received")
+        return data
+    }
+
     fun getQuizFinished(token: String, attemptid: String, page: String): QuizFinished? {
         var data: QuizFinished? = null
         val loaded = MutableStateFlow(false)

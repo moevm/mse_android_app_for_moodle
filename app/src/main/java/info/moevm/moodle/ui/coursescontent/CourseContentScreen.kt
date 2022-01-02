@@ -185,6 +185,7 @@ fun CardItem(
                         courseManager.setCategoryLessonIndex(categoryLessonIndex)
                         courseManager.setLessonIndex(lessonIndex)
                         courseManager.setTaskIndex(0)
+                        courseManager.setLocalQuizId(lessonId.toString())
                         navigateTo(Screen.TestAttempts)
                     }
                     else -> ""

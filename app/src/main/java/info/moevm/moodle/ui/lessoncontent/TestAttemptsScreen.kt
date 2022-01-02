@@ -7,14 +7,12 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import info.moevm.moodle.data.courses.Attempt
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescontent.*
@@ -33,9 +31,6 @@ fun TestAttemptsScreen(
 ) {
     // TODO проверить работу добавления новой попытки
     val attemptContent = courseManager.getQuizAttemptContent()
-    val attemptsState: SnapshotStateList<Attempt?> = remember { mutableStateListOf() }
-    if (attemptContent?.attempts != null)
-        attemptsState.addAll(attemptContent.attempts)
     val badNewAttemptState = remember { mutableStateOf(false) } // если мы хотим начать новую попытку до завершнения прошлой
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -43,7 +38,6 @@ fun TestAttemptsScreen(
         topBar = { TestPreviewScreenTopBar { navigateTo(Screen.CourseContent) } },
         bottomBar = {
             BottomNavigatorWithAttempt(
-                attemptsState = attemptsState,
                 newAttemptState = badNewAttemptState,
                 courseManager = courseManager,
                 navigateTo = navigateTo
@@ -237,7 +231,6 @@ fun TestPreviewScreenTopBar(
 
 @Composable
 fun BottomNavigatorWithAttempt(
-    attemptsState: SnapshotStateList<Attempt?>,
     newAttemptState: MutableState<Boolean>,
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
@@ -273,7 +266,7 @@ fun BottomNavigatorWithAttempt(
             onClick = {
                 // FIXME Исправить метод добавления новой попытки
                 if (courseManager.startNewAttempt((courseManager.getQuizAttemptContent()?.attempts?.getOrNull(0)?.quiz ?: -1).toString())) {
-                    attemptsState.add(courseManager.getQuizAttemptContent()?.attempts?.last())
+//                    attemptsState.add(courseManager.getQuizAttemptContent()?.attempts?.last())
                     newAttemptState.value = false
                 } else {
                     newAttemptState.value = true
