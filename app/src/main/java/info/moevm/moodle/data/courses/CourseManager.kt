@@ -777,26 +777,32 @@ class CourseManager(
             "}\n"
     private val jsGetTextAnswerResult: String =
         "function findTextAnswer() {\n" +
-            "  let answer = document.getElementsByClassName(\"form-control d-inline\")\n" +
-            "  if (answer[0].nodeName === \"INPUT\")\n" +
-            "    android.postTextResult(answer[0].id + \";\" + answer[0].value)\n" +
+            "  let answer = document.getElementsByClassName(\"answer\")\n" +
+            "  if (answer.length > 0 && answer[0].nodeName === \"SPAN\") {\n" +
+            "    if (answer[0].childElementCount > 0 && answer[0].children[0].nodeName === \"INPUT\") {\n" +
+            "      android.postTextResult(answer[0].children[0].id + \";\" + answer[0].children[0].value)\n" +
+            "    }\n" +
+            "  }\n" +
             "  return undefined\n" +
             "}\n"
     private val jsGetNumericalAnswerResult: String =
         "function findNumericalAnswer() {\n" +
-            "  let answer = document.getElementsByClassName(\"form-control d-inline\")\n" +
-            "  if (answer[0].nodeName === \"INPUT\")\n" +
-            "    android.postNumericalResult(answer[0].id + \";\" + answer[0].value)\n" +
+            "  let answer = document.getElementsByClassName(\"answer\")\n" +
+            "  if (answer.length > 0 && answer[0].nodeName === \"SPAN\") {\n" +
+            "    if (answer[0].childElementCount > 0 && answer[0].children[0].nodeName === \"INPUT\") {\n" +
+            "      android.postNumericalResult(answer[0].children[0].id + \";\" + answer[0].children[0].value)\n" +
+            "    }\n" +
+            "  }\n" +
             "  return undefined\n" +
             "}\n"
     private val jsGetMatchesResult: String =
         "function findMatches() {\n" +
-            "  let answer = document.getElementsByClassName(\"select custom-select custom-select ml-1\")\n" +
+            "  let answer = document.getElementsByClassName(\"control\")\n" +
             "  let resString = \"\"\n" +
             "  for (let i = 0; i < answer.length; i++) {\n" +
-            "    for (let j = 0; j < answer[i].length; j++) {\n" +
-            "      if (answer[i].nodeName === \"SELECT\" && answer[i][j].selected)\n" +
-            "        resString += answer[i].name + \";\" + j.toString()\n" +
+            "    for (let j = 0; j < answer[i].children[1].length; j++) {\n" +
+            "      if (answer[i].children[1].nodeName === \"SELECT\" && answer[i].children[1][j].selected)\n" +
+            "        resString += answer[i].children[1].name + \";\" + j.toString()\n" +
             "    }\n" +
             "    resString += \";\"\n" +
             "  }\n" +
