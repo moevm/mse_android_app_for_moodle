@@ -75,7 +75,7 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
@@ -98,7 +98,7 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
@@ -171,13 +171,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        waitSomeSecondUntilFalse(loaded, 5)
         Timber.d("answer is received")
         return data
     }
@@ -194,13 +194,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        waitSomeSecondUntilFalse(loaded, 5)
         Timber.d("answer is received")
         return data
     }
@@ -217,7 +217,7 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
@@ -240,7 +240,7 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
@@ -263,7 +263,7 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
@@ -286,7 +286,7 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
@@ -309,7 +309,7 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
@@ -332,7 +332,7 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
@@ -355,7 +355,7 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true

@@ -1,6 +1,7 @@
 package info.moevm.moodle.data.courses
 
 import android.annotation.SuppressLint
+import android.view.View
 import android.webkit.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.model.CurrentCourses
 import info.moevm.moodle.ui.coursescontent.*
+import info.moevm.moodle.utils.Expectant
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
@@ -173,7 +175,8 @@ class CourseManager(
     @Composable
     private fun BuildLessonContent(
         content: String?,
-        addOwnChecker: Boolean
+        addOwnChecker: Boolean,
+        isLection: Boolean
     ) { // TODO добавить обработку мат формул и подобного
         Column {
             Box( // TODO добавить поддержку полноэкранного режима для видео
@@ -185,32 +188,38 @@ class CourseManager(
                         webView!!.apply {
                             this.settings.javaScriptEnabled = true
                             this.addJavascriptInterface(MoodleJavaScriptInterface(), "android")
+                            this.settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
+                            this.settings.loadWithOverviewMode = isLection
+                            this.settings.useWideViewPort = isLection
                             if (addOwnChecker)
                                 this.loadData(
-                                    removeButtonFromHTML(content) + addCheckers(),
+                                    if (content == null) "<p>При загрузке произошла ошибка</p>"
+                                    else removeButtonFromHTML(content) + addCheckers(),
                                     "text/html",
                                     "utf-8"
                                 )
                             else
                                 this.loadData(
-                                    content
-                                        ?: "<p>Ошибка загрузки</p>",
+                                    content ?: "<p>При загрузке произошла ошибка</p>",
                                     "text/html",
                                     "utf-8"
                                 )
+
                         }
                     },
                     update = {
+                        it.settings.loadWithOverviewMode = isLection
+                        it.settings.useWideViewPort = isLection
                         if (addOwnChecker)
                             it.loadData(
-                                removeButtonFromHTML(content) + addCheckers(),
+                                if (content == null) "<p>При загрузке произошла ошибка</p>"
+                                else removeButtonFromHTML(content) + addCheckers(),
                                 "text/html",
                                 "utf-8"
                             )
                         else
                             it.loadData(
-                                content
-                                    ?: "<p>Ошибка загрузки</p>",
+                                content ?: "<p>При загрузке произошла ошибка</p>",
                                 "text/html",
                                 "utf-8"
                             )
@@ -223,11 +232,6 @@ class CourseManager(
     /**
      * Режим ожидания на заданное время или пока флаг не станет true (нужно для получения данных от Moodle)
      */
-    fun waitSomeSecondUntilFalse(flag: MutableStateFlow<Boolean>, seconds: Long) {
-        val time = System.currentTimeMillis()
-        val waitingTime = TimeUnit.SECONDS.toMillis(seconds)
-        while (!flag.value && System.currentTimeMillis() - time < waitingTime) {}
-    }
 
     /**
      * Глобальная установка элемента (устанавливает типаж теста или лекцию)
@@ -246,7 +250,8 @@ class CourseManager(
                         content = lessonPages?.pages?.getOrNull(
                             taskItemIndex.value
                         )?.page?.contents,
-                        addOwnChecker = false
+                        addOwnChecker = false,
+                        isLection = true
                     )
                 }
                 quizFinishedContent = null
@@ -265,7 +270,8 @@ class CourseManager(
                             content = quizFinishedContent?.questions?.getOrNull(
                                 0
                             )?.html,
-                            addOwnChecker = false
+                            addOwnChecker = false,
+                            isLection = false
                         )
                     }
                 else
@@ -279,7 +285,8 @@ class CourseManager(
                             content = quizInProgressContent?.questions?.getOrNull(
                                 0
                             )?.html,
-                            addOwnChecker = true
+                            addOwnChecker = true,
+                            isLection = false
                         )
                     }
                 articleLesson = null
@@ -303,7 +310,8 @@ class CourseManager(
                     content = quizFinishedContent?.questions?.getOrNull(
                         taskItemIndex.value
                     )?.html,
-                    addOwnChecker = false
+                    addOwnChecker = false,
+                    isLection = false
                 )
             }
         } else if (quizInProgressContent != null) {
@@ -317,7 +325,8 @@ class CourseManager(
                     content = quizInProgressContent?.questions?.getOrNull(
                         0
                     )?.html,
-                    addOwnChecker = true
+                    addOwnChecker = true,
+                    isLection = false
                 )
             }
         }
@@ -343,7 +352,7 @@ class CourseManager(
                 }
                 loaded.value = true
             }
-            waitSomeSecondUntilFalse(loaded, 2)
+            Expectant.waitSomeSecondUntilFalse(loaded, 2)
         }
         return data
     }
@@ -398,7 +407,7 @@ class CourseManager(
                 }
                 loaded.value = true
             }
-            waitSomeSecondUntilFalse(loaded, 2)
+            Expectant.waitSomeSecondUntilFalse(loaded, 2)
         }
         return data
     }
@@ -413,7 +422,7 @@ class CourseManager(
                 courseContentData = moodleApi.getCourseContent(token, courseId)
                 loaded.value = true
             }
-            waitSomeSecondUntilFalse(loaded, 2)
+            Expectant.waitSomeSecondUntilFalse(loaded, 7)
         }
     }
 
@@ -429,7 +438,7 @@ class CourseManager(
                 loaded.value = true
             }
         }
-        waitSomeSecondUntilFalse(loaded, 2)
+        Expectant.waitSomeSecondUntilFalse(loaded, 7)
     }
 
     /**
@@ -444,7 +453,7 @@ class CourseManager(
                 loaded.value = true
             }
         }
-        waitSomeSecondUntilFalse(loaded, 2)
+        Expectant.waitSomeSecondUntilFalse(loaded, 2)
     }
 
     /**
@@ -454,13 +463,12 @@ class CourseManager(
         val loaded = MutableStateFlow(false)
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
-                quizInProgressContent =
-                    moodleApi.getQuizInProgress(token, attemptid, page)
+                quizInProgressContent = moodleApi.getQuizInProgress(token, attemptid, page)
                 quizFinishedContent = null
                 loaded.value = true
             }
         }
-        waitSomeSecondUntilFalse(loaded, 2)
+        Expectant.waitSomeSecondUntilFalse(loaded, 2)
     }
 
     /**
@@ -476,7 +484,7 @@ class CourseManager(
                 loaded.value = true
             }
         }
-        waitSomeSecondUntilFalse(loaded, 2)
+        Expectant.waitSomeSecondUntilFalse(loaded, 2)
     }
 
     /**
@@ -500,7 +508,7 @@ class CourseManager(
                 loaded.value = true
             }
         }
-        waitSomeSecondUntilFalse(loaded, 2)
+        Expectant.waitSomeSecondUntilFalse(loaded, 2)
         return data
     }
 
@@ -523,7 +531,7 @@ class CourseManager(
                 loaded.value = true
             }
         }
-//        waitSomeSecondUntilFalse(loaded, 2)
+//        Expectant.waitSomeSecondUntilFalse(loaded, 2)
         return newAttempt
     }
 

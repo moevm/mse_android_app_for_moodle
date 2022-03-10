@@ -128,25 +128,27 @@ private fun AppContent(
                 composable(ScreenName.TEST.name) {
                     TestScreen(
                         courseManager = courseManager,
-                        navigateTo = actions.select
+                        onBackPressed = actions.upPress
                     )
                 }
                 composable(ScreenName.TEST_ATTEMPTS.name) {
                     TestAttemptsScreen(
                         courseManager = courseManager,
-                        navigateTo = actions.select
+                        navigateTo = actions.select,
+                        onBackPressed = actions.upPress
                     )
                 }
                 composable(ScreenName.ARTICLE.name) {
                     info.moevm.moodle.ui.lessoncontent.ArticleScreen(
                         courseManager = courseManager,
-                        navigateTo = actions.select
+                        onBackPressed = actions.upPress
                     )
                 }
                 composable(ScreenName.COURSE_CONTENT.name) {
                     CourseContentScreen(
                         courseManager = courseManager,
-                        navigateTo = actions.select
+                        navigateTo = actions.select,
+                        onBackPressed = actions.upPress
                     )
                 }
                 composable(ScreenName.ENTER_SETUP.name) {

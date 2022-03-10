@@ -1,11 +1,14 @@
 package info.moevm.moodle.ui
 
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import com.google.accompanist.insets.ProvideWindowInsets
 import info.moevm.moodle.MOEVMMoodleApplication
+import info.moevm.moodle.R
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {

@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.observe
+import info.moevm.moodle.R
 import info.moevm.moodle.api.DataStoreUser
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.data.courses.CourseManager
@@ -57,7 +58,7 @@ fun PreviewScreen(
                 .i("checkLogIn was called with answ: ${answ.value}")
             if (answ.value?.errorcode != "invalidtoken") {
                 if (!inHomeScreen.value) {
-                    showMessage(context, "already login")
+                    showMessage(context, context.getString(R.string.user_auth))
                     courseManager.setToken(token)
                     navigateTo(Screen.Home)
                     inHomeScreen.value = true

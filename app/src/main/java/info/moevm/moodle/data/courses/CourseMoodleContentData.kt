@@ -71,7 +71,7 @@ data class CourseModule(
     val completion: Int? = null,
     val completiondata: CourseModuleCompletionData? = null,
     val contents: Array<CourseModuleContent>? = null,
-    val contentsinfo: Array<CourseModuleContentInfo>? = null
+//    val contentsinfo: Array<CourseModuleContentInfo>? = null
 )
 
 /**
@@ -141,7 +141,7 @@ data class CourseModuleContent(
     val timemodified: Int? = null,
     val sortorder: Int? = null,
     val mimetype: String? = null,
-    val isexternalfile: Int? = null,
+    val isexternalfile: Boolean? = null,
     val repositorytype: String? = null,
     val userid: Int? = null,
     val author: String? = null,

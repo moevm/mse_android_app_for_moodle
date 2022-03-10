@@ -132,6 +132,7 @@ fun SignInSignUpTopAppBar(
     onSetupTouch: (Screen) -> Unit
 ) {
     val image = ImageVector.vectorResource(id = R.drawable.settings)
+    val context = LocalContext.current
     TopAppBar(
         title = {
             Text(
@@ -152,7 +153,8 @@ fun SignInSignUpTopAppBar(
     ) {
         IconButton(
             onClick = {
-                onSetupTouch(Screen.EnterSetup)
+                showMessage(context, context.getString(R.string.not_support_yet))
+//                onSetupTouch(Screen.EnterSetup)
             }
         ) {
             Row {
@@ -286,7 +288,7 @@ fun SignInContent(
                     }
                 )
                 checkLoginName()
-                showMessage(context, "checking...", 5000)
+                showMessage(context, context.getString(R.string.checking_auth), 5000)
             },
             modifier = Modifier
                 .fillMaxWidth()

@@ -33,9 +33,7 @@ fun PostCardPopular(
         Column(
             modifier = Modifier.clickable(
                 onClick = {
-//            navigateTo(Screen.Article(post.id))
-                    if (post.title == "Курс молодого бойца") // FIXME исправить на переход к нужному курсу
-                        navigateTo(Screen.CourseContent)
+
                 }
             )
         ) {

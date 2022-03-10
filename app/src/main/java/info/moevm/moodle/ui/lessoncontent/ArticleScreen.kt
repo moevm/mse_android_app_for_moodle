@@ -27,7 +27,7 @@ import info.moevm.moodle.ui.coursescontent.ArticleTaskContentItem
 @Composable
 fun ArticleScreen(
     courseManager: CourseManager,
-    navigateTo: (Screen) -> Unit
+    onBackPressed: () -> Unit
 ) {
 
     val taskContent = courseManager.getArticleLessonContentItem()
@@ -39,7 +39,7 @@ fun ArticleScreen(
         topBar = {
             TaskScreenTopBar(
                 courseManager = courseManager,
-                onBack = { navigateTo(Screen.CourseContent) }
+                onBack = { onBackPressed() }
             )
         },
         bottomBar = {
@@ -47,13 +47,10 @@ fun ArticleScreen(
                 courseManager = courseManager,
                 taskContentState = taskContentState,
                 taskContentItemSize = courseManager.getTaskArticlesContentSize(),
-                navigateTo = navigateTo
+                onBackPressed = { onBackPressed() }
             )
         }
     ) {
-//        if (taskContent == null) { // FIXME исправить появление Ошибки при переходе между статьёй и тестом
-//        }
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -117,7 +114,7 @@ fun TaskBottomNavigator(
     courseManager: CourseManager,
     taskContentState: MutableState<ArticleTaskContentItem?>,
     taskContentItemSize: Int,
-    navigateTo: (Screen) -> Unit
+    onBackPressed: () -> Unit
 ) {
     val index = courseManager.getTaskContentItemIndexState()
     val (iconBack, textBack) = when (index.value) {
@@ -134,7 +131,7 @@ fun TaskBottomNavigator(
             selected = selectedItem == 0,
             onClick = {
                 if (!courseManager.moveTaskIndex(-1))
-                    navigateTo(Screen.CourseContent)
+                    onBackPressed()
                 courseManager.setGlobalItem()
                 taskContentState.value = courseManager.getArticleLessonContentItem()
             },
@@ -145,7 +142,7 @@ fun TaskBottomNavigator(
             selected = selectedItem == 1,
             onClick = {
                 if (!courseManager.moveTaskIndex(1)) {
-                    navigateTo(Screen.CourseContent)
+                    onBackPressed()
                 }
                 courseManager.setGlobalItem()
                 taskContentState.value = courseManager.getArticleLessonContentItem()

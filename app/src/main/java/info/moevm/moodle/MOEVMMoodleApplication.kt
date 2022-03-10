@@ -19,7 +19,6 @@ class MOEVMMoodleApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         if (BuildConfig.DEBUG) {
             // print logs in debug mode
             Timber.plant(DebugTree())

@@ -11,8 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -23,6 +21,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
@@ -32,16 +31,16 @@ import info.moevm.moodle.api.DataStoreUser
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.data.courses.CoursesRepository
-import info.moevm.moodle.data.courses.TopicSelection
+import info.moevm.moodle.data.courses.AllCourseSelection
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.utils.produceUiState
 import kotlinx.coroutines.launch
 
 enum class Sections(val title: String) {
-    Topics("All"),
-    People("Current"),
-    Publications("Archive")
+    AllCourse("Все курсы"),
+    CurrentCourse("Ваши курсы"),
+    Publications("Архив")
 }
 
 /**
@@ -102,35 +101,37 @@ fun InterestsScreen(
     val changeCourse = { courseId: Int, courseName: String ->
         courseManager.setCourseId(courseId)
         courseManager.setCourseName(courseName)
+        navigateTo(Screen.CourseContent)
     }
+    val emptyChangerCourse = { _: Int, _: String -> }
     // Describe the screen sections here since each section needs 2 states and 1 event.
     // Pass them to the stateless InterestsScreen using a tabContent.
-    val topicsSection = TabContent(Sections.Topics) {
-        val (topics) = produceUiState(coursesRepository) {
-            getTopics(tokenState)
+    val allCourseSection = TabContent(Sections.AllCourse) {
+        val (allCourse) = produceUiState(coursesRepository) {
+            getAllCourse(tokenState)
         }
         // collectAsState will read a [Flow] in Compose
-        val selectedTopics by coursesRepository.observeTopicsSelected()
+        val selectedAllCourse by coursesRepository.observeAllCourseSelected()
             .collectAsState(setOf())
-        val onTopicSelect: (TopicSelection) -> Unit = {
-            coroutineScope.launch { coursesRepository.toggleTopicSelection(it) }
+        val onAllCourseSelect: (AllCourseSelection) -> Unit = {
+//            coroutineScope.launch { coursesRepository.toggleAllCourseSelection(it) }
         }
-        val data = topics.value.data ?: return@TabContent
-        TopicList(navigateTo, data, selectedTopics, onTopicSelect, changeCourse)
+        val data = allCourse.value.data ?: return@TabContent
+        AllCourseList(navigateTo, data, selectedAllCourse, onAllCourseSelect, emptyChangerCourse)
     }
 
-    val peopleSection = TabContent(Sections.People) {
-        val (people) = produceUiState(coursesRepository) {
-            getPeople(tokenState)
+    val currentCourseSection = TabContent(Sections.CurrentCourse) {
+        val (currentCourse) = produceUiState(coursesRepository) {
+            getCurrentCourse(tokenState)
         }
-        val selectedPeople by coursesRepository.observePeopleSelected()
+        val selectedCurrentCourse by coursesRepository.observeCurrentCourseSelected()
             .collectAsState(setOf())
-        val onPeopleSelect: (String) -> Unit = {
-            coroutineScope.launch { coursesRepository.togglePersonSelected(it) }
+        val onCurrentCourseSelect: (String) -> Unit = {
+            coroutineScope.launch { coursesRepository.toggleCurrentCourseSelected(it) }
         }
-        val data = people.value.data ?: return@TabContent // List<Pair<String, Int>>  -->  title + id
+        val data = currentCourse.value.data ?: return@TabContent // List<Pair<String, Int>>  -->  title + id
 
-        PeopleList(navigateTo, data, selectedPeople, onPeopleSelect, changeCourse)
+        CurrentCourseList(navigateTo, data, selectedCurrentCourse, onCurrentCourseSelect, changeCourse)
     }
 
 //    val publicationSection = TabContent(Sections.Publications) { // Не требуется
@@ -155,7 +156,7 @@ fun InterestsScreen(
 //        )
 //    }
 
-    val tabContent = listOf(topicsSection, peopleSection/*, publicationSection*/)
+    val tabContent = listOf(allCourseSection, currentCourseSection/*, publicationSection*/)
     val (currentSection, updateSection) = rememberSaveable {
         mutableStateOf(
             tabContent.first().section
@@ -205,7 +206,7 @@ fun InterestsScreen(
         topBar = {
             TopAppBar(
                 modifier = Modifier.testTag("topAppBarInterests"),
-                title = { Text("Interests") },
+                title = { Text(stringResource(id = R.string.interest_activity_title)) },
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
@@ -268,18 +269,18 @@ private fun TabContent(
  * Display the list for the topic tab
  *
  * @param courses (state) topics to display, mapped by section
- * @param selectedTopics (state) currently selected topics
+ * @param selectedAllCourses (state) currently selected topics
  * @param onTopicSelect (event) request a topic selection be changed
  */
 @Composable
-private fun TopicList(
+private fun AllCourseList(
     navigateTo: (Screen) -> Unit,
     courses: CoursesMap,
-    selectedTopics: Set<TopicSelection>,
-    onTopicSelect: (TopicSelection) -> Unit,
+    selectedAllCourses: Set<AllCourseSelection>,
+    onTopicSelect: (AllCourseSelection) -> Unit,
     onCourseClicked: (Int, String) -> Unit
 ) {
-    TabWithSections(navigateTo, courses, selectedTopics, onTopicSelect, onCourseClicked)
+    TabWithSections(navigateTo, courses, selectedAllCourses, onTopicSelect, onCourseClicked)
 }
 
 /**
@@ -290,7 +291,7 @@ private fun TopicList(
  * @param onPersonSelect (event) request a person selection be changed
  */
 @Composable
-private fun PeopleList(
+private fun CurrentCourseList(
     navigateTo: (Screen) -> Unit,
     people: List<Pair<String, Int>>,
     selectedPeople: Set<String>,
@@ -360,15 +361,15 @@ private fun TabWithTopics(
  * Display a sectioned list of topics
  *
  * @param sections (state) topics to display, grouped by sections
- * @param selectedTopics (state) currently selected topics
+ * @param selectedAllCourses (state) currently selected topics
  * @param onTopicSelect (event) request a topic+section selection be changed
  */
 @Composable
 private fun TabWithSections(
     navigateTo: (Screen) -> Unit,
     sections: CoursesMap,
-    selectedTopics: Set<TopicSelection>,
-    onTopicSelect: (TopicSelection) -> Unit,
+    selectedAllCourses: Set<AllCourseSelection>,
+    onTopicSelect: (AllCourseSelection) -> Unit,
     onCourseClicked: (Int, String) -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -384,15 +385,15 @@ private fun TabWithSections(
                 TopicItem(
                     navigateTo = navigateTo,
                     itemTitle = topics[index].first,
-                    selected = selectedTopics.contains(
-                        TopicSelection(
+                    selected = selectedAllCourses.contains(
+                        AllCourseSelection(
                             section,
                             topics[index].first
                         )
                     ),
                     itemIndex = topics[index].second,
                     onCourseClicked = onCourseClicked
-                ) { onTopicSelect(TopicSelection(section, topics[index].first)) }
+                ) { onTopicSelect(AllCourseSelection(section, topics[index].first)) }
                 TopicDivider()
             }
         }
@@ -425,12 +426,9 @@ private fun TopicItem(
                     value = selected,
                     onValueChange = { onToggle() }
                 )
-                .clickable { // TODO Исправить на нормально
+                .clickable {
                     onCourseClicked(itemIndex, itemTitle)
-//                    val z = 2
-//                    if (itemTitle == "Курс молодого бойца" || itemTitle == "КМБ") {
-                    navigateTo(Screen.CourseContent)
-//                    }
+//                    navigateTo(Screen.CourseContent)
                 }
                 .padding(horizontal = 16.dp)
         ) {
@@ -455,19 +453,20 @@ private fun TopicItem(
                     .padding(start = 16.dp, end = 8.dp),
                 style = MaterialTheme.typography.subtitle1
             )
+        // TODO: сделать переход на экран информации о курсе
+
             Box(
                 modifier = Modifier
                     .clickable {
-                        // TODO: сделать переход на экран информации о курсе
                     }
                     .size(42.dp)
                     .align(Alignment.CenterVertically)
             ) {
-                Icon(
-                    modifier = Modifier.align(Alignment.Center),
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = null
-                )
+//                Icon(
+//                    modifier = Modifier.align(Alignment.Center),
+//                    imageVector = Icons.Outlined.Info,
+//                    contentDescription = null
+//                )
             }
         }
     }

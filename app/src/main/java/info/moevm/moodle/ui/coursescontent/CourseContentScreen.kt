@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -29,19 +30,31 @@ import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.components.ExpandableCard
+import info.moevm.moodle.ui.signin.showMessage
+import info.moevm.moodle.utils.Expectant
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.IllegalArgumentException
 
 @Composable
 fun CourseContentScreen(
     courseManager: CourseManager,
-    navigateTo: (Screen) -> Unit
+    navigateTo: (Screen) -> Unit,
+    onBackPressed: () -> Unit
 ) {
 //    TODO: исправить на вывод ошибки
-    val titles = courseManager.getLessonsTitles() ?: return
+    val waitTime = 3000
+    if (courseManager.getLessonsTitles() == null) { // если вдруг не успело загрузиться
+        val startTime = System.currentTimeMillis()
+        while (courseManager.getLessonsTitles() == null && System.currentTimeMillis() - startTime < waitTime) {}
+    }
+    val titles = courseManager.getLessonsTitles() ?: return // если всё же не загрузилось,
+    val availableTypes = TaskType.values().map { it.value }
 
-    val time = System.currentTimeMillis()
-    while (System.currentTimeMillis() - time < 250) { // FIXME: Даём время на удаление прошлого содержимого, исправить
+    while (System.currentTimeMillis() - waitTime < 250) { // FIXME: Даём время на удаление прошлого содержимого, исправить
         Timber.i("content TimeOut 250ms")
     }
 
@@ -61,7 +74,7 @@ fun CourseContentScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navigateTo(Screen.Interests)
+                            onBackPressed()
                         }
                     ) {
                         Icon(Icons.Filled.ArrowBack, null)
@@ -86,7 +99,7 @@ fun CourseContentScreen(
                             courseManager.getLessonsContents(index)
                         if (lessonContent != null) {
                             CardItems( // TODO: исправить на нормально
-                                tasksType = lessonContent.map { TaskType.valueOf(it.modname?.uppercase() ?: "NONE") }.toList(),
+                                tasksType = lessonContent.map { if((it.modname ?: "") in availableTypes) TaskType.valueOf(it.modname?.uppercase() ?: "") else TaskType.NONE}.toList(),
                                 tasksTitles = lessonContent.map { Html.fromHtml(it.name).toString() ?: "<Ошибка загрузки данных>" }.toList(),
                                 tasksStatus = lessonContent.map {
                                     when (it.completiondata?.state) {
@@ -163,6 +176,7 @@ fun CardItem(
     lessonId: Int,
     navigateTo: (Screen) -> Unit
 ) {
+    val context = LocalContext.current
     BoxWithConstraints(
         Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopStart
@@ -188,7 +202,7 @@ fun CardItem(
                         courseManager.setLocalQuizId(lessonId.toString())
                         navigateTo(Screen.TestAttempts)
                     }
-                    else -> ""
+                    else -> showMessage(context, context.getString(R.string.not_support_element_course))
                 }
             }
         ) {

@@ -1,6 +1,5 @@
 package info.moevm.moodle.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
@@ -8,7 +7,9 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.text.font.*
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import info.moevm.moodle.R
@@ -52,7 +53,7 @@ val Colors.snackbarAction: Color
 
 @Composable
 fun MOEVMMoodleTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = /*isSystemInDarkTheme()*/ false,
     content: @Composable () -> Unit
 ) {
     MaterialTheme(

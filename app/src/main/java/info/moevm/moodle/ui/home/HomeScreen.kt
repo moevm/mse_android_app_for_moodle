@@ -1,11 +1,12 @@
 package info.moevm.moodle.ui.home
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,9 +15,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.W700
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import info.moevm.moodle.R
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.posts.PostsRepository
@@ -149,24 +155,35 @@ fun HomeScreen(
         }
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
-        LoadingContent(
-            empty = posts.initialLoad,
-            emptyContent = { FullScreenLoading() },
-            loading = posts.loading,
-            onRefresh = onRefreshPosts,
-            content = {
-                HomeScreenErrorAndContent(
-                    posts = posts,
-                    onRefresh = {
-                        onRefreshPosts()
-                    },
-                    navigateTo = navigateTo,
-                    favorites = favorites,
-                    onToggleFavorite = onToggleFavorite,
-                    modifier = modifier
-                )
-            }
-        )
+
+        // TODO Дополнить чем-нибудь
+
+        BoxWithConstraints(modifier = modifier.then(Modifier.fillMaxSize())) {
+            Text(
+                modifier = Modifier.fillMaxSize(1f).padding(top=42.dp),
+                text = "Добро пожаловать!",
+                textAlign = TextAlign.Center,
+                fontSize = 26.sp
+            )
+        }
+//        LoadingContent(
+//            empty = posts.initialLoad,
+//            emptyContent = { FullScreenLoading() },
+//            loading = posts.loading,
+//            onRefresh = onRefreshPosts,
+//            content = {
+//                HomeScreenErrorAndContent(
+//                    posts = posts,
+//                    onRefresh = {
+//                        onRefreshPosts()
+//                    },
+//                    navigateTo = navigateTo,
+//                    favorites = favorites,
+//                    onToggleFavorite = onToggleFavorite,
+//                    modifier = modifier
+//                )
+//            }
+//        )
     }
 }
 

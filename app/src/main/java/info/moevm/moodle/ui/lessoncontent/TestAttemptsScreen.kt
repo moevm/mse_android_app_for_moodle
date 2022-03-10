@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -27,7 +28,8 @@ import java.util.*
 @Composable
 fun TestAttemptsScreen(
     courseManager: CourseManager,
-    navigateTo: (Screen) -> Unit
+    navigateTo: (Screen) -> Unit,
+    onBackPressed: () -> Unit
 ) {
     // TODO проверить работу добавления новой попытки
     val attemptContent = courseManager.getQuizAttemptContent()
@@ -35,7 +37,7 @@ fun TestAttemptsScreen(
     val scaffoldState = rememberScaffoldState()
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { TestPreviewScreenTopBar { navigateTo(Screen.CourseContent) } },
+        topBar = { TestPreviewScreenTopBar { onBackPressed() } },
         bottomBar = {
             BottomNavigatorWithAttempt(
                 newAttemptState = badNewAttemptState,
@@ -153,7 +155,8 @@ fun AttemptsCard(
                 Row(Modifier.fillMaxWidth()) {
                     Text(
                         modifier = Modifier.padding(top = 8.dp, start = 40.dp),
-                        text = numberCard.toString()
+                        text = numberCard.toString(),
+                        fontFamily = FontFamily.Default
                     )
                     Column(
                         Modifier
@@ -253,14 +256,14 @@ fun BottomNavigatorWithAttempt(
 
     val selectedItem by remember { mutableStateOf(0) }
     BottomNavigation {
-        BottomNavigationItem( // Назад
-            selected = selectedItem == 0,
-            onClick = {
-                // TODO сделать переход назад
-            },
-            icon = { Icon(imageVector = iconBack, contentDescription = null) },
-            label = { Text(textBack) }
-        )
+//        BottomNavigationItem( // Назад
+//            selected = selectedItem == 0,
+//            onClick = {
+//                // TODO сделать переход назад
+//            },
+//            icon = { Icon(imageVector = iconBack, contentDescription = null) },
+//            label = { Text(textBack) }
+//        )
         BottomNavigationItem( // Новая попытка
             selected = selectedItem == 1,
             onClick = {
@@ -280,18 +283,18 @@ fun BottomNavigatorWithAttempt(
             },
             label = { Text(textAttempt) }
         )
-        BottomNavigationItem( // Вперёд
-            selected = selectedItem == 2,
-            onClick = {
-                // TODO сделать переход вперёд
-            },
-            icon = {
-                Icon(
-                    imageVector = iconForward,
-                    contentDescription = null
-                )
-            },
-            label = { Text(textForward) }
-        )
+//        BottomNavigationItem( // Вперёд
+//            selected = selectedItem == 2,
+//            onClick = {
+//                // TODO сделать переход вперёд
+//            },
+//            icon = {
+//                Icon(
+//                    imageVector = iconForward,
+//                    contentDescription = null
+//                )
+//            },
+//            label = { Text(textForward) }
+//        )
     }
 }

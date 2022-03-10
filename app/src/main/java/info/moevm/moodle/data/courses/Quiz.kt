@@ -71,7 +71,7 @@ data class AdditionalData(
 )
 
 data class QuizFinished(
-    val grade: Int? = null,
+    val grade: String? = null,
     val attempt: Attempt? = null,
     val additionaldata: List<AdditionalData>? = null,
     val questions: List<Question>? = null,

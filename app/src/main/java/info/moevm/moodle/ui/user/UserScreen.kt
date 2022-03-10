@@ -53,7 +53,10 @@ fun UserScreen(
                 modifier = Modifier.testTag("topAppBarHome"),
                 title = {
                     Text(
-                        text = "${stringResource(id = R.string.hello)}, ${fullNameMoodleProfile.value ?: ""}",
+                        text = stringResource(id = R.string.hello) + if (fullNameMoodleProfile.value != null)
+                            ", ${fullNameMoodleProfile.value ?: ""}"
+                        else
+                            "",
                         textAlign = TextAlign.Justify,
                         modifier = Modifier
                             .fillMaxSize()
@@ -132,14 +135,14 @@ fun UserContent(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "$cityMoodleProfile, $countryMoodleProfile",
+            text = cityMoodleProfile + (if(cityMoodleProfile.isNotEmpty() && countryMoodleProfile.isNotEmpty()) ", " else "") + countryMoodleProfile,
             textAlign = TextAlign.Justify,
             style = MaterialTheme.typography.h5
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(
             onClick = {
-                onNavigate(Screen.Home)
+                onNavigate(Screen.Interests)
             },
             modifier = Modifier
                 .fillMaxWidth()

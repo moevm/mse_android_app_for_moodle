@@ -13,12 +13,12 @@ interface CoursesRepository {
     /**
      * Get relevant topics to the user.
      */
-    suspend fun getTopics(token: String): Result<CoursesMap>
+    suspend fun getAllCourse(token: String): Result<CoursesMap>
 
     /**
      * Get list of people.
      */
-    suspend fun getPeople(token: String): Result<List<Pair<String, Int>>>
+    suspend fun getCurrentCourse(token: String): Result<List<Pair<String, Int>>>
 
     /**
      * Get list of publications.
@@ -28,12 +28,12 @@ interface CoursesRepository {
     /**
      * Toggle between selected and unselected
      */
-    suspend fun toggleTopicSelection(topic: TopicSelection)
+    suspend fun toggleAllCourseSelection(allCourse: AllCourseSelection)
 
     /**
      * Toggle between selected and unselected
      */
-    suspend fun togglePersonSelected(person: String)
+    suspend fun toggleCurrentCourseSelected(person: String)
 
     /**
      * Toggle between selected and unselected
@@ -43,12 +43,12 @@ interface CoursesRepository {
     /**
      * Currently selected topics
      */
-    fun observeTopicsSelected(): Flow<Set<TopicSelection>>
+    fun observeAllCourseSelected(): Flow<Set<AllCourseSelection>>
 
     /**
      * Currently selected people
      */
-    fun observePeopleSelected(): Flow<Set<String>>
+    fun observeCurrentCourseSelected(): Flow<Set<String>>
 
     /**
      * Currently selected publications
@@ -56,4 +56,4 @@ interface CoursesRepository {
     fun observePublicationSelected(): Flow<Set<String>>
 }
 
-data class TopicSelection(val section: String, val topic: String)
+data class AllCourseSelection(val section: String, val topic: String)
