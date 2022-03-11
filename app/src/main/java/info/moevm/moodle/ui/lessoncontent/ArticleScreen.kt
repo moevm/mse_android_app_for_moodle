@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
+import info.moevm.moodle.ui.components.LoadErrorActivity
 import info.moevm.moodle.ui.coursescontent.ArticleTaskContentItem
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -61,13 +62,13 @@ fun ArticleScreen(
         ) {
             Text(
                 modifier = Modifier.padding(16.dp),
-                text = taskContentState.value!!.taskTitle,
+                text = taskContentState.value?.taskTitle ?: "Лекция",
                 style = MaterialTheme.typography.h6,
                 textAlign = TextAlign.Center
             )
             Text(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                text = taskContentState.value!!.taskMark,
+                text = taskContentState.value?.taskMark ?: "Оценка",
                 style = TextStyle(
                     fontSize = 12.sp,
                     color = Color(0f, 0f, 0f, 0.4f),

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MOEVMoodle</string>
-    <string name="load_error">Can\'t update course list</string>
+    <string name="load_error">Ошибка при загрузке данных</string>
     <string name="retry">Retry</string>
 
     <string name="app_tagline">MOEVM Moodle App</string>
@@ -38,6 +38,9 @@
     <string name="user_auth">"Вы вошли"</string>
     <string name="checking_auth">Проверка…</string>
     <string name="not_support_element_course">Данный элемент не поддерживается</string>
+    <string name="welcome_default_case">добро пожаловать</string>
+    <string name="welcome_up_case">Добро пожаловать</string>
+    <string name="overview_only">Доступно только обзорно</string>
 
     <!--  Labels  -->
     <string name="home_label">Главный экран</string>

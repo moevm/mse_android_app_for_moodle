@@ -264,7 +264,7 @@ class CourseManager(
                         "Элемент теста",
                         TaskContentType.TEST_FINISHED,
                         quizFinishedContent?.questions?.getOrNull(0)?.mark
-                            ?: "Данный элемент не поддерживается"
+                            ?: "Данный элемент не поддерживается или не загружен"
                     ) {
                         BuildLessonContent(
                             content = quizFinishedContent?.questions?.getOrNull(
@@ -279,7 +279,7 @@ class CourseManager(
                         "Элемент теста",
                         TaskContentType.TEST_IN_PROGRESS,
                         quizInProgressContent?.questions?.getOrNull(0)?.mark
-                            ?: "Данный элемент не поддерживается"
+                            ?: "Данный элемент не поддерживается или не загружен"
                     ) {
                         BuildLessonContent(
                             content = quizInProgressContent?.questions?.getOrNull(
@@ -422,7 +422,7 @@ class CourseManager(
                 courseContentData = moodleApi.getCourseContent(token, courseId)
                 loaded.value = true
             }
-            Expectant.waitSomeSecondUntilFalse(loaded, 7)
+            Expectant.waitSomeSecondUntilFalse(loaded, 5)
         }
     }
 
@@ -617,6 +617,10 @@ class CourseManager(
      */
     fun setToken(token: String) {
         this.token = token
+    }
+
+    fun getToken(): String {
+        return this.token.take(this.token.length)
     }
 
     /**

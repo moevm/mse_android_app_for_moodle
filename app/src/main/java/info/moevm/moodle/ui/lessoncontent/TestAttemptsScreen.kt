@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
+import info.moevm.moodle.ui.components.LoadErrorActivity
 import info.moevm.moodle.ui.coursescontent.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -46,6 +47,10 @@ fun TestAttemptsScreen(
             )
         }
     ) {
+        if (attemptContent == null) {
+            LoadErrorActivity()
+            return@Scaffold
+        }
         val scrollState = rememberScrollState()
         Column(
             modifier = Modifier

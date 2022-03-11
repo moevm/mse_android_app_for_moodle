@@ -30,6 +30,7 @@ import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.components.ExpandableCard
+import info.moevm.moodle.ui.components.LoadErrorActivity
 import info.moevm.moodle.ui.signin.showMessage
 import info.moevm.moodle.utils.Expectant
 import kotlinx.coroutines.Dispatchers
@@ -46,12 +47,12 @@ fun CourseContentScreen(
     onBackPressed: () -> Unit
 ) {
 //    TODO: исправить на вывод ошибки
-    val waitTime = 3000
+    val waitTime = 1500
     if (courseManager.getLessonsTitles() == null) { // если вдруг не успело загрузиться
         val startTime = System.currentTimeMillis()
         while (courseManager.getLessonsTitles() == null && System.currentTimeMillis() - startTime < waitTime) {}
     }
-    val titles = courseManager.getLessonsTitles() ?: return // если всё же не загрузилось,
+    val titles = courseManager.getLessonsTitles() // если всё же не загрузилось,
     val availableTypes = TaskType.values().map { it.value }
 
     while (System.currentTimeMillis() - waitTime < 250) { // FIXME: Даём время на удаление прошлого содержимого, исправить
@@ -89,6 +90,10 @@ fun CourseContentScreen(
             )
         )
     ) {
+        if (titles == null || titles.isEmpty()) {
+            LoadErrorActivity()
+            return@Scaffold
+        }
         LazyColumn(Modifier.padding(bottom = 4.dp)) {
             itemsIndexed(cards.value) { index, card ->
                 val primaryColor = MaterialTheme.colors.primary

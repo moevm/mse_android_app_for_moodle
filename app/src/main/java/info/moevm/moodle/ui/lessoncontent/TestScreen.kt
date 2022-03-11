@@ -25,6 +25,7 @@ import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
+import info.moevm.moodle.ui.components.LoadErrorActivity
 import info.moevm.moodle.ui.coursescontent.TaskAnswerType
 import info.moevm.moodle.ui.coursescontent.TaskContentType
 import kotlinx.coroutines.launch

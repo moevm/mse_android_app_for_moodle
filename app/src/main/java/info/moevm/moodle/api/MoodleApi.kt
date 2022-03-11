@@ -8,6 +8,7 @@ import info.moevm.moodle.model.APIVariables
 import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.model.MoodleUser
 import info.moevm.moodle.model.WrongToken
+import info.moevm.moodle.utils.Expectant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,7 +82,7 @@ class MoodleApi {
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 2)
         Timber.d("answer is received")
         return data
     }
@@ -104,7 +105,7 @@ class MoodleApi {
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 2)
         Timber.d("answer is received")
         return data
     }
@@ -177,7 +178,7 @@ class MoodleApi {
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 5)
+        Expectant.waitSomeSecondUntilFalse(loaded, 5)
         Timber.d("answer is received")
         return data
     }
@@ -200,7 +201,7 @@ class MoodleApi {
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 5)
+        Expectant.waitSomeSecondUntilFalse(loaded, 5)
         Timber.d("answer is received")
         return data
     }
@@ -223,7 +224,7 @@ class MoodleApi {
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -246,7 +247,7 @@ class MoodleApi {
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -269,7 +270,7 @@ class MoodleApi {
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -292,7 +293,7 @@ class MoodleApi {
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -315,7 +316,7 @@ class MoodleApi {
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -338,7 +339,7 @@ class MoodleApi {
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -362,7 +363,7 @@ class MoodleApi {
         }
 
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }

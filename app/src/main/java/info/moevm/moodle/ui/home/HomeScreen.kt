@@ -1,5 +1,6 @@
 package info.moevm.moodle.ui.home
 
+import android.graphics.Paint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -11,18 +12,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion.W700
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.MutableLiveData
 import info.moevm.moodle.R
 import info.moevm.moodle.data.Result
 import info.moevm.moodle.data.posts.PostsRepository
@@ -47,6 +46,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun HomeScreen(
     navigateTo: (Screen) -> Unit,
+    fullNameMoodleUser: MutableLiveData<String>,
     postsRepository: PostsRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
@@ -65,6 +65,7 @@ fun HomeScreen(
 
     HomeScreen(
         posts = postUiState.value,
+        fullNameMoodleUser = fullNameMoodleUser,
         favorites = favorites,
         onToggleFavorite = {
             coroutineScope.launch { postsRepository.toggleFavorite(it) }
@@ -92,6 +93,7 @@ fun HomeScreen(
 @Composable
 fun HomeScreen(
     posts: UiState<List<Post>>,
+    fullNameMoodleUser: MutableLiveData<String>,
     favorites: Set<String>,
     onToggleFavorite: (String) -> Unit,
     onRefreshPosts: () -> Unit,
@@ -155,17 +157,19 @@ fun HomeScreen(
         }
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
-
         // TODO Дополнить чем-нибудь
-
-        BoxWithConstraints(modifier = modifier.then(Modifier.fillMaxSize())) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
-                modifier = Modifier.fillMaxSize(1f).padding(top=42.dp),
-                text = "Добро пожаловать!",
+                text = if(fullNameMoodleUser.value != "") "${fullNameMoodleUser.value},\n${stringResource(R.string.welcome_default_case)}!"
+                else "${stringResource(R.string.welcome_up_case)}!",
                 textAlign = TextAlign.Center,
                 fontSize = 26.sp
             )
         }
+    // Отображение карточек с курсами, не работает с получением данных из сервера
 //        LoadingContent(
 //            empty = posts.initialLoad,
 //            emptyContent = { FullScreenLoading() },
@@ -414,8 +418,15 @@ private fun PostListDivider() {
 @Composable
 fun PreviewHomeScreenBody() {
     ThemedPreview {
-        val posts = loadFakePosts()
-        PostList(posts, { }, setOf(), {})
+        val scaffoldState = rememberScaffoldState(
+            drawerState = rememberDrawerState(DrawerValue.Closed)
+        )
+        HomeScreen(
+            postsRepository = BlockingFakePostsRepository(LocalContext.current),
+            fullNameMoodleUser = MutableLiveData("Тест Тестович"),
+            scaffoldState = scaffoldState,
+            navigateTo = { }
+        )
     }
 }
 
@@ -428,6 +439,7 @@ private fun PreviewDrawerOpen() {
         )
         HomeScreen(
             postsRepository = BlockingFakePostsRepository(LocalContext.current),
+            fullNameMoodleUser = MutableLiveData("Тест Тестович"),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )
@@ -461,6 +473,7 @@ private fun PreviewDrawerOpenDark() {
         )
         HomeScreen(
             postsRepository = BlockingFakePostsRepository(LocalContext.current),
+            fullNameMoodleUser = MutableLiveData("Тест Тестович"),
             scaffoldState = scaffoldState,
             navigateTo = { }
         )

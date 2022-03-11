@@ -16,8 +16,7 @@ const val FADE_IN_ANIMATION_DURATION = 500
 const val FADE_OUT_ANIMATION_DURATION = 500
 const val COLLAPSE_ANIMATION_DURATION = 500
 
-class CardsViewModel(titles: List<String>) : ViewModel() {
-
+class CardsViewModel(titles: List<String>?) : ViewModel() {
     private val _cards = MutableStateFlow(listOf<ExpandableCardModel>())
     val cards: StateFlow<List<ExpandableCardModel>> get() = _cards
 
@@ -26,9 +25,10 @@ class CardsViewModel(titles: List<String>) : ViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.Default) {
+            val tempTitles = titles ?: emptyList()
             val testList = arrayListOf<ExpandableCardModel>()
             var cnt = 0
-            for (title in titles) {
+            for (title in tempTitles) {
                 testList += ExpandableCardModel(id = cnt++, title = title)
             }
             _cards.emit(testList)

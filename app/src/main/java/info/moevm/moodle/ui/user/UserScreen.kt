@@ -12,9 +12,14 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import info.moevm.moodle.R
 import info.moevm.moodle.api.DataStoreUser
@@ -52,17 +57,7 @@ fun UserScreen(
             TopAppBar(
                 modifier = Modifier.testTag("topAppBarHome"),
                 title = {
-                    Text(
-                        text = stringResource(id = R.string.hello) + if (fullNameMoodleProfile.value != null)
-                            ", ${fullNameMoodleProfile.value ?: ""}"
-                        else
-                            "",
-                        textAlign = TextAlign.Justify,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentSize(Alignment.Center)
-                            .padding(end = 16.dp)
-                    )
+
                 },
                 navigationIcon = {
                     IconButton(
@@ -83,6 +78,7 @@ fun UserScreen(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             UserContent(
+                fullNameMoodleProfile,
                 cityMoodleProfile.value ?: "",
                 countryMoodleProfile.value ?: "",
                 onNavigate = navigateTo
@@ -117,6 +113,7 @@ fun UserScreen(
 
 @Composable
 fun UserContent(
+    fullNameMoodleProfile: MutableLiveData<String>,
     cityMoodleProfile: String,
     countryMoodleProfile: String,
     onNavigate: (Screen) -> Unit
@@ -128,12 +125,21 @@ fun UserContent(
         ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         CircularImage(
-            image = ImageBitmap.imageResource(id = R.drawable.avatar),
+            image = ImageBitmap.imageResource(id = R.drawable.avatar2),
             modifier = Modifier.size(120.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = fullNameMoodleProfile.value ?: "",
+            textAlign = TextAlign.Justify,
+            style = MaterialTheme.typography.h5,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentSize(Alignment.TopCenter)
+        )
+        Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = cityMoodleProfile + (if(cityMoodleProfile.isNotEmpty() && countryMoodleProfile.isNotEmpty()) ", " else "") + countryMoodleProfile,
             textAlign = TextAlign.Justify,

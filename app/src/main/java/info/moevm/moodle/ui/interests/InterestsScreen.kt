@@ -23,7 +23,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.asLiveData
 import info.moevm.moodle.R
@@ -34,6 +36,8 @@ import info.moevm.moodle.data.courses.CoursesRepository
 import info.moevm.moodle.data.courses.AllCourseSelection
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
+import info.moevm.moodle.ui.components.LoadErrorActivity
+import info.moevm.moodle.ui.signin.showMessage
 import info.moevm.moodle.utils.produceUiState
 import kotlinx.coroutines.launch
 
@@ -62,6 +66,9 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  * @param scaffoldState (state) state for screen Scaffold
  * @param coursesRepository data source for this screen
  */
+
+
+
 @Composable
 fun InterestsScreen(
     navigateTo: (Screen) -> Unit,
@@ -70,30 +77,30 @@ fun InterestsScreen(
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
 
-    fun Context.lifecycleOwner(): LifecycleOwner? {
-        var curContext = this
-        var maxDepth = 20
-        while (maxDepth-- > 0 && curContext !is LifecycleOwner) {
-            curContext = (curContext as ContextWrapper).baseContext
-        }
-        return if (curContext is LifecycleOwner) {
-            curContext
-        } else {
-            null
-        }
-    }
+//    fun Context.lifecycleOwner(): LifecycleOwner? {
+//        var curContext = this
+//        var maxDepth = 20
+//        while (maxDepth-- > 0 && curContext !is LifecycleOwner) {
+//            curContext = (curContext as ContextWrapper).baseContext
+//        }
+//        return if (curContext is LifecycleOwner) {
+//            curContext
+//        } else {
+//            null
+//        }
+//    }
 
     val context = LocalContext.current
-    val lifeSO = context.lifecycleOwner()
-    val dataStore = DataStoreUser(context)
-    var tokenState: String = ""
+//    val lifeSO = context.lifecycleOwner()
+//    val dataStore = DataStoreUser(context)
+    val tokenState: String = courseManager.getToken()
 
-    dataStore.tokenFlow.asLiveData().observe(
-        lifeSO!!,
-        {
-            tokenState = it
-        }
-    )
+//    dataStore.tokenFlow.asLiveData().observe(
+//        lifeSO!!,
+//        {
+////            tokenState = it
+//        }
+//    )
 
     // Returns a [CoroutineScope] that is scoped to the lifecycle of [InterestsScreen]. When this
     // screen is removed from composition, the scope will be cancelled.
@@ -103,7 +110,7 @@ fun InterestsScreen(
         courseManager.setCourseName(courseName)
         navigateTo(Screen.CourseContent)
     }
-    val emptyChangerCourse = { _: Int, _: String -> }
+    val emptyChangerCourse = { _: Int, _: String -> showMessage(context, context.getString(R.string.overview_only)) }
     // Describe the screen sections here since each section needs 2 states and 1 event.
     // Pass them to the stateless InterestsScreen using a tabContent.
     val allCourseSection = TabContent(Sections.AllCourse) {
@@ -116,8 +123,12 @@ fun InterestsScreen(
         val onAllCourseSelect: (AllCourseSelection) -> Unit = {
 //            coroutineScope.launch { coursesRepository.toggleAllCourseSelection(it) }
         }
-        val data = allCourse.value.data ?: return@TabContent
-        AllCourseList(navigateTo, data, selectedAllCourse, onAllCourseSelect, emptyChangerCourse)
+        val data = allCourse.value.data
+        if (data != null && data.isEmpty()) {
+            LoadErrorActivity()
+        } else if(data != null) {
+            AllCourseList(navigateTo, data, selectedAllCourse, onAllCourseSelect, emptyChangerCourse)
+        }
     }
 
     val currentCourseSection = TabContent(Sections.CurrentCourse) {
@@ -129,9 +140,12 @@ fun InterestsScreen(
         val onCurrentCourseSelect: (String) -> Unit = {
             coroutineScope.launch { coursesRepository.toggleCurrentCourseSelected(it) }
         }
-        val data = currentCourse.value.data ?: return@TabContent // List<Pair<String, Int>>  -->  title + id
-
-        CurrentCourseList(navigateTo, data, selectedCurrentCourse, onCurrentCourseSelect, changeCourse)
+        val data = currentCourse.value.data // List<Pair<String, Int>>  -->  title + id
+        if (data != null && data.isEmpty()) {
+            LoadErrorActivity()
+        } else if(data != null) {
+            CurrentCourseList(navigateTo, data, selectedCurrentCourse, onCurrentCourseSelect, changeCourse)
+        }
     }
 
 //    val publicationSection = TabContent(Sections.Publications) { // Не требуется
@@ -374,13 +388,15 @@ private fun TabWithSections(
 ) {
     val scrollState = rememberScrollState()
 
-    Column(modifier = Modifier.verticalScroll(scrollState)) {
+    Column(modifier = Modifier
+        .verticalScroll(scrollState)
+        .padding(vertical = 16.dp)) {
         sections.forEach { (section, topics) ->
-            Text(
-                text = section,
-                modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.subtitle1
-            )
+//            Text(
+//                text = section,
+//                modifier = Modifier.padding(16.dp),
+//                style = MaterialTheme.typography.subtitle1
+//            )
             for (index in topics.indices) {
                 TopicItem(
                     navigateTo = navigateTo,

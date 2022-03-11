@@ -20,29 +20,6 @@ import java.util.ArrayList
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class FakeCoursesRepository : CoursesRepository {
-
-    private val topics by lazy {
-        mapOf(
-            "Android" to listOf("Jetpack Compose", "Kotlin", "Jetpack"),
-            "Programming" to listOf("Kotlin", "Declarative UIs", "Java"),
-            "Technology" to listOf("Pixel", "Google")
-        )
-    }
-
-    private val currentTopics by lazy {
-        listOf(
-            "Kobalt Toral",
-            "K'Kola Uvarek",
-            "Kris Vriloc",
-            "Grala Valdyr",
-            "Kruel Valaxar",
-            "L'Elij Venonn",
-            "Kraag Solazarn",
-            "Tava Targesh",
-            "Kemarrin Muuda"
-        )
-    }
-
     private val publications by lazy {
         listOf(
             "Курс молодого бойца",
