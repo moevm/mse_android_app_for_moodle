@@ -9,7 +9,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,7 +20,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -32,13 +34,7 @@ import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.components.ExpandableCard
 import info.moevm.moodle.ui.components.LoadErrorActivity
 import info.moevm.moodle.ui.signin.showMessage
-import info.moevm.moodle.utils.Expectant
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.IllegalArgumentException
 
 @Composable
 fun CourseContentScreen(
@@ -104,7 +100,7 @@ fun CourseContentScreen(
                             courseManager.getLessonsContents(index)
                         if (lessonContent != null) {
                             CardItems( // TODO: исправить на нормально
-                                tasksType = lessonContent.map { if((it.modname ?: "") in availableTypes) TaskType.valueOf(it.modname?.uppercase() ?: "") else TaskType.NONE}.toList(),
+                                tasksType = lessonContent.map { if ((it.modname ?: "") in availableTypes) TaskType.valueOf(it.modname?.uppercase() ?: "") else TaskType.NONE }.toList(),
                                 tasksTitles = lessonContent.map { Html.fromHtml(it.name).toString() ?: "<Ошибка загрузки данных>" }.toList(),
                                 tasksStatus = lessonContent.map {
                                     when (it.completiondata?.state) {

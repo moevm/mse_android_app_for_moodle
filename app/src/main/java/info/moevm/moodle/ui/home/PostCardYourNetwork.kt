@@ -32,9 +32,7 @@ fun PostCardPopular(
     ) {
         Column(
             modifier = Modifier.clickable(
-                onClick = {
-
-                }
+                onClick = { }
             )
         ) {
             val image = post.image

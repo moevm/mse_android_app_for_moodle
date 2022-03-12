@@ -10,19 +10,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import info.moevm.moodle.R
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.components.LoadErrorActivity
-import info.moevm.moodle.ui.coursescontent.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.IllegalArgumentException
+import info.moevm.moodle.ui.coursescontent.AttemptStatus
+import info.moevm.moodle.ui.signin.showMessage
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,16 +30,15 @@ fun TestAttemptsScreen(
     navigateTo: (Screen) -> Unit,
     onBackPressed: () -> Unit
 ) {
-    // TODO проверить работу добавления новой попытки
     val attemptContent = courseManager.getQuizAttemptContent()
-    val badNewAttemptState = remember { mutableStateOf(false) } // если мы хотим начать новую попытку до завершнения прошлой
+    val attemptsCount = remember { mutableStateOf(attemptContent?.attempts?.size ?: 0) }
     val scaffoldState = rememberScaffoldState()
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { TestPreviewScreenTopBar { onBackPressed() } },
         bottomBar = {
             BottomNavigatorWithAttempt(
-                newAttemptState = badNewAttemptState,
+                attemptsCount = attemptsCount,
                 courseManager = courseManager,
                 navigateTo = navigateTo
             )
@@ -111,28 +108,21 @@ fun TestAttemptsScreen(
                     }
                 }
 
-                if (attemptContent?.attempts == null) // FIXME нужно обработать случай
-                    throw IllegalArgumentException("Попытки являются null")
-
-                var index = 1
-                for (item in attemptContent.attempts) {
+                if (attemptContent.attempts == null) {
+                    LoadErrorActivity()
+                    return@Scaffold
+                }
+                for (index in 0 until attemptsCount.value) {
+                    val item = attemptContent.attempts[index]
                     AttemptsCard(
                         courseManager = courseManager,
                         chosenAttempt = courseManager.getAttemptId(),
-                        idAttempt = item.id ?: -1,
-                        numberCard = index++,
-                        attemptStatus = item.state ?: "Ошибка",
-                        date = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.ROOT).format(Date((((item.timefinish?.toLong() ?: 0L) - 0).coerceAtLeast(0L) * 1000))).toString(),
+                        idAttempt = item?.id ?: -1,
+                        numberCard = index + 1,
+                        attemptStatus = item?.state ?: "Ошибка",
+                        date = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.ROOT).format(Date((((item?.timefinish?.toLong() ?: 0L) - 0).coerceAtLeast(0L) * 1000))).toString(),
                         navigateTo = navigateTo
                     )
-                }
-                if (badNewAttemptState.value) {
-                    GlobalScope.launch {
-                        withContext(Dispatchers.Main) {
-                            scaffoldState.snackbarHostState.showSnackbar("Попытка уже была начата")
-                            badNewAttemptState.value = false
-                        }
-                    }
                 }
             }
         }
@@ -159,7 +149,9 @@ fun AttemptsCard(
             BoxWithConstraints {
                 Row(Modifier.fillMaxWidth()) {
                     Text(
-                        modifier = Modifier.padding(top = 8.dp, start = 40.dp),
+                        modifier = Modifier
+                            .padding(top = 8.dp, start = 40.dp)
+                            .width(20.dp),
                         text = numberCard.toString(),
                         fontFamily = FontFamily.Default
                     )
@@ -239,10 +231,11 @@ fun TestPreviewScreenTopBar(
 
 @Composable
 fun BottomNavigatorWithAttempt(
-    newAttemptState: MutableState<Boolean>,
+    attemptsCount: MutableState<Int>,
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
+    val context = LocalContext.current
     val (iconBack, textBack) = when (courseManager.getLessonContentItemIndex().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
@@ -272,12 +265,13 @@ fun BottomNavigatorWithAttempt(
         BottomNavigationItem( // Новая попытка
             selected = selectedItem == 1,
             onClick = {
-                // FIXME Исправить метод добавления новой попытки
-                if (courseManager.startNewAttempt((courseManager.getQuizAttemptContent()?.attempts?.getOrNull(0)?.quiz ?: -1).toString())) {
-//                    attemptsState.add(courseManager.getQuizAttemptContent()?.attempts?.last())
-                    newAttemptState.value = false
+                if (courseManager.getQuizAttemptContent()?.attempts?.isNotEmpty() == true &&
+                    courseManager.getQuizAttemptContent()?.attempts?.last()?.state != "inprogress"
+                ) {
+                    courseManager.startNewAttempt((courseManager.getQuizAttemptContent()?.attempts?.getOrNull(0)?.quiz ?: -1).toString())
+                    attemptsCount.value++
                 } else {
-                    newAttemptState.value = true
+                    showMessage(context, context.getString(R.string.attempt_already_in_progress))
                 }
             },
             icon = {

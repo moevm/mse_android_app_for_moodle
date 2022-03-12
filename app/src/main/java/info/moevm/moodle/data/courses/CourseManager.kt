@@ -1,8 +1,8 @@
 package info.moevm.moodle.data.courses
 
 import android.annotation.SuppressLint
-import android.view.View
-import android.webkit.*
+import android.webkit.WebSettings
+import android.webkit.WebView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -15,11 +15,13 @@ import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.model.CurrentCourses
 import info.moevm.moodle.ui.coursescontent.*
 import info.moevm.moodle.utils.Expectant
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.lang.Math.max
-import java.util.concurrent.TimeUnit
 
 class CourseManager(
     private var token: String,
@@ -204,7 +206,6 @@ class CourseManager(
                                     "text/html",
                                     "utf-8"
                                 )
-
                         }
                     },
                     update = {
@@ -515,24 +516,18 @@ class CourseManager(
     /**
      * Создать новую попытку
      */
-    fun startNewAttempt(quizid: String): Boolean { // FIXME не работает, возвращает null вместо попытки
-        TODO("New Attempt")
+    fun startNewAttempt(quizid: String) { // FIXME не работает, возвращает null вместо попытки
+//        TODO("New Attempt")
         val loaded = MutableStateFlow(false)
-        var newAttempt = false
         GlobalScope.launch {
             withContext(Dispatchers.IO) {
-//                val response = moodleApi.startNewAttempt(token, quizid)
-//                if (response != null) {
-//                    newAttempt = true
-//                    quizAttemptContent?.attempts?.add(response.attempts[0])
-//                } else
-//                    newAttempt = false
-
+                val response = moodleApi.startNewAttempt(token, quizid)
+                if (response != null)
+                    quizAttemptContent?.attempts?.add(response.attempt)
                 loaded.value = true
             }
         }
-//        Expectant.waitSomeSecondUntilFalse(loaded, 2)
-        return newAttempt
+        Expectant.waitSomeSecondUntilFalse(loaded, 2)
     }
 
     /**

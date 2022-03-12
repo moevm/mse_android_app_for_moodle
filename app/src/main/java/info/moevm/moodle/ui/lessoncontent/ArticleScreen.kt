@@ -20,8 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import info.moevm.moodle.data.courses.CourseManager
-import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.components.LoadErrorActivity
 import info.moevm.moodle.ui.coursescontent.ArticleTaskContentItem
 
 @SuppressLint("SetJavaScriptEnabled")

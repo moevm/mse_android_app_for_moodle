@@ -1,7 +1,5 @@
 package info.moevm.moodle.ui.interests
 
-import android.content.Context
-import android.content.ContextWrapper
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,7 +8,6 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -23,17 +20,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.asLiveData
 import info.moevm.moodle.R
-import info.moevm.moodle.api.DataStoreUser
+import info.moevm.moodle.data.courses.AllCourseSelection
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.data.courses.CoursesRepository
-import info.moevm.moodle.data.courses.AllCourseSelection
 import info.moevm.moodle.ui.AppDrawer
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.components.LoadErrorActivity
@@ -67,8 +59,6 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  * @param coursesRepository data source for this screen
  */
 
-
-
 @Composable
 fun InterestsScreen(
     navigateTo: (Screen) -> Unit,
@@ -94,14 +84,14 @@ fun InterestsScreen(
 //    val lifeSO = context.lifecycleOwner()
 //    val dataStore = DataStoreUser(context)
     val tokenState: String = courseManager.getToken()
-
-//    dataStore.tokenFlow.asLiveData().observe(
-//        lifeSO!!,
-//        {
-////            tokenState = it
-//        }
-//    )
-
+/*
+    dataStore.tokenFlow.asLiveData().observe(
+        lifeSO!!,
+        {
+            tokenState = it
+        }
+    )
+*/
     // Returns a [CoroutineScope] that is scoped to the lifecycle of [InterestsScreen]. When this
     // screen is removed from composition, the scope will be cancelled.
     val coroutineScope = rememberCoroutineScope()
@@ -126,7 +116,7 @@ fun InterestsScreen(
         val data = allCourse.value.data
         if (data != null && data.isEmpty()) {
             LoadErrorActivity()
-        } else if(data != null) {
+        } else if (data != null) {
             AllCourseList(navigateTo, data, selectedAllCourse, onAllCourseSelect, emptyChangerCourse)
         }
     }
@@ -143,7 +133,7 @@ fun InterestsScreen(
         val data = currentCourse.value.data // List<Pair<String, Int>>  -->  title + id
         if (data != null && data.isEmpty()) {
             LoadErrorActivity()
-        } else if(data != null) {
+        } else if (data != null) {
             CurrentCourseList(navigateTo, data, selectedCurrentCourse, onCurrentCourseSelect, changeCourse)
         }
     }
@@ -388,9 +378,11 @@ private fun TabWithSections(
 ) {
     val scrollState = rememberScrollState()
 
-    Column(modifier = Modifier
-        .verticalScroll(scrollState)
-        .padding(vertical = 16.dp)) {
+    Column(
+        modifier = Modifier
+            .verticalScroll(scrollState)
+            .padding(vertical = 16.dp)
+    ) {
         sections.forEach { (section, topics) ->
 //            Text(
 //                text = section,
@@ -469,7 +461,7 @@ private fun TopicItem(
                     .padding(start = 16.dp, end = 8.dp),
                 style = MaterialTheme.typography.subtitle1
             )
-        // TODO: сделать переход на экран информации о курсе
+            // TODO: сделать переход на экран информации о курсе
 
             Box(
                 modifier = Modifier

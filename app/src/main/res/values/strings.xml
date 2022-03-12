@@ -85,4 +85,5 @@
     <string name="wrong_login">Неправильный логин или пароль</string>
     <string name="network_problems">Проблемы с соединением, проверьте интернет подключение</string>
     <string name="title_activity_article_screen">ArticleScreen</string>
+    <string name="attempt_already_in_progress">Попытка уже была начата</string>
 </resources>

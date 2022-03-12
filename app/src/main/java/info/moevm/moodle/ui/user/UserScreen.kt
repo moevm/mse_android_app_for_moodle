@@ -2,7 +2,8 @@ package info.moevm.moodle.ui.user
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -12,14 +13,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import info.moevm.moodle.R
 import info.moevm.moodle.api.DataStoreUser
@@ -56,9 +52,7 @@ fun UserScreen(
         topBar = {
             TopAppBar(
                 modifier = Modifier.testTag("topAppBarHome"),
-                title = {
-
-                },
+                title = { },
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
@@ -141,7 +135,7 @@ fun UserContent(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = cityMoodleProfile + (if(cityMoodleProfile.isNotEmpty() && countryMoodleProfile.isNotEmpty()) ", " else "") + countryMoodleProfile,
+            text = cityMoodleProfile + (if (cityMoodleProfile.isNotEmpty() && countryMoodleProfile.isNotEmpty()) ", " else "") + countryMoodleProfile,
             textAlign = TextAlign.Justify,
             style = MaterialTheme.typography.h5
         )
