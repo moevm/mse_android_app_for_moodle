@@ -32,6 +32,7 @@ import info.moevm.moodle.R
 import info.moevm.moodle.api.DataStoreMoodleUser
 import info.moevm.moodle.api.DataStoreUser
 import info.moevm.moodle.api.MoodleApi
+import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.model.MoodleUser
 import info.moevm.moodle.ui.Screen
@@ -59,6 +60,7 @@ fun SignInScreen(
     fullNameMoodleUser: MutableLiveData<String>,
     cityMoodleUser: MutableLiveData<String>,
     countryMoodleUser: MutableLiveData<String>,
+    courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
     var brandingBottom by remember { mutableStateOf(0f) }
@@ -103,6 +105,7 @@ fun SignInScreen(
 //                                SignInEvent.SignIn(email, password)
 //                            }
                         navigateTo = navigateTo,
+                        courseManager = courseManager,
                         fullNameMoodleUser = fullNameMoodleUser,
                         cityMoodleUser = cityMoodleUser,
                         countryMoodleUser = countryMoodleUser
@@ -167,6 +170,7 @@ fun SignInSignUpTopAppBar(
 @Composable
 fun SignInContent(
     navigateTo: (Screen) -> Unit,
+    courseManager: CourseManager,
     fullNameMoodleUser: MutableLiveData<String>,
     cityMoodleUser: MutableLiveData<String>,
     countryMoodleUser: MutableLiveData<String>
@@ -272,6 +276,7 @@ fun SignInContent(
                         when {
                             data.value?.token != null -> {
                                 tokenState = data.value?.token!!
+                                courseManager.setToken(tokenState)
                                 GlobalScope.launch {
                                     // TODO if
                                     dataStore.addUser(userName, userPassword, tokenState)
@@ -324,11 +329,12 @@ fun SignInSignUpScreen(
 @Composable
 fun SignInPreview() {
     MOEVMMoodleTheme {
-        SignInScreen(
-            fullNameMoodleUser = MutableLiveData(""),
-            cityMoodleUser = MutableLiveData(""),
-            countryMoodleUser = MutableLiveData("")
-        ) { }
+//        SignInScreen(
+//            courseManager = CourseManager(),
+//            fullNameMoodleUser = MutableLiveData(""),
+//            cityMoodleUser = MutableLiveData(""),
+//            countryMoodleUser = MutableLiveData("")
+//        ) { }
     }
 }
 
@@ -336,10 +342,10 @@ fun SignInPreview() {
 @Composable
 fun SignInPreviewDark() {
     MOEVMMoodleTheme(darkTheme = true) {
-        SignInScreen(
-            fullNameMoodleUser = MutableLiveData(""),
-            cityMoodleUser = MutableLiveData(""),
-            countryMoodleUser = MutableLiveData("")
-        ) { }
+//        SignInScreen(
+//            fullNameMoodleUser = MutableLiveData(""),
+//            cityMoodleUser = MutableLiveData(""),
+//            countryMoodleUser = MutableLiveData("")
+//        ) { }
     }
 }

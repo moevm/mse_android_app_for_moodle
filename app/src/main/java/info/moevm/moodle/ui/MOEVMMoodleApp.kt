@@ -165,6 +165,7 @@ private fun AppContent(
                 composable(ScreenName.SIGN_IN.name) {
                     SignInScreen(
                         navigateTo = actions.select,
+                        courseManager = courseManager,
                         fullNameMoodleUser = fullNameMoodleUser,
                         cityMoodleUser = cityMoodleUser,
                         countryMoodleUser = countryMoodleUser
