@@ -2,7 +2,8 @@ package info.moevm.moodle.ui.user
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -51,16 +52,7 @@ fun UserScreen(
         topBar = {
             TopAppBar(
                 modifier = Modifier.testTag("topAppBarHome"),
-                title = {
-                    Text(
-                        text = "${stringResource(id = R.string.hello)}, ${fullNameMoodleProfile.value ?: ""}",
-                        textAlign = TextAlign.Justify,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .wrapContentSize(Alignment.Center)
-                            .padding(end = 16.dp)
-                    )
-                },
+                title = { },
                 navigationIcon = {
                     IconButton(
                         modifier = Modifier.testTag("appDrawer"),
@@ -80,6 +72,7 @@ fun UserScreen(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             UserContent(
+                fullNameMoodleProfile,
                 cityMoodleProfile.value ?: "",
                 countryMoodleProfile.value ?: "",
                 onNavigate = navigateTo
@@ -114,6 +107,7 @@ fun UserScreen(
 
 @Composable
 fun UserContent(
+    fullNameMoodleProfile: MutableLiveData<String>,
     cityMoodleProfile: String,
     countryMoodleProfile: String,
     onNavigate: (Screen) -> Unit
@@ -125,21 +119,30 @@ fun UserContent(
         ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         CircularImage(
-            image = ImageBitmap.imageResource(id = R.drawable.avatar),
+            image = ImageBitmap.imageResource(id = R.drawable.avatar2),
             modifier = Modifier.size(120.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "$cityMoodleProfile, $countryMoodleProfile",
+            text = fullNameMoodleProfile.value ?: "",
+            textAlign = TextAlign.Justify,
+            style = MaterialTheme.typography.h5,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentSize(Alignment.TopCenter)
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = cityMoodleProfile + (if (cityMoodleProfile.isNotEmpty() && countryMoodleProfile.isNotEmpty()) ", " else "") + countryMoodleProfile,
             textAlign = TextAlign.Justify,
             style = MaterialTheme.typography.h5
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(
             onClick = {
-                onNavigate(Screen.Home)
+                onNavigate(Screen.Interests)
             },
             modifier = Modifier
                 .fillMaxWidth()

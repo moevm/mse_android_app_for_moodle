@@ -20,14 +20,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import info.moevm.moodle.data.courses.CourseManager
-import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescontent.ArticleTaskContentItem
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun ArticleScreen(
     courseManager: CourseManager,
-    navigateTo: (Screen) -> Unit
+    onBackPressed: () -> Unit
 ) {
 
     val taskContent = courseManager.getArticleLessonContentItem()
@@ -39,7 +38,7 @@ fun ArticleScreen(
         topBar = {
             TaskScreenTopBar(
                 courseManager = courseManager,
-                onBack = { navigateTo(Screen.CourseContent) }
+                onBack = { onBackPressed() }
             )
         },
         bottomBar = {
@@ -47,13 +46,10 @@ fun ArticleScreen(
                 courseManager = courseManager,
                 taskContentState = taskContentState,
                 taskContentItemSize = courseManager.getTaskArticlesContentSize(),
-                navigateTo = navigateTo
+                onBackPressed = { onBackPressed() }
             )
         }
     ) {
-//        if (taskContent == null) { // FIXME исправить появление Ошибки при переходе между статьёй и тестом
-//        }
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -64,13 +60,13 @@ fun ArticleScreen(
         ) {
             Text(
                 modifier = Modifier.padding(16.dp),
-                text = taskContentState.value!!.taskTitle,
+                text = taskContentState.value?.taskTitle ?: "Лекция",
                 style = MaterialTheme.typography.h6,
                 textAlign = TextAlign.Center
             )
             Text(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                text = taskContentState.value!!.taskMark,
+                text = taskContentState.value?.taskMark ?: "Оценка",
                 style = TextStyle(
                     fontSize = 12.sp,
                     color = Color(0f, 0f, 0f, 0.4f),
@@ -117,7 +113,7 @@ fun TaskBottomNavigator(
     courseManager: CourseManager,
     taskContentState: MutableState<ArticleTaskContentItem?>,
     taskContentItemSize: Int,
-    navigateTo: (Screen) -> Unit
+    onBackPressed: () -> Unit
 ) {
     val index = courseManager.getTaskContentItemIndexState()
     val (iconBack, textBack) = when (index.value) {
@@ -134,7 +130,7 @@ fun TaskBottomNavigator(
             selected = selectedItem == 0,
             onClick = {
                 if (!courseManager.moveTaskIndex(-1))
-                    navigateTo(Screen.CourseContent)
+                    onBackPressed()
                 courseManager.setGlobalItem()
                 taskContentState.value = courseManager.getArticleLessonContentItem()
             },
@@ -145,7 +141,7 @@ fun TaskBottomNavigator(
             selected = selectedItem == 1,
             onClick = {
                 if (!courseManager.moveTaskIndex(1)) {
-                    navigateTo(Screen.CourseContent)
+                    onBackPressed()
                 }
                 courseManager.setGlobalItem()
                 taskContentState.value = courseManager.getArticleLessonContentItem()

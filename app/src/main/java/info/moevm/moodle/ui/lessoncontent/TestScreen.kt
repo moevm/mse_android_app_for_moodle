@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import info.moevm.moodle.data.courses.CourseManager
-import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.coursescontent.TaskAnswerType
 import info.moevm.moodle.ui.coursescontent.TaskContentType
 import kotlinx.coroutines.launch
@@ -33,7 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun TestScreen(
     courseManager: CourseManager,
-    navigateTo: (Screen) -> Unit
+    onBackPressed: () -> Unit
 ) {
     val testContentItem = courseManager.getTestTaskContentItem()
     val taskContentState = remember { mutableStateOf(testContentItem) }
@@ -42,7 +41,7 @@ fun TestScreen(
         topBar = {
             TaskScreenTopBar(
                 courseManager = courseManager,
-                onBack = { navigateTo(Screen.CourseContent) }
+                onBack = { onBackPressed() }
             )
         },
         bottomBar = {
@@ -53,14 +52,14 @@ fun TestScreen(
                         needChecker = false,
                         navigatePrevPage = {
                             if (!courseManager.moveTaskIndex(-1))
-                                navigateTo(Screen.TestAttempts)
+                                onBackPressed()
                             courseManager.changeLocalTestItem()
                             taskContentState.value =
                                 courseManager.getTestTaskContentItem()
                         },
                         navigateNextPage = {
                             if (!courseManager.moveTaskIndex(1))
-                                navigateTo(Screen.TestAttempts)
+                                onBackPressed()
                             courseManager.changeLocalTestItem()
                             taskContentState.value =
                                 courseManager.getTestTaskContentItem()
@@ -72,7 +71,7 @@ fun TestScreen(
                         needChecker = true,
                         navigatePrevPage = {
                             if (!courseManager.moveTaskIndex(-1))
-                                navigateTo(Screen.TestAttempts)
+                                onBackPressed()
                             courseManager.receiveQuizInProgress(
                                 courseManager.getAttemptId().value.toString(),
                                 courseManager.getTaskContentItemIndexState().value.toString()
@@ -85,7 +84,7 @@ fun TestScreen(
                             if (!courseManager.moveTaskIndex(1)) {
                                 courseManager.requireQuizFinishAttempt(courseManager.getAttemptId().value.toString(), "1")
                                 courseManager.receiveQuizAttempts(courseManager.getLocalQuizId())
-                                navigateTo(Screen.TestAttempts)
+                                onBackPressed()
                             }
                             courseManager.receiveQuizInProgress(
                                 courseManager.getAttemptId().value.toString(),

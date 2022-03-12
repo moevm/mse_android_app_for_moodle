@@ -10,40 +10,44 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import info.moevm.moodle.R
 import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.ui.Screen
-import info.moevm.moodle.ui.coursescontent.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.IllegalArgumentException
+import info.moevm.moodle.ui.components.LoadErrorActivity
+import info.moevm.moodle.ui.coursescontent.AttemptStatus
+import info.moevm.moodle.ui.signin.showMessage
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun TestAttemptsScreen(
     courseManager: CourseManager,
-    navigateTo: (Screen) -> Unit
+    navigateTo: (Screen) -> Unit,
+    onBackPressed: () -> Unit
 ) {
-    // TODO проверить работу добавления новой попытки
     val attemptContent = courseManager.getQuizAttemptContent()
-    val badNewAttemptState = remember { mutableStateOf(false) } // если мы хотим начать новую попытку до завершнения прошлой
+    val attemptsCount = remember { mutableStateOf(attemptContent?.attempts?.size ?: 0) }
     val scaffoldState = rememberScaffoldState()
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { TestPreviewScreenTopBar { navigateTo(Screen.CourseContent) } },
+        topBar = { TestPreviewScreenTopBar { onBackPressed() } },
         bottomBar = {
             BottomNavigatorWithAttempt(
-                newAttemptState = badNewAttemptState,
+                attemptsCount = attemptsCount,
                 courseManager = courseManager,
                 navigateTo = navigateTo
             )
         }
     ) {
+        if (attemptContent == null) {
+            LoadErrorActivity()
+            return@Scaffold
+        }
         val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
@@ -104,28 +108,21 @@ fun TestAttemptsScreen(
                     }
                 }
 
-                if (attemptContent?.attempts == null) // FIXME нужно обработать случай
-                    throw IllegalArgumentException("Попытки являются null")
-
-                var index = 1
-                for (item in attemptContent.attempts) {
+                if (attemptContent.attempts == null) {
+                    LoadErrorActivity()
+                    return@Scaffold
+                }
+                for (index in 0 until attemptsCount.value) {
+                    val item = attemptContent.attempts[index]
                     AttemptsCard(
                         courseManager = courseManager,
                         chosenAttempt = courseManager.getAttemptId(),
-                        idAttempt = item.id ?: -1,
-                        numberCard = index++,
-                        attemptStatus = item.state ?: "Ошибка",
-                        date = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.ROOT).format(Date((((item.timefinish?.toLong() ?: 0L) - 0).coerceAtLeast(0L) * 1000))).toString(),
+                        idAttempt = item?.id ?: -1,
+                        numberCard = index + 1,
+                        attemptStatus = item?.state ?: "Ошибка",
+                        date = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.ROOT).format(Date((((item?.timefinish?.toLong() ?: 0L) - 0).coerceAtLeast(0L) * 1000))).toString(),
                         navigateTo = navigateTo
                     )
-                }
-                if (badNewAttemptState.value) {
-                    GlobalScope.launch {
-                        withContext(Dispatchers.Main) {
-                            scaffoldState.snackbarHostState.showSnackbar("Попытка уже была начата")
-                            badNewAttemptState.value = false
-                        }
-                    }
                 }
             }
         }
@@ -152,8 +149,11 @@ fun AttemptsCard(
             BoxWithConstraints {
                 Row(Modifier.fillMaxWidth()) {
                     Text(
-                        modifier = Modifier.padding(top = 8.dp, start = 40.dp),
-                        text = numberCard.toString()
+                        modifier = Modifier
+                            .padding(top = 8.dp, start = 40.dp)
+                            .width(20.dp),
+                        text = numberCard.toString(),
+                        fontFamily = FontFamily.Default
                     )
                     Column(
                         Modifier
@@ -231,10 +231,11 @@ fun TestPreviewScreenTopBar(
 
 @Composable
 fun BottomNavigatorWithAttempt(
-    newAttemptState: MutableState<Boolean>,
+    attemptsCount: MutableState<Int>,
     courseManager: CourseManager,
     navigateTo: (Screen) -> Unit
 ) {
+    val context = LocalContext.current
     val (iconBack, textBack) = when (courseManager.getLessonContentItemIndex().value) {
         0 -> Pair(Icons.Filled.SubdirectoryArrowLeft, "Вернуться")
         else -> Pair(Icons.Filled.ChevronLeft, "Назад")
@@ -253,23 +254,33 @@ fun BottomNavigatorWithAttempt(
 
     val selectedItem by remember { mutableStateOf(0) }
     BottomNavigation {
-        BottomNavigationItem( // Назад
-            selected = selectedItem == 0,
-            onClick = {
-                // TODO сделать переход назад
-            },
-            icon = { Icon(imageVector = iconBack, contentDescription = null) },
-            label = { Text(textBack) }
-        )
+//        BottomNavigationItem( // Назад
+//            selected = selectedItem == 0,
+//            onClick = {
+//                // TODO сделать переход назад
+//            },
+//            icon = { Icon(imageVector = iconBack, contentDescription = null) },
+//            label = { Text(textBack) }
+//        )
         BottomNavigationItem( // Новая попытка
             selected = selectedItem == 1,
             onClick = {
-                // FIXME Исправить метод добавления новой попытки
-                if (courseManager.startNewAttempt((courseManager.getQuizAttemptContent()?.attempts?.getOrNull(0)?.quiz ?: -1).toString())) {
-//                    attemptsState.add(courseManager.getQuizAttemptContent()?.attempts?.last())
-                    newAttemptState.value = false
+                if (courseManager.getQuizAttemptContent()?.attempts == null) {
+                    showMessage(context, context.getString(R.string.load_error))
                 } else {
-                    newAttemptState.value = true
+                    if (courseManager.getQuizAttemptContent()?.attempts?.isEmpty() == true ||
+                        courseManager.getQuizAttemptContent()?.attempts?.isNotEmpty() == true &&
+                        courseManager.getQuizAttemptContent()?.attempts?.last()?.state != "inprogress"
+                    ) {
+                        if (courseManager.getLocalQuizId().isNotEmpty()) {
+                            courseManager.startNewAttempt(courseManager.getLocalQuizId())
+                            attemptsCount.value++
+                        } else {
+                            showMessage(context, context.getString(R.string.load_error))
+                        }
+                    } else {
+                        showMessage(context, context.getString(R.string.attempt_already_in_progress))
+                    }
                 }
             },
             icon = {
@@ -280,18 +291,18 @@ fun BottomNavigatorWithAttempt(
             },
             label = { Text(textAttempt) }
         )
-        BottomNavigationItem( // Вперёд
-            selected = selectedItem == 2,
-            onClick = {
-                // TODO сделать переход вперёд
-            },
-            icon = {
-                Icon(
-                    imageVector = iconForward,
-                    contentDescription = null
-                )
-            },
-            label = { Text(textForward) }
-        )
+//        BottomNavigationItem( // Вперёд
+//            selected = selectedItem == 2,
+//            onClick = {
+//                // TODO сделать переход вперёд
+//            },
+//            icon = {
+//                Icon(
+//                    imageVector = iconForward,
+//                    contentDescription = null
+//                )
+//            },
+//            label = { Text(textForward) }
+//        )
     }
 }

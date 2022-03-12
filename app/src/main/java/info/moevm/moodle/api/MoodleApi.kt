@@ -8,6 +8,7 @@ import info.moevm.moodle.model.APIVariables
 import info.moevm.moodle.model.LoginSuccess
 import info.moevm.moodle.model.MoodleUser
 import info.moevm.moodle.model.WrongToken
+import info.moevm.moodle.utils.Expectant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,13 +76,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 2)
         Timber.d("answer is received")
         return data
     }
@@ -98,13 +99,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 2)
         Timber.d("answer is received")
         return data
     }
@@ -171,13 +172,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 5)
         Timber.d("answer is received")
         return data
     }
@@ -194,13 +195,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 5)
         Timber.d("answer is received")
         return data
     }
@@ -217,13 +218,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -240,13 +241,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -263,13 +264,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -286,13 +287,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -309,13 +310,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -332,13 +333,13 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }
@@ -355,14 +356,14 @@ class MoodleApi {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Timber.d("fatal error")
+                    Timber.e("fatal error: ${e.message}")
                 }
             }
             loaded.value = true
         }
 
         // WORK IN PROGRESS
-        waitSomeSecondUntilFalse(loaded, 1)
+        Expectant.waitSomeSecondUntilFalse(loaded, 1)
         Timber.d("answer is received")
         return data
     }

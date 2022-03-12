@@ -2,9 +2,9 @@ package info.moevm.moodle.data.courses.impl
 
 import info.moevm.moodle.api.MoodleApi
 import info.moevm.moodle.data.Result
+import info.moevm.moodle.data.courses.AllCourseSelection
 import info.moevm.moodle.data.courses.CoursesMap
 import info.moevm.moodle.data.courses.CoursesRepository
-import info.moevm.moodle.data.courses.TopicSelection
 import info.moevm.moodle.utils.addOrRemove
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -20,29 +20,6 @@ import java.util.ArrayList
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class FakeCoursesRepository : CoursesRepository {
-
-    private val topics by lazy {
-        mapOf(
-            "Android" to listOf("Jetpack Compose", "Kotlin", "Jetpack"),
-            "Programming" to listOf("Kotlin", "Declarative UIs", "Java"),
-            "Technology" to listOf("Pixel", "Google")
-        )
-    }
-
-    private val currentTopics by lazy {
-        listOf(
-            "Kobalt Toral",
-            "K'Kola Uvarek",
-            "Kris Vriloc",
-            "Grala Valdyr",
-            "Kruel Valaxar",
-            "L'Elij Venonn",
-            "Kraag Solazarn",
-            "Tava Targesh",
-            "Kemarrin Muuda"
-        )
-    }
-
     private val publications by lazy {
         listOf(
             "Курс молодого бойца",
@@ -58,14 +35,14 @@ class FakeCoursesRepository : CoursesRepository {
     }
 
     // for now, keep the selections in memory
-    private val selectedTopics = MutableStateFlow(setOf<TopicSelection>())
+    private val selectedTopics = MutableStateFlow(setOf<AllCourseSelection>())
     private val selectedPeople = MutableStateFlow(setOf<String>())
     private val selectedPublications = MutableStateFlow(setOf<String>())
 
     // Used to make suspend functions that read and update state safe to call from any thread
     private val mutex = Mutex()
 
-    override suspend fun getTopics(token: String): Result<CoursesMap> {
+    override suspend fun getAllCourse(token: String): Result<CoursesMap> {
         if (token.isEmpty())
             Timber.i("token in getTopics empty")
         else
@@ -97,7 +74,7 @@ class FakeCoursesRepository : CoursesRepository {
         return Result.Success(topicMap)
     }
 
-    override suspend fun getPeople(token: String): Result<List<Pair<String, Int>>> {
+    override suspend fun getCurrentCourse(token: String): Result<List<Pair<String, Int>>> {
         if (token.isEmpty())
             Timber.i("token in getPeople empty")
         else
@@ -122,15 +99,15 @@ class FakeCoursesRepository : CoursesRepository {
         return Result.Success(publications)
     }
 
-    override suspend fun toggleTopicSelection(topic: TopicSelection) {
+    override suspend fun toggleAllCourseSelection(allCourse: AllCourseSelection) {
         mutex.withLock {
             val set = selectedTopics.value.toMutableSet()
-            set.addOrRemove(topic)
+            set.addOrRemove(allCourse)
             selectedTopics.value = set
         }
     }
 
-    override suspend fun togglePersonSelected(person: String) {
+    override suspend fun toggleCurrentCourseSelected(person: String) {
         mutex.withLock {
             val set = selectedPeople.value.toMutableSet()
             set.addOrRemove(person)
@@ -146,9 +123,9 @@ class FakeCoursesRepository : CoursesRepository {
         }
     }
 
-    override fun observeTopicsSelected(): Flow<Set<TopicSelection>> = selectedTopics
+    override fun observeAllCourseSelected(): Flow<Set<AllCourseSelection>> = selectedTopics
 
-    override fun observePeopleSelected(): Flow<Set<String>> = selectedPeople
+    override fun observeCurrentCourseSelected(): Flow<Set<String>> = selectedPeople
 
     override fun observePublicationSelected(): Flow<Set<String>> = selectedPublications
 }

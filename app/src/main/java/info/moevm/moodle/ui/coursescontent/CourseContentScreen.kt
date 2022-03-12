@@ -9,7 +9,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,19 +32,26 @@ import info.moevm.moodle.data.courses.CourseManager
 import info.moevm.moodle.model.CardsViewModel
 import info.moevm.moodle.ui.Screen
 import info.moevm.moodle.ui.components.ExpandableCard
+import info.moevm.moodle.ui.components.LoadErrorActivity
+import info.moevm.moodle.ui.signin.showMessage
 import timber.log.Timber
-import kotlin.IllegalArgumentException
 
 @Composable
 fun CourseContentScreen(
     courseManager: CourseManager,
-    navigateTo: (Screen) -> Unit
+    navigateTo: (Screen) -> Unit,
+    onBackPressed: () -> Unit
 ) {
 //    TODO: исправить на вывод ошибки
-    val titles = courseManager.getLessonsTitles() ?: return
+    val waitTime = 1500
+    if (courseManager.getLessonsTitles() == null) { // если вдруг не успело загрузиться
+        val startTime = System.currentTimeMillis()
+        while (courseManager.getLessonsTitles() == null && System.currentTimeMillis() - startTime < waitTime) {}
+    }
+    val titles = courseManager.getLessonsTitles() // если всё же не загрузилось,
+    val availableTypes = TaskType.values().map { it.value }
 
-    val time = System.currentTimeMillis()
-    while (System.currentTimeMillis() - time < 250) { // FIXME: Даём время на удаление прошлого содержимого, исправить
+    while (System.currentTimeMillis() - waitTime < 250) { // FIXME: Даём время на удаление прошлого содержимого, исправить
         Timber.i("content TimeOut 250ms")
     }
 
@@ -61,7 +71,7 @@ fun CourseContentScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navigateTo(Screen.Interests)
+                            onBackPressed()
                         }
                     ) {
                         Icon(Icons.Filled.ArrowBack, null)
@@ -76,6 +86,10 @@ fun CourseContentScreen(
             )
         )
     ) {
+        if (titles == null || titles.isEmpty()) {
+            LoadErrorActivity()
+            return@Scaffold
+        }
         LazyColumn(Modifier.padding(bottom = 4.dp)) {
             itemsIndexed(cards.value) { index, card ->
                 val primaryColor = MaterialTheme.colors.primary
@@ -86,7 +100,7 @@ fun CourseContentScreen(
                             courseManager.getLessonsContents(index)
                         if (lessonContent != null) {
                             CardItems( // TODO: исправить на нормально
-                                tasksType = lessonContent.map { TaskType.valueOf(it.modname?.uppercase() ?: "NONE") }.toList(),
+                                tasksType = lessonContent.map { if ((it.modname ?: "") in availableTypes) TaskType.valueOf(it.modname?.uppercase() ?: "") else TaskType.NONE }.toList(),
                                 tasksTitles = lessonContent.map { Html.fromHtml(it.name).toString() ?: "<Ошибка загрузки данных>" }.toList(),
                                 tasksStatus = lessonContent.map {
                                     when (it.completiondata?.state) {
@@ -163,6 +177,7 @@ fun CardItem(
     lessonId: Int,
     navigateTo: (Screen) -> Unit
 ) {
+    val context = LocalContext.current
     BoxWithConstraints(
         Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopStart
@@ -188,7 +203,7 @@ fun CardItem(
                         courseManager.setLocalQuizId(lessonId.toString())
                         navigateTo(Screen.TestAttempts)
                     }
-                    else -> ""
+                    else -> showMessage(context, context.getString(R.string.not_support_element_course))
                 }
             }
         ) {

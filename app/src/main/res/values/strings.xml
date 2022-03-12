@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MOEVMoodle</string>
-    <string name="load_error">Can\'t update course list</string>
+    <string name="load_error">Ошибка при загрузке данных</string>
     <string name="retry">Retry</string>
 
     <string name="app_tagline">MOEVM Moodle App</string>
@@ -10,7 +10,7 @@
     <string name="dominant_home_course_caption">Your last course</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
-    <string name="sign_in">Sign in</string>
+    <string name="sign_in">Войти</string>
     <string name="token_url_setup">Token and URL settings</string>
     <string name="token">Token</string>
     <string name="url">URL</string>
@@ -20,11 +20,10 @@
     <string name="user_img_url_placeholder">https://picsum.photos/200</string>
     <string name="user_city_placeholder">Saint-Petersburg</string>
     <string name="user_country_placeholder">RU</string>
-    <string name="hello">Hello</string>
-    <string name="profile_label">Profile</string>
-    <string name="setups">Setups</string>
-    <string name="log_out">Log out</string>
-    <string name="all_courses">All courses</string>
+    <string name="hello">Привет</string>
+    <string name="setups">Предустановки</string>
+    <string name="log_out">Выйти из аккаунта</string>
+    <string name="all_courses">Все курсы</string>
     <string name="or">or</string>
     <string name="forgot_password">Forgot password</string>
     <string name="user_continue">Continue</string>
@@ -32,15 +31,29 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="done">Done</string>
-    <string name="settings_name">Settings</string>
+    <string name="settings_name">Настройки</string>
     <string name="enter_screen_info">Enter admin token for extension API. Specify the url of the server to send requests to: local or work.</string>
     <string name="moodle_user">moodle_user</string>
+    <string name="not_available_yet">"Пока что недоступно"</string>
+    <string name="user_auth">Вы вошли</string>
+    <string name="checking_auth">Проверка…</string>
+    <string name="not_support_element_course">Данный элемент не поддерживается</string>
+    <string name="welcome_default_case">добро пожаловать</string>
+    <string name="welcome_up_case">Добро пожаловать</string>
+    <string name="overview_only">Доступно только обзорно</string>
 
     <!--  Labels  -->
-    <string name="home_label">Home</string>
-    <string name="courses_label">Courses</string>
-    <string name="statistics_label">Statistics</string>
-    <string name="settings_label">Settings</string>
+    <string name="home_label">Главный экран</string>
+    <string name="courses_label">Курсы</string>
+    <string name="profile_label">Профиль</string>
+    <string name="statistics_label">Статистика</string>
+    <string name="settings_label">Настройки</string>
+    <string name="all_moodle_courses">Все курсы</string>
+    <string name="current_moodle_courses">Ваши курсы</string>
+
+    <!--  Activity Title  -->
+    <string name="interest_activity_title">Список курсов</string>
+
 
     <!--  Service information  -->
     <string name="function_not_available_info">Functionality not available 🙈</string>
@@ -69,7 +82,8 @@
     <string name="change_theme">Change theme</string>
 
     <!-- Log In -->
-    <string name="wrong_login">Wrong login or password</string>
-    <string name="network_problems">Network problems, check internet connection</string>
+    <string name="wrong_login">Неправильный логин или пароль</string>
+    <string name="network_problems">Проблемы с соединением, проверьте интернет подключение</string>
     <string name="title_activity_article_screen">ArticleScreen</string>
+    <string name="attempt_already_in_progress">Попытка уже была начата</string>
 </resources>

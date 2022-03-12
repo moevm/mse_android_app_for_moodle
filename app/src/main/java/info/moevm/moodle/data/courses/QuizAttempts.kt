@@ -20,27 +20,27 @@ val sumgrades: Int?                        Необязательно //Total ma
 data class Attempt(
     val id: Int? = null,
     val quiz: Int? = null,
-    val userid: Int? = null,
-    val attempt: Int? = null,
-    val uniqueid: Int? = null,
-    val layout: String? = null,
-    val currentpage: Int? = null,
-    val preview: Int? = null,
+//    val userid: Int? = null,
+//    val attempt: Int? = null,
+//    val uniqueid: Int? = null,
+//    val layout: String? = null,
+//    val currentpage: Int? = null,
+//    val preview: Int? = null,
     val state: String? = null,
-    val timestart: Int? = null,
+//    val timestart: Int? = null,
     val timefinish: Int? = null,
-    val timemodified: Int? = null,
-    val timemodifiedoffline: Int? = null,
-    val timecheckstate: Int? = null,
-    val sumgrades: Double? = null
+//    val timemodified: Int? = null,
+//    val timemodifiedoffline: Int? = null,
+//    val timecheckstate: Int? = null,
+//    val sumgrades: Double? = null
 )
 
 data class QuizAttempts(
-    val attempts: List<Attempt>? = null,
+    val attempts: MutableList<Attempt?>? = null,
     val warnings: List<WarningItem>? = null
 )
 
 data class QuizAttempt(
-    val attempts: Attempt? = null,
-    val warnings: WarningItem? = null
+    val attempt: Attempt? = null,
+    val warnings: List<WarningItem>? = null
 )

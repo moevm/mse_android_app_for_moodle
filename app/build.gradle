@@ -16,7 +16,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName "1.1.1"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -75,6 +75,14 @@ android {
     // TODO: Fix lint errors and remove
     lintOptions {
         abortOnError false
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("androidx.compose.ui:ui-tooling:1.0.0-beta09")
+        force("androidx.compose.ui:ui-tooling-data:1.0.0-beta09")
+        force("androidx.compose.ui:ui-tooling-preview:1.0.0-beta09")
     }
 }
 

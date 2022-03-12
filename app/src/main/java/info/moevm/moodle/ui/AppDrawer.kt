@@ -19,11 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import info.moevm.moodle.R
+import info.moevm.moodle.ui.signin.showMessage
 
 @Composable
 fun AppDrawer(
@@ -31,6 +33,7 @@ fun AppDrawer(
     currentScreen: Screen,
     closeDrawer: () -> Unit
 ) {
+    val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(Modifier.height(24.dp))
         MOEVMMoodleLogo(Modifier.padding(16.dp))
@@ -71,7 +74,8 @@ fun AppDrawer(
             label = stringResource(R.string.statistics_label),
             isSelected = currentScreen == Screen.Statistics,
             action = {
-                navigateTo(Screen.Statistics)
+//                navigateTo(Screen.Statistics)
+                showMessage(context, context.getString(R.string.not_available_yet))
                 closeDrawer()
             }
         )
@@ -81,7 +85,8 @@ fun AppDrawer(
             label = stringResource(R.string.settings_label),
             isSelected = currentScreen == Screen.Settings,
             action = {
-                navigateTo(Screen.Settings)
+                showMessage(context, context.getString(R.string.not_available_yet))
+//                navigateTo(Screen.Settings)
                 closeDrawer()
             }
         )

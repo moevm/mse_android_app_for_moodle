@@ -6,7 +6,10 @@ import android.content.ContextWrapper
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -37,7 +40,10 @@ import info.moevm.moodle.ui.signin.SignInScreen
 import info.moevm.moodle.ui.statistics.SettingsScreenForStatistics
 import info.moevm.moodle.ui.theme.MOEVMMoodleTheme
 import info.moevm.moodle.ui.user.UserScreen
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @Composable
 fun MOEVMMoodleApp(appContainer: AppContainer) {
@@ -128,25 +134,27 @@ private fun AppContent(
                 composable(ScreenName.TEST.name) {
                     TestScreen(
                         courseManager = courseManager,
-                        navigateTo = actions.select
+                        onBackPressed = actions.upPress
                     )
                 }
                 composable(ScreenName.TEST_ATTEMPTS.name) {
                     TestAttemptsScreen(
                         courseManager = courseManager,
-                        navigateTo = actions.select
+                        navigateTo = actions.select,
+                        onBackPressed = actions.upPress
                     )
                 }
                 composable(ScreenName.ARTICLE.name) {
                     info.moevm.moodle.ui.lessoncontent.ArticleScreen(
                         courseManager = courseManager,
-                        navigateTo = actions.select
+                        onBackPressed = actions.upPress
                     )
                 }
                 composable(ScreenName.COURSE_CONTENT.name) {
                     CourseContentScreen(
                         courseManager = courseManager,
-                        navigateTo = actions.select
+                        navigateTo = actions.select,
+                        onBackPressed = actions.upPress
                     )
                 }
                 composable(ScreenName.ENTER_SETUP.name) {
@@ -157,6 +165,7 @@ private fun AppContent(
                 composable(ScreenName.SIGN_IN.name) {
                     SignInScreen(
                         navigateTo = actions.select,
+                        courseManager = courseManager,
                         fullNameMoodleUser = fullNameMoodleUser,
                         cityMoodleUser = cityMoodleUser,
                         countryMoodleUser = countryMoodleUser
@@ -165,6 +174,7 @@ private fun AppContent(
                 composable(ScreenName.HOME.name) {
                     HomeScreen(
                         navigateTo = actions.select,
+                        fullNameMoodleUser = fullNameMoodleUser,
                         postsRepository = postsRepository,
                         scaffoldState = scaffoldState
                     )
