@@ -265,13 +265,22 @@ fun BottomNavigatorWithAttempt(
         BottomNavigationItem( // Новая попытка
             selected = selectedItem == 1,
             onClick = {
-                if (courseManager.getQuizAttemptContent()?.attempts?.isNotEmpty() == true &&
-                    courseManager.getQuizAttemptContent()?.attempts?.last()?.state != "inprogress"
-                ) {
-                    courseManager.startNewAttempt((courseManager.getQuizAttemptContent()?.attempts?.getOrNull(0)?.quiz ?: -1).toString())
-                    attemptsCount.value++
+                if (courseManager.getQuizAttemptContent()?.attempts == null) {
+                    showMessage(context, context.getString(R.string.load_error))
                 } else {
-                    showMessage(context, context.getString(R.string.attempt_already_in_progress))
+                    if (courseManager.getQuizAttemptContent()?.attempts?.isEmpty() == true ||
+                        courseManager.getQuizAttemptContent()?.attempts?.isNotEmpty() == true &&
+                        courseManager.getQuizAttemptContent()?.attempts?.last()?.state != "inprogress"
+                    ) {
+                        if (courseManager.getLocalQuizId().isNotEmpty()) {
+                            courseManager.startNewAttempt(courseManager.getLocalQuizId())
+                            attemptsCount.value++
+                        } else {
+                            showMessage(context, context.getString(R.string.load_error))
+                        }
+                    } else {
+                        showMessage(context, context.getString(R.string.attempt_already_in_progress))
+                    }
                 }
             },
             icon = {

@@ -75,7 +75,7 @@ fun AppDrawer(
             isSelected = currentScreen == Screen.Statistics,
             action = {
 //                navigateTo(Screen.Statistics)
-                showMessage(context, context.getString(R.string.not_support_yet))
+                showMessage(context, context.getString(R.string.not_available_yet))
                 closeDrawer()
             }
         )
@@ -85,7 +85,7 @@ fun AppDrawer(
             label = stringResource(R.string.settings_label),
             isSelected = currentScreen == Screen.Settings,
             action = {
-                showMessage(context, context.getString(R.string.not_support_yet))
+                showMessage(context, context.getString(R.string.not_available_yet))
 //                navigateTo(Screen.Settings)
                 closeDrawer()
             }

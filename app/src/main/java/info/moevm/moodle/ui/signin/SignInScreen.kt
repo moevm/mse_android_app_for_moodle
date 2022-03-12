@@ -153,7 +153,7 @@ fun SignInSignUpTopAppBar(
     ) {
         IconButton(
             onClick = {
-                showMessage(context, context.getString(R.string.not_support_yet))
+                showMessage(context, context.getString(R.string.not_available_yet))
 //                onSetupTouch(Screen.EnterSetup)
             }
         ) {

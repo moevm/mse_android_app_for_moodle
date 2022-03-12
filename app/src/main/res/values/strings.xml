@@ -34,8 +34,8 @@
     <string name="settings_name">Настройки</string>
     <string name="enter_screen_info">Enter admin token for extension API. Specify the url of the server to send requests to: local or work.</string>
     <string name="moodle_user">moodle_user</string>
-    <string name="not_support_yet">"Пока что не поддерживается. Но в будущем обязательно будет!"</string>
-    <string name="user_auth">"Вы вошли"</string>
+    <string name="not_available_yet">"Пока что недоступно"</string>
+    <string name="user_auth">Вы вошли</string>
     <string name="checking_auth">Проверка…</string>
     <string name="not_support_element_course">Данный элемент не поддерживается</string>
     <string name="welcome_default_case">добро пожаловать</string>
